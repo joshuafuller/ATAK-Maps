@@ -1,6 +1,5 @@
 
 ![ATAK-Maps Logo](https://github.com/joshuafuller/ATAK-Maps/blob/master/images/ATAK-Maps-Logo-White.png?raw=true)
- :world_map: A collection of maps for use in [**ATAK**](https://github.com/deptofdefense/AndroidTacticalAssaultKit-CIV)
  
 ![GitHub Release Date](https://img.shields.io/github/release-date/joshuafuller/ATAK-Maps?style=flat) ![GitHub All Releases](https://img.shields.io/github/downloads/joshuafuller/ATAK-Maps/total?style=flat)
  

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<customMapSource>
+   <name>OSM Standard</name>
+   <minZoom>0</minZoom>
+   <maxZoom>18</maxZoom>
+   <tileType>png</tileType>
+   <url>http://tile.openstreetmap.org/{$z}/{$x}/{$y}.png</url>
+   <tileUpdate>None</tileUpdate>
+   <backgroundColor>#000000</backgroundColor>
+   <ignoreErrors>false</ignoreErrors>
+   <serverParts></serverParts>
+</customMapSource>

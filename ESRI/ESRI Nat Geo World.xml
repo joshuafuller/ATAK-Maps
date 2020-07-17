@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<customMapSource>
+<name>ESRI Nat Geo World</name>
+<minZoom>1</minZoom>
+<maxZoom>20</maxZoom>
+<tileType>jpg</tileType>
+<tileUpdate>None</tileUpdate>
+<url>https://server.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer/tile/{$z}/{$y}/{$x}</url>
+<backgroundColor>#000000</backgroundColor>
+</customMapSource>

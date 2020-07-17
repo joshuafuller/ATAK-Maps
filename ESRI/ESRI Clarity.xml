@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<customMapSource>
+<name>ESRI World Imagery (Clarity) Beta</name>
+<minZoom>1</minZoom>
+<maxZoom>20</maxZoom>
+<tileType>jpg</tileType>
+<tileUpdate>None</tileUpdate>
+<url>http://clarity.maptiles.arcgis.com/arcgis/rest/services/World_Imagery/MapServer/tile/{$z}/{$y}/{$x}</url>
+<backgroundColor>#000000</backgroundColor>
+</customMapSource>

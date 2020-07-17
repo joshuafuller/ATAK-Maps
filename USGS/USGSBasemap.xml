@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<customMapSource>
+	<name>USGS</name>
+	<minZoom>0</minZoom>
+	<maxZoom>15</maxZoom>
+	<tileType>png</tileType>
+	<tileUpdate>None</tileUpdate>
+	<url>https://basemap.nationalmap.gov/ArcGIS/rest/services/USGSTopo/MapServer/tile/{$z}/{$y}/{$x}</url>
+	<backgroundColor>#000000</backgroundColor>
+</customMapSource>

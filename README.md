@@ -1,4 +1,5 @@
-[LOGO]
+
+![ATAK-Maps Logo](https://github.com/joshuafuller/ATAK-Maps/blob/master/images/ATAK-Maps-Logo-White.png?raw=true)
 
 # ATAK-Maps
  :world_map: A collection of maps for use in [**ATAK**](https://github.com/deptofdefense/AndroidTacticalAssaultKit-CIV)
@@ -15,13 +16,13 @@
 
  
 ### How do I add these maps to ATAK ?
-![Download ATAK-Maps.zip](https://github.com/joshuafuller/ATAK-Maps/blob/master/screenshots/screenshot_1.png?raw=true)
+![Download ATAK-Maps.zip](https://github.com/joshuafuller/ATAK-Maps/blob/master/images/screenshot_1.png?raw=true)
 
 
-![Goto Import Manager](https://github.com/joshuafuller/ATAK-Maps/blob/master/screenshots/screenshot_2.png?raw=true)
+![Goto Import Manager](https://github.com/joshuafuller/ATAK-Maps/blob/master/images/screenshot_2.png?raw=true)
 
 
-![Locate the ATAK-Maps.zip file](https://github.com/joshuafuller/ATAK-Maps/blob/master/screenshots/screenshot_3.png?raw=true)
+![Locate the ATAK-Maps.zip file](https://github.com/joshuafuller/ATAK-Maps/blob/master/images/screenshot_3.png?raw=true)
 
 ### Can you add other maps ?
 >[How to create an issue or feature request]

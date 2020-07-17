@@ -2,14 +2,14 @@
 [SCREENSHOTS]
 
 # ATAK-Maps
+ :world_map: A collection of maps for use in [**ATAK**](https://github.com/deptofdefense/AndroidTacticalAssaultKit-CIV)
+ 
 
 ![GitHub Release Date](https://img.shields.io/github/release-date/joshuafuller/ATAK-Maps?style=social)
 ![GitHub All Releases](https://img.shields.io/github/downloads/joshuafuller/ATAK-Maps/total?style=social)
  
 
- A collection of maps for use in [**ATAK**](https://github.com/deptofdefense/AndroidTacticalAssaultKit-CIV)
  
-
 ## How to add these maps to ATAK
 
 

@@ -1,5 +1,3 @@
-
-
 [LOGO]
 
 # ATAK-Maps
@@ -10,18 +8,10 @@
 ![GitHub Release Date](https://img.shields.io/github/release-date/joshuafuller/ATAK-Maps?style=flat)
 ![GitHub All Releases](https://img.shields.io/github/downloads/joshuafuller/ATAK-Maps/total?style=flat)
  
-[TOC]
-
-Links
-
-Links
-
-Links
-
 ## Frequently Asked Questions
 
 ### What is ATAK-Maps ?
-[DESCRIPTION of MOBAC compatible maps]
+>ATAK-Maps is a collection of MOBAC formated XML files that contain pointers to online map sources. These XML files can be imported into ATAK and other map applications to display these maps.
 
  
 ### How do I add these maps to ATAK ?
@@ -34,5 +24,6 @@ Links
 ![Locate the ATAK-Maps.zip file](https://github.com/joshuafuller/ATAK-Maps/blob/master/screenshots/screenshot_3.png?raw=true)
 
 ### Can you add other maps ?
-[How to create an issue or feature request]
-[How to do a pull request]
+>[How to create an issue or feature request]
+
+>[How to do a pull request]

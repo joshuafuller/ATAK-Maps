@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<customMapSource>
+   <name>OSM Hike Bike</name>
+   <minZoom>0</minZoom>
+   <maxZoom>21</maxZoom>
+   <tileType>png</tileType>
+   <url>https://tiles.wmflabs.org/hikebike/{$z}/{$x}/{$y}.png</url>
+   <tileUpdate>None</tileUpdate>
+   <backgroundColor>#000000</backgroundColor>
+   <ignoreErrors>false</ignoreErrors>
+   <serverParts></serverParts>
+</customMapSource>

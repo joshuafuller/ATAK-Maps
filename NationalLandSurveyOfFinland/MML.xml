@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<customMapSource>
+	<name>MML Topographic Map</name>
+    <tileType>jpg</tileType>
+    <url>https://tiles.kartat.kapsi.fi/peruskartta/{$z}/{$x}/{$y}.jpg</url>
+    <minZoom>2</minZoom>
+    <maxZoom>19</maxZoom>
+	<tileUpdate>None</tileUpdate>
+	<backgroundColor>#000000</backgroundColor>
+	<ignoreErrors>false</ignoreErrors>
+	<serverParts></serverParts>
+</customMapSource>

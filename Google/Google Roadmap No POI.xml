@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<customMapSource>
+<name>Google Roadmap No POI</name>
+<minZoom>0</minZoom>
+<maxZoom>20</maxZoom>
+<tileType>jpg</tileType>
+<tileUpdate>None</tileUpdate>
+<url>http://mt1.google.com/vt/lyrs=m&amp;x={$x}&amp;y={$y}&amp;z={$z}&amp;s=Gal&amp;apistyle=s.t%3A2%7Cs.e%3Al%7Cp.v%3Aoff</url>
+<backgroundColor>#000000</backgroundColor>
+</customMapSource>

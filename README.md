@@ -1,7 +1,7 @@
 
 ![ATAK-Maps Logo](https://github.com/joshuafuller/ATAK-Maps/blob/master/images/ATAK-Maps-Logo-White.png?raw=true)
  
-![GitHub Release Date](https://img.shields.io/github/release-date/joshuafuller/ATAK-Maps?style=flat) ![GitHub All Releases](https://img.shields.io/github/downloads/joshuafuller/ATAK-Maps/total?style=flat)
+![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/joshuafuller/ATAK-Maps) ![GitHub Release Date](https://img.shields.io/github/release-date/joshuafuller/ATAK-Maps?style=flat) ![GitHub All Releases](https://img.shields.io/github/downloads/joshuafuller/ATAK-Maps/total?style=flat)
  
 ## Frequently Asked Questions
 

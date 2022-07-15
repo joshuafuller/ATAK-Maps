@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-    <customMapSource>
+<customMapSource>
     <name>USDA FSTopo (Overlay)</name>
     <minZoom>0</minZoom>
     <maxZoom>17</maxZoom>
     <tileType>png</tileType>
-	<tileUpdate>None</tileUpdate>
+    <tileUpdate>None</tileUpdate>
     <url>https://apps.fs.usda.gov/arcx/rest/services/EDW/EDW_FSTopo_01/MapServer/tile/{$z}/{$y}/{$x}</url>
     <backgroundColor>#000000</backgroundColor>
 </customMapSource>

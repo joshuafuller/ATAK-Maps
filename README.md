@@ -18,7 +18,9 @@ Follow these steps to install maps on your mobile device:
 5. **Verify**: Open ATAK and check the new maps in the map list.
 
 ## ❓ FAQ
-- **What is ATAK-Maps?** A set of XML files to import maps into ATAK.
+- **What is ATAK-Maps?** A set of XML files to import maps into ATAK that allow the user to view various online map sources.
+- **Can I cache these maps?** Yes, once you import the maps into ATAK, you can cache them for offline use.
+- **Will you add more maps?** Yes, we are always looking for new maps to add. If you have a map suggestion, please open an issue.
 
 ## ⚠️ Open Street Maps Compatibility
 Open Street Maps may block ATAK client access. These files are included for reference, and we are seeking a solution.

@@ -1,13 +1,6 @@
 # :earth_americas: Contributing to ATAK Maps
 
-First off, thank you for considering contributing to ATAK Maps! It's people like you that make ATAK Maps such a great tool. We welcome and appreciate contributions from the community!
-
-## :pushpin: Table of Contents
-
-- [Prerequisites](#prerequisites)
-- [Contributing Map Files](#contributing-map-files)
-- [Guidelines for Map Files](#guidelines-for-map-files)
-- [Contact](#contact)
+First off, thank you for considering contributing to ATAK Maps! It's contributors like you that make ATAK Maps such a valuable resource. We welcome and appreciate contributions from the community!
 
 ## :gear: Prerequisites
 

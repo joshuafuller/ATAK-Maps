@@ -52,7 +52,8 @@ Join our [Discord server](https://discord.gg/dQUYADMW87) for support and communi
 ## License
 
 ATAK-Maps is distributed under the [MIT License](LICENSE).
+                        
+## Stargazers over time
+[![Stargazers over time](https://starchart.cc/joshuafuller/ATAK-Maps.svg?variant=adaptive)](https://starchart.cc/joshuafuller/ATAK-Maps)
 
-## Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=joshuafuller/ATAK-Maps&type=Date)](https://star-history.com/#joshuafuller/ATAK-Maps&Date)
+                    

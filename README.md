@@ -29,8 +29,8 @@ To integrate ATAK-Maps into your ATAK application, follow these steps:
 1. **Download**: Get `ATAK-Maps.zip` from the [Releases page](https://github.com/joshuafuller/ATAK-Maps/releases).
 2. **Locate**: Navigate to 'Downloads' in your file manager.
 3. **Extract**: Open `ATAK-Maps.zip` and extract its contents.
-4. **Transfer**: Move the files to the `ATAK/imagery` directory.
-5. **Verify**: In ATAK, ensure the new maps appear in the map list.
+4. **Transfer**: Move the map files (anything not prefixed `grg_`) to the `ATAK/imagery` directory and the overlays (anything prefixed `grg_`) into the `ATAK/grg` directory.
+5. **Verify**: In ATAK, ensure the new maps appear in the map list and the overlays appear in the overlay list.
 
 ## Frequently Asked Questions (FAQ)
 

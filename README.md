@@ -6,7 +6,7 @@
 
 ## Detailed Overview of ATAK-Maps
 
-ATAK-Maps is a comprehensive collection of XML files, formatted in the Mobile Atlas Creator (MOBAC) format. This format is used in [Android Tactical Assault Kit (ATAK)](https://tak.gov), an advanced geospatial mapping tool employed in various sectors including military, law enforcement, and emergency services. This repository and it's contents are not affiliated with TAK.GOV in any way.
+ATAK-Maps is a comprehensive collection of XML files, formatted in the Mobile Atlas Creator (MOBAC) format. This format is used in [Android Tactical Assault Kit (ATAK)](https://tak.gov), an advanced geospatial mapping tool employed in various sectors including military, law enforcement, and emergency services. This repository and its contents are not affiliated with TAK.GOV in any way.
 
 ### What are ATAK-Maps?
 

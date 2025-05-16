@@ -41,6 +41,10 @@ To integrate ATAK-Maps into your ATAK application, follow these steps:
 
 Please note that Open Street Maps may restrict ATAK client access. These maps are included for reference, and we're exploring solutions.
 
+## Creating Custom Maps
+
+Want to add your own map sources? See the [Creating Custom Maps](docs/creating-custom-maps.md) guide for details on the MOBAC XML structure, choosing tile servers, configuring zoom levels and testing new files in ATAK.
+
 ## Contributing
 
 We welcome your contributions! Review our [contribution guidelines](CONTRIBUTING.md) for more information.

@@ -54,6 +54,12 @@ We welcome your contributions! Review our [contribution guidelines](CONTRIBUTING
 
 Join our [Discord server](https://discord.gg/dQUYADMW87) for support and community engagement.
 
+## Publishing a New Version
+
+To publish a new release, run the **Release Please** workflow from the GitHub
+Actions tab. When it completes, a tag like `vX.Y.Z` is created which
+automatically triggers the ZIP release workflow.
+
 ## License
 
 ATAK-Maps is distributed under the [MIT License](LICENSE).

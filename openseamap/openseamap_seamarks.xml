@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<customMapSource>
+    <name>OpenSeaMap – Seamarks</name>
+    <minZoom>0</minZoom>
+    <maxZoom>18</maxZoom>
+    <tileType>png</tileType>
+    <url>https://t1.openseamap.org/seamark/{$z}/{$x}/{$y}.png</url>
+    <coordinateSystem>EPSG:3857</coordinateSystem>
+    <backgroundColor>#000000</backgroundColor>
+    <ignoreErrors>false</ignoreErrors>
+    <serverParts>t1,t2,t3</serverParts>
+</customMapSource>

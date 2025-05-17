@@ -2,11 +2,12 @@
 
 ![ATAK-Maps Logo](https://github.com/joshuafuller/ATAK-Maps/blob/master/images/ATAK_MAPS_Logo.png?raw=true)
 
-![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/joshuafuller/ATAK-Maps) ![GitHub Release Date](https://img.shields.io/github/release-date/joshuafuller/ATAK-Maps?style=flat) ![GitHub All Releases](https://img.shields.io/github/downloads/joshuafuller/ATAK-Maps/total?style=flat) [![Discord](https://img.shields.io/discord/698067185515495436?style=flat)](https://discord.gg/dQUYADMW87) [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/joshuafuller/ATAK-Maps)
+![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/joshuafuller/ATAK-Maps) ![GitHub Release Date](https://img.shields.io/github/release-date/joshuafuller/ATAK-Maps?style=flat)
+![GitHub All Releases](https://img.shields.io/github/downloads/joshuafuller/ATAK-Maps/total?style=flat) [![Discord](https://img.shields.io/discord/698067185515495436?style=flat)](https://discord.gg/dQUYADMW87) [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/joshuafuller/ATAK-Maps)
 
 ## Detailed Overview of ATAK-Maps
 
-ATAK-Maps is a comprehensive collection of XML files, formatted in the Mobile Atlas Creator (MOBAC) format. This format is used in [Android Tactical Assault Kit (ATAK)](https://tak.gov), an advanced geospatial mapping tool employed in various sectors including military, law enforcement, and emergency services. This repository and it's contents are not affiliated with TAK.GOV in any way.
+ATAK-Maps is a comprehensive collection of XML files, formatted in the Mobile Atlas Creator (MOBAC) format. This format is used in [Android Tactical Assault Kit (ATAK)](https://tak.gov), an advanced geospatial mapping tool employed in various sectors including military, law enforcement, and emergency services. This repository and its contents are not affiliated with TAK.GOV in any way.
 
 ### What are ATAK-Maps?
 
@@ -37,9 +38,13 @@ To integrate ATAK-Maps into your ATAK application, follow these steps:
 - **Can I cache these maps for offline use?** Yes, ATAK supports automatic and manual caching of maps.
 - **Will more maps be added?** We continuously update our map collection. Share your suggestions [here](https://github.com/joshuafuller/ATAK-Maps/issues).
 
-## Open Street Maps Compatibility
+## OpenStreetMap Compatibility
 
-Please note that Open Street Maps may restrict ATAK client access. These maps are included for reference, and we're exploring solutions.
+Please note that OpenStreetMap may restrict ATAK client access. These maps are included for reference, and we're exploring solutions.
+
+## Creating Custom Maps
+
+Want to add your own map sources? See the [Creating Custom Maps](docs/creating-custom-maps.md) guide for details on the MOBAC XML structure, choosing tile servers, configuring zoom levels and testing new files in ATAK.
 
 ## Contributing
 
@@ -52,8 +57,8 @@ Join our [Discord server](https://discord.gg/dQUYADMW87) for support and communi
 ## License
 
 ATAK-Maps is distributed under the [MIT License](LICENSE).
-                        
+
 ## Stargazers over time
 [![Stargazers over time](https://starchart.cc/joshuafuller/ATAK-Maps.svg?variant=adaptive)](https://starchart.cc/joshuafuller/ATAK-Maps)
 
-                    
+

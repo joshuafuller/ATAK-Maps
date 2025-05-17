@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<customMapSource>
+    <name>NAIP – USDA CONUS Prime</name>
+    <minZoom>0</minZoom>
+    <maxZoom>17</maxZoom>
+    <tileType>jpg</tileType>
+    <url>https://gis.apfo.usda.gov/arcgis/rest/services/NAIP/USDA_CONUS_PRIME/ImageServer/tile/{$z}/{$y}/{$x}</url>
+    <tileUpdate>None</tileUpdate>
+    <backgroundColor>#000000</backgroundColor>
+    <ignoreErrors>false</ignoreErrors>
+    <serverParts></serverParts>
+</customMapSource>

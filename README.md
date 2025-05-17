@@ -37,9 +37,9 @@ To integrate ATAK-Maps into your ATAK application, follow these steps:
 - **Can I cache these maps for offline use?** Yes, ATAK supports automatic and manual caching of maps.
 - **Will more maps be added?** We continuously update our map collection. Share your suggestions [here](https://github.com/joshuafuller/ATAK-Maps/issues).
 
-## Open Street Maps Compatibility
+## OpenStreetMap Compatibility
 
-Please note that Open Street Maps may restrict ATAK client access. These maps are included for reference, and we're exploring solutions.
+Please note that OpenStreetMap may restrict ATAK client access. These maps are included for reference, and we're exploring solutions.
 
 ## Contributing
 

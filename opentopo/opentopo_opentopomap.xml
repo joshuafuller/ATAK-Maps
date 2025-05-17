@@ -3,7 +3,7 @@
     <name>OpenTopo - Opentopomap</name>
     <minZoom>1</minZoom>
     <maxZoom>17</maxZoom>
-    <tileType>PNG</tileType>
+    <tileType>png</tileType>
     <tileUpdate>IfNoneMatch</tileUpdate>
     <serverParts>a b c</serverParts>
     <url>https://{$serverpart}.tile.opentopomap.org/{$z}/{$x}/{$y}.png</url>

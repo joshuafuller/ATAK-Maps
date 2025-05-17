@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<customMapSource>
+    <name>Poland - Orthophoto (Std Res, Geoportal WMTS)</name>
+    <minZoom>0</minZoom>
+    <maxZoom>18</maxZoom>
+    <tileType>jpg</tileType>
+    <tileUpdate>None</tileUpdate>
+    <url>https://mapy.geoportal.gov.pl/wss/service/PZGIK/ORTO/WMTS/StandardResolution
+         ?SERVICE=WMTS&amp;REQUEST=GetTile&amp;VERSION=1.0.0
+         &amp;LAYER=ORTOFOTOMAPA&amp;STYLE=default
+         &amp;TILEMATRIXSET=EPSG:3857
+         &amp;TILEMATRIX={$z}&amp;TILEROW={$y}&amp;TILECOL={$x}
+         &amp;FORMAT=image/jpeg</url>
+    <coordinateSystem>EPSG:3857</coordinateSystem>
+    <backgroundColor>#000000</backgroundColor>
+    <ignoreErrors>false</ignoreErrors>
+    <serverParts></serverParts>
+</customMapSource>

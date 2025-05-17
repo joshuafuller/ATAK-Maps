@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<customWmsMapSource>
+    <name>Canada - Toporama</name>
+    <version>1.1.1</version>
+    <minZoom>0</minZoom>
+    <maxZoom>23</maxZoom>
+    <tileType>jpg</tileType>
+    <url>https://maps.geogratis.gc.ca/wms/toporama_en?</url>
+    <coordinatesystem>EPSG:3857</coordinatesystem>
+    <layers>WMS-Toporama</layers>
+</customWmsMapSource>

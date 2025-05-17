@@ -8,5 +8,6 @@
     <tileUpdate>None</tileUpdate>
     <backgroundColor>#000000</backgroundColor>
     <ignoreErrors>false</ignoreErrors>
-    <serverParts />
+    <serverParts></serverParts>
 </customMapSource>
+

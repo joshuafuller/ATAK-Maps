@@ -44,7 +44,7 @@ Please note that OpenStreetMap may restrict ATAK client access. These maps are i
 
 ## Creating Custom Maps
 
-Want to add your own map sources? See the [Creating Custom Maps](docs/creating-custom-maps.md) guide for details on the MOBAC XML structure, choosing tile servers, configuring zoom levels and testing new files in ATAK.
+Want to add your own map sources? See the [Creating Custom Maps guide](docs/creating-custom-maps.md) for details on the MOBAC XML structure, choosing tile servers, configuring zoom levels, and testing new files in ATAK.
 
 ## Contributing
 

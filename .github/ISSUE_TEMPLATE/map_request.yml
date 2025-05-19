@@ -1,0 +1,89 @@
+name: "🗺️ Map / Layer request"
+description: "Ask for a new map, tileset, WMS/WMTS, or datapackage"
+title: "[Map] <source or region>"
+labels: ["map-request", "needs-triage"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Common fixes**
+
+        * [ ] I verified the map isn’t already in **Layers → Online / Offline**.
+        * [ ] I checked previous *Map Requests* for duplicates.
+        * [ ] The data source allows re-hosting or public use (see license check below).
+
+  # ---  Source details  ---
+  - type: input
+    id: source_name
+    attributes:
+      label: Map / data source name
+      placeholder: "e.g. USFS Topo (Vector Tiles)"
+
+  - type: dropdown
+    id: map_type
+    attributes:
+      label: Type of data
+      options:
+        - TMS / XYZ
+        - WMTS / WMS
+        - ArcGIS REST
+        - MBTiles / GeoPackage (offline)
+        - Other (describe below)
+    validations:
+      required: true
+
+  - type: input
+    id: url
+    attributes:
+      label: Primary service URL or download link
+      placeholder: "https://tiles.example.com/{z}/{x}/{y}.png"
+    validations:
+      required: true
+
+  - type: textarea
+    id: coverage
+    attributes:
+      label: Coverage area (bbox or description)
+      placeholder: |
+        CONUS; bounding box [-125,24] to [-66,49]
+        or “statewide Colorado”
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: license
+    attributes:
+      label: License / usage rights
+      description: "Select all that apply"
+      options:
+        - label: Data is in the public domain (e.g. US government)
+        - label: Data is licensed CC-BY or similarly permissive
+        - label: I obtained written permission to redistribute
+        - label: I’m not sure (add details below)
+    validations:
+      required: true
+
+  - type: textarea
+    id: update_freq
+    attributes:
+      label: Expected update frequency
+      placeholder: "Quarterly; never changes; live tiles updated daily…"
+    validations:
+      required: false
+
+  - type: textarea
+    id: benefit
+    attributes:
+      label: Why is this valuable for ATAK-Maps users?
+      placeholder: |
+        Wildland fire teams rely on this layer for current fire-perimeter data…
+    validations:
+      required: true
+
+  - type: textarea
+    id: extra
+    attributes:
+      label: Additional context / sample tile
+      description: "Screenshots, sample MBTiles, related docs, etc."

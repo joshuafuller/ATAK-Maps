@@ -1,0 +1,90 @@
+name: "🐛 Bug report"
+description: "Something isn’t working?  Help us fix it by filling out this form."
+title: "[Bug] <short description here>"
+labels: ["bug", "needs-triage"]
+assignees: []
+
+body:
+  # -----  Quick self-triage  -----
+  - type: markdown
+    attributes:
+      value: |
+        **Thanks for taking the time to open a report!**
+
+        Most problems are solved by one of the checks below.  Please make sure you’ve ticked **every box** before continuing.
+
+        - [ ] I searched **open** and **closed** issues for something similar.
+        - [ ] I’m on the **latest release/tag** of ATAK-Maps.
+        - [ ] I purged or re-downloaded the map/layer cache.
+        - [ ] If this is a remote map source, I verified the URL works in a browser (tiles/WMS/KML reachable).
+        - [ ] I disabled other plugins/maps to rule out conflicts.
+        - [ ] I can reproduce the problem **consistently** following the steps I’ll describe below.
+
+  # -----  Environment  -----
+  - type: input
+    id: atak_maps_version
+    attributes:
+      label: ATAK-Maps version / commit
+      placeholder: "v1.2.1   (or commit SHA)"
+    validations:
+      required: true
+
+  - type: input
+    id: tak_client_version
+    attributes:
+      label: TAK client / server version
+      placeholder: "ATAK-CIV 5.2.1, TAK-Server 4.7.1"
+    validations:
+      required: false
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Device & OS
+      description: "Phone/tablet model, Android/iOS version, emulator, etc."
+      placeholder: |
+        • Device: Samsung Tab Active 3  
+        • OS: Android 14 / OneUI 6.1
+    validations:
+      required: false
+
+  # -----  Problem details  -----
+  - type: textarea
+    id: what_happened
+    attributes:
+      label: What happened?
+      description: "Describe the bug and what you *expected* to happen."
+      placeholder: |
+        When I enable the FEMA WMS layer the app crashes after ~10 s instead
+        of displaying flood polygons.
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps_to_reproduce
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Open Layers → “US FEMA Flood Maps”
+        2. Toggle the layer on
+        3. Zoom to 1:50 000
+        4. Observe crash
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant log output (optional)
+      description: "Paste any stack-trace or console error between ``` ```."
+      render: shell
+    validations:
+      required: false
+
+  - type: textarea
+    id: extra
+    attributes:
+      label: Anything else?
+      description: "Screenshots, the faulty XML/TMS URL, ideas for a fix, etc."
+    validations:
+      required: false

@@ -1,0 +1,54 @@
+name: "✨ Feature request"
+description: "Propose a new capability or improvement"
+title: "[Feature] <short description>"
+labels: ["enhancement", "needs-triage"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Before you start**
+
+        * [ ] I searched open **and** closed issues to be sure this hasn’t been requested.
+        * [ ] This isn’t already possible through existing layers, plugins, or settings.
+        * [ ] I’m willing to help test or document the feature if accepted.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem will this feature solve?
+      description: "Describe the pain point or limitation you’re hitting."
+      placeholder: |
+        When working offline in Alaska, the default map layers have no hill-shading,
+        making navigation difficult…
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Describe the ideal solution
+      placeholder: |
+        Integrate USGS shaded-relief tiles (TMS) that automatically cache offline,
+        or bundle a pre-generated MBTiles package…
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives you’ve considered
+      placeholder: |
+        • Manually loading GeoTIFFs in QGIS and exporting…  
+        • Using XYZ layer in ATAK but it stops at zoom 12…
+    validations:
+      required: false
+
+  - type: textarea
+    id: extra
+    attributes:
+      label: Additional context
+      description: "Links, screenshots, mock-ups, etc."
+    validations:
+      required: false

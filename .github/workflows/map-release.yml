@@ -1,0 +1,41 @@
+# .github/workflows/map-release.yml
+name: Release on map update
+on:
+  push:
+    branches: [master]
+    paths: '**/*.xml'    # fire **only** when XML files change
+  workflow_dispatch:     # let you trigger one manually if needed
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions: write-all
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+
+      # 1) Figure out the next version (patch bump by default)
+      - id: semver
+        uses: cycjimmy/semantic-release-action@v4
+        with:
+          branch: master
+          tag_format: 'v${version}'
+          extra_plugins: |
+            @semantic-release/commit-analyzer
+            @semantic-release/release-notes-generator
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # 2) Package *only* the XMLs
+      - if: steps.semver.outputs.new_release_published == 'true'
+        run: |
+          zip -r atak-maps-${{ steps.semver.outputs.new_release_version }}.zip $(git ls-files '*.xml')
+
+      # 3) Create the GitHub release + upload asset
+      - if: steps.semver.outputs.new_release_published == 'true'
+        uses: ncipollo/release-action@v1
+        with:
+          tag: v${{ steps.semver.outputs.new_release_version }}
+          name: v${{ steps.semver.outputs.new_release_version }}
+          body: ${{ steps.semver.outputs.new_release_notes }}
+          artifacts: atak-maps-${{ steps.semver.outputs.new_release_version }}.zip

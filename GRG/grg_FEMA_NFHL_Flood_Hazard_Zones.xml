@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<customWmsMapSource>
+    <name>FEMA NFHL - Flood Hazard Zones (WMS)</name>
+    <minZoom>5</minZoom>
+    <maxZoom>19</maxZoom>
+    <tileType>PNG</tileType> <!-- MOBAC uses this to infer FORMAT=image/png -->
+    <version>1.3.0</version>
+    <layers>12</layers> <!-- Layer ID for "Flood Hazard Zones" -->
+    <url><![CDATA[https://hazards.fema.gov:443/arcgis/services/public/NFHLWMS/MapServer/WMSServer?]]></url>
+    <coordinatesystem>EPSG:4326</coordinatesystem>
+    <!--
+        Use the "aditionalparameters" tag with the typo as seen in the MOBAC wiki.
+        Include TRANSPARENT=TRUE and explicitly request the default style.
+    -->
+    <aditionalparameters><![CDATA[&TRANSPARENT=TRUE&STYLES=default]]></aditionalparameters>
+    <backgroundColor>#000000</backgroundColor> <!-- Optional: Default is black, can be #FFFFFF for white or #00000000 for transparent black if issues with PNG alpha -->
+</customWmsMapSource>

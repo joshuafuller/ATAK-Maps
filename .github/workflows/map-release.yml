@@ -1,5 +1,18 @@
-# Triggers whenever an XML map file hits `master` (or on demand).
-# Creates/updates a SemVer tag + GitHub Release and attaches a ZIP of all maps.
+# Triggers whenever an XML map file is pushed to `master`
+# (or whenever the workflow is run manually).
+#
+# 1. Zips every *.xml map into dist/atak-maps.zip
+# 2. Runs semantic-release to:
+#      • calculate the next SemVer
+#      • tag the commit
+#      • create / update the GitHub Release
+#      • attach the ZIP as a release asset
+#
+# NOTE: .releaserc.json must live at repo root
+#       and list the @semantic-release/github plugin
+#       with   "path": "dist/atak-maps.zip"
+#       (label can stay versioned).
+
 name: Map Release
 
 on:
@@ -11,22 +24,25 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
-    # Needed for tagging/releases (contents) and, if you re-enable failComment,
-    # issue creation (issues).
+
+    # Needed so the action can create tags/releases.
     permissions:
       contents: write
-      issues: write
+      issues:   write   # still off by default via failComment:false
 
     steps:
+      # -- Checkout full history so semantic-release can find previous tags
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0   # full history → correct version calculation
+          fetch-depth: 0
 
+      # -- Build ZIP of all XML map sources
       - name: Build ZIP of maps
         run: |
           mkdir -p dist
           zip -r dist/atak-maps.zip $(git ls-files '*.xml')
 
+      # -- Run semantic-release (wrapper bundles the CLI + plugins)
       - name: semantic-release
         uses: cycjimmy/semantic-release-action@v4
         env:

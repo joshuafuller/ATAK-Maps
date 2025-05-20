@@ -6,7 +6,9 @@
       [
         "@semantic-release/github",
         {
-          "assets": [{ "path": "dist/atak-maps-${nextRelease.version}.zip", "label": "atak-maps-${nextRelease.version}.zip" }],
+          "assets": [
+            { "path": "dist/atak-maps.zip", "label": "atak-maps-${nextRelease.version}.zip" }
+          ],
           "failComment": false
         }
       ]

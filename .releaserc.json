@@ -1,31 +1,20 @@
 {
-    "branches": ["master"],
-    "plugins": [
-      "@semantic-release/commit-analyzer",
-      "@semantic-release/release-notes-generator",
-  
-      /* ---- rename the ZIP once semantic-release knows the next version ---- */
-      [
-        "@semantic-release/exec",
-        {
-          "prepareCmd": "mv dist/atak-maps.zip dist/atak-maps-${nextRelease.version}.zip"
-        }
-      ],
-  
-      /* ---- publish the renamed file ---- */
-      [
-        "@semantic-release/github",
-        {
-          "assets": [
-            {
-              "path": "dist/atak-maps-${nextRelease.version}.zip",
-              "name": "atak-maps-${nextRelease.version}.zip",
-              "label": "All XML map layers"
-            }
-          ],
-          "failComment": false
-        }
-      ]
+  "branches": ["master"],
+  "plugins": [
+    "@semantic-release/commit-analyzer",
+    "@semantic-release/release-notes-generator",
+    [
+      "@semantic-release/github",
+      {
+        "assets": [
+          {
+            "path": "dist/atak-maps.zip",
+            "name": "atak-maps-${nextRelease.version}.zip",
+            "label": "All XML map layers"
+          }
+        ],
+        "failComment": false
+      }
     ]
-  }
-  
+  ]
+}

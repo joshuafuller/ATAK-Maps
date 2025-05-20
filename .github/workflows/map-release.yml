@@ -1,17 +1,19 @@
 # Triggers whenever an XML map file is pushed to `master`
-# (or whenever the workflow is run manually).
+# (or when you run the workflow manually).
 #
-# 1. Zips every *.xml map into dist/atak-maps.zip
-# 2. Runs semantic-release to:
-#      • calculate the next SemVer
-#      • tag the commit
-#      • create / update the GitHub Release
-#      • attach the ZIP as a release asset
+# Flow:
+#   1. Zips every *.xml map into dist/atak-maps.zip
+#   2. semantic-release
+#        • calculates the next SemVer
+#        • tags the commit
+#        • creates / updates the GitHub Release
+#        • uploads the ZIP as an asset
+#          – path  : dist/atak-maps.zip             (file on disk)
+#          – name  : atak-maps-${version}.zip       (how it’s served to users)
+#          – label : All XML map layers             (description)
 #
-# NOTE: .releaserc.json must live at repo root
-#       and list the @semantic-release/github plugin
-#       with   "path": "dist/atak-maps.zip"
-#       (label can stay versioned).
+# NOTE: The companion .releaserc.json (no comments allowed in that file!)
+#       must include @semantic-release/github with the matching asset block.
 
 name: Map Release
 
@@ -25,24 +27,24 @@ jobs:
   release:
     runs-on: ubuntu-latest
 
-    # Needed so the action can create tags/releases.
+    # Needed so the action can tag commits and create releases.
     permissions:
       contents: write
-      issues:   write   # still off by default via failComment:false
+      issues:   write   # kept for future use; failComment is disabled now
 
     steps:
-      # -- Checkout full history so semantic-release can find previous tags
+      # Checkout full history so semantic-release can inspect previous tags
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      # -- Build ZIP of all XML map sources
+      # Build ZIP containing all XML maps
       - name: Build ZIP of maps
         run: |
           mkdir -p dist
           zip -r dist/atak-maps.zip $(git ls-files '*.xml')
 
-      # -- Run semantic-release (wrapper bundles the CLI + plugins)
+      # Run semantic-release (wrapper ships the CLI and installs plugins)
       - name: semantic-release
         uses: cycjimmy/semantic-release-action@v4
         env:

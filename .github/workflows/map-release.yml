@@ -5,35 +5,29 @@ name: Map Release
 on:
   push:
     branches: [master]
-    paths:
-      - "**/*.xml"
+    paths: "**/*.xml"
   workflow_dispatch:
 
 jobs:
   release:
     runs-on: ubuntu-latest
+    # Needed for tagging/releases (contents) and, if you re-enable failComment,
+    # issue creation (issues).
     permissions:
-      # needed for semantic-release to tag and publish the Release
       contents: write
+      issues: write
+
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0   # full history → proper version analysis
+          fetch-depth: 0   # full history → correct version calculation
 
-      # Package every XML map into one artifact
       - name: Build ZIP of maps
         run: |
           mkdir -p dist
           zip -r dist/atak-maps.zip $(git ls-files '*.xml')
 
-      # Run semantic-release (wrapper bundles the CLI for you)
       - name: semantic-release
         uses: cycjimmy/semantic-release-action@v4
-        with:
-          branch: master
-          extra_plugins: |
-            @semantic-release/commit-analyzer
-            @semantic-release/release-notes-generator
-            "@semantic-release/github"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

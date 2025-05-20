@@ -11,7 +11,7 @@
     <!--
         Use the "aditionalparameters" tag with the typo as seen in the MOBAC wiki.
         Include TRANSPARENT=TRUE and explicitly request the default style.
-    -->
+    --> 
     <aditionalparameters><![CDATA[&TRANSPARENT=TRUE&STYLES=default]]></aditionalparameters>
     <backgroundColor>#000000</backgroundColor> <!-- Optional: Default is black, can be #FFFFFF for white or #00000000 for transparent black if issues with PNG alpha -->
 </customWmsMapSource>

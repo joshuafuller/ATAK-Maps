@@ -10,7 +10,7 @@
           {
             "path": "dist/atak-maps.zip",
             "name": "atak-maps-${nextRelease.version}.zip",
-            "label": "All XML map layers"
+            "label": "atak-maps-${nextRelease.version}.zip"
           }
         ],
         "failComment": false

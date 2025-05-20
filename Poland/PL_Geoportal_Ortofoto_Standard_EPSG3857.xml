@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <customMapSource>
-    <name>PL Ortofoto Std (WMTS EPSG3857)</name> <!-- name of the map -->
+    <name>PL Ortofoto Std (WMTS EPSG3857)</name> 
     <minZoom>0</minZoom>
     <maxZoom>20</maxZoom>
     <tileType>JPG</tileType>

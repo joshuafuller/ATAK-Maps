@@ -1,41 +1,39 @@
-# .github/workflows/map-release.yml
-name: Release on map update
+# Triggers whenever an XML map file hits `master` (or on demand).
+# Creates/updates a SemVer tag + GitHub Release and attaches a ZIP of all maps.
+name: Map Release
+
 on:
   push:
     branches: [master]
-    paths: '**/*.xml'    # fire **only** when XML files change
-  workflow_dispatch:     # let you trigger one manually if needed
+    paths:
+      - "**/*.xml"
+  workflow_dispatch:
 
 jobs:
   release:
     runs-on: ubuntu-latest
-    permissions: write-all
+    permissions:
+      # needed for semantic-release to tag and publish the Release
+      contents: write
     steps:
       - uses: actions/checkout@v4
-        with: { fetch-depth: 0 }
+        with:
+          fetch-depth: 0   # full history → proper version analysis
 
-      # 1) Figure out the next version (patch bump by default)
-      - id: semver
+      # Package every XML map into one artifact
+      - name: Build ZIP of maps
+        run: |
+          mkdir -p dist
+          zip -r dist/atak-maps.zip $(git ls-files '*.xml')
+
+      # Run semantic-release (wrapper bundles the CLI for you)
+      - name: semantic-release
         uses: cycjimmy/semantic-release-action@v4
         with:
           branch: master
-          tag_format: 'v${version}'
           extra_plugins: |
             @semantic-release/commit-analyzer
             @semantic-release/release-notes-generator
+            "@semantic-release/github"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # 2) Package *only* the XMLs
-      - if: steps.semver.outputs.new_release_published == 'true'
-        run: |
-          zip -r atak-maps-${{ steps.semver.outputs.new_release_version }}.zip $(git ls-files '*.xml')
-
-      # 3) Create the GitHub release + upload asset
-      - if: steps.semver.outputs.new_release_published == 'true'
-        uses: ncipollo/release-action@v1
-        with:
-          tag: v${{ steps.semver.outputs.new_release_version }}
-          name: v${{ steps.semver.outputs.new_release_version }}
-          body: ${{ steps.semver.outputs.new_release_notes }}
-          artifacts: atak-maps-${{ steps.semver.outputs.new_release_version }}.zip

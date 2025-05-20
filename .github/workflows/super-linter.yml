@@ -1,26 +1,26 @@
-# This workflow executes several linters on changed files based on languages used in your code base whenever
-# you push a code or open a pull request.
-#
-# You can adjust the behavior by modifying this file.
-# For more information, see:
-# https://github.com/github/super-linter
-name: Lint Code Base
+# Lints only XML files (maps) that changed in the commit / PR.
+name: Lint XML Maps
 
-on: [push, pull_request]
+on:
+  pull_request:
+    paths:
+      - "**/*.xml"
+  push:
+    branches: [master]
+    paths:
+      - "**/*.xml"
+
 jobs:
-  run-lint:
+  lint:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-        with:
-          # Full git history is needed to get a proper list of changed files within `super-linter`
-          fetch-depth: 0
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
 
-      - name: Lint Code Base
-        uses: github/super-linter@v4
+      - name: Run Super-Linter
+        uses: github/super-linter@v5
         env:
-          VALIDATE_ALL_CODEBASE: true
-          VALIDATE_XML: true
-          DEFAULT_BRANCH: "master"
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEFAULT_BRANCH: master
+          VALIDATE_XML: true
+          VALIDATE_ALL_CODEBASE: false   # lint only the diff

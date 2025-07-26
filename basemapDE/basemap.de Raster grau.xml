@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!-- Source: https://basemap.de/produkte-und-dienste/web-raster/ -->
+<customWmsMapSource>
+    <name>basemap.de Raster, grau</name>
+    <minZoom>0</minZoom>
+    <maxZoom>19</maxZoom>
+    <tileType>PNG</tileType> <!-- MOBAC uses this to infer FORMAT=image/png -->
+    <version>1.3.0</version>
+    <layers>de_basemapde_web_raster_grau</layers>
+    <url><![CDATA[https://sgx.geodatenzentrum.de/wms_basemapde?]]></url>
+    <coordinatesystem>EPSG:3857</coordinatesystem>
+    <aditionalparameters><![CDATA[]]></aditionalparameters>
+    <backgroundColor>#000000</backgroundColor> <!-- Optional: Default is black, can be #FFFFFF for white or #00000000 for transparent black if issues with PNG alpha -->
+</customWmsMapSource>

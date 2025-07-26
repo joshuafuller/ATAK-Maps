@@ -56,9 +56,12 @@ Join our [Discord server](https://discord.gg/dQUYADMW87) for support and communi
 
 ## Publishing a New Version
 
-To publish a new release, run the **Release Please** workflow from the GitHub
-Actions tab. When it completes, a tag like `vX.Y.Z` is created which
-automatically triggers the ZIP release workflow.
+To publish a new release, push a commit to `master` with a message that begins
+with `feat:` or `fix:` using the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) format.
+The *Map Release* workflow runs automatically on those commits—or it can be
+triggered manually from the *Actions* tab—and uses semantic-release to tag the
+commit and upload `atak-maps.zip`.
+For more details, including instructions for forks, see [docs/release-guide.md](docs/release-guide.md).
 
 ## License
 

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<customMapSource>
+    <name>Esri UK - GB Cartographic</name>
+    <minZoom>0</minZoom>
+    <maxZoom>19</maxZoom>
+    <tileType>png</tileType>
+    <tileUpdate>None</tileUpdate>
+    <url>https://server.arcgisonline.com/ArcGIS/rest/services/GB_Cartographic/MapServer/tile/{$z}/{$y}/{$x}</url>
+    <backgroundColor>#000000</backgroundColor>
+</customMapSource>

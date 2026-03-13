@@ -8,7 +8,7 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 README_PATH = REPO_ROOT / "README.md"
-EXCLUDE_DIRS = {".github", "schema"}
+EXCLUDE_DIRS = {".github", ".git", "schema", "dist", "docs"}
 
 START_MARKER = "<!-- MAP_CATALOG_START -->"
 END_MARKER = "<!-- MAP_CATALOG_END -->"
@@ -24,7 +24,8 @@ def find_xml_files():
     """Find all XML files in the repo, excluding certain directories."""
     xml_files = []
     for dirpath, dirnames, filenames in os.walk(REPO_ROOT):
-        # Skip excluded directories
+        # Prune excluded directories so os.walk doesn't descend into them
+        dirnames[:] = [d for d in dirnames if d not in EXCLUDE_DIRS]
         rel = Path(dirpath).relative_to(REPO_ROOT)
         if rel.parts and rel.parts[0] in EXCLUDE_DIRS:
             continue

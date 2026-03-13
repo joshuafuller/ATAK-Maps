@@ -25,7 +25,7 @@ The MOBAC format is integral to the functionality of ATAK-Maps. It enables the d
 
 ## Installation Guide
 
-1. **Download** `ATAK-Maps.zip` from the [Releases page](https://github.com/joshuafuller/ATAK-Maps/releases).
+1. **Download** the latest `atak-maps-<version>.zip` from the [Releases page](https://github.com/joshuafuller/ATAK-Maps/releases).
 2. **Import** — open the ZIP in ATAK using the Import feature. Maps populate automatically.
 3. **Verify** the new maps appear in ATAK's map layer selector.
 

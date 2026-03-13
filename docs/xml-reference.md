@@ -16,8 +16,9 @@ Three XML root element types are recognized by ATAK's parser
 | `customWmsMapSource` | OGC Web Map Service (WMS) | Government GIS servers, ArcGIS WMS endpoints |
 | `customMultiLayerMapSource` | Composite of other sources | Overlay combinations (e.g., satellite + road labels) |
 
-Each XML file must contain exactly one root element.  The file extension must
-be `.xml` (case-insensitive).
+Each XML file must contain exactly one root element.  This repository
+distributes `.xml` files, though ATAK also recognizes `.xmle` (encrypted) and
+`.bsh` (BeanShell scripted) map source formats.
 
 ---
 
@@ -315,7 +316,7 @@ level.  For each bit position from zoom down to 1:
 3. If the corresponding bit in `y` is set, add 2.
 4. Append the resulting digit (0, 1, 2, or 3) to the string.
 
-At zoom level 3, tile (6, 2) produces quadkey `"210"`:
+At zoom level 3, tile (6, 2) produces quadkey `"130"`:
 
 | Bit position | x bit | y bit | Digit |
 |---|---|---|---|

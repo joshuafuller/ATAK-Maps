@@ -60,7 +60,7 @@
       <xs:element name="layers"                  type="xs:string"/>
       <xs:element name="maxZoom"                 type="xs:nonNegativeInteger"/>
       <xs:element name="tileType"                type="xs:string"/>
-      <xs:element name="minZoom"                 type="xs:nonNegativeInteger"  minOccurs="0"/>
+      <xs:element name="minZoom"                 type="xs:integer"             minOccurs="0"/>
       <xs:element name="styles"                  type="xs:string"              minOccurs="0"/>
       <xs:element name="version"                 type="xs:string"              minOccurs="0"/>
       <xs:element name="coordinatesystem"        type="xs:string"              minOccurs="0"/>

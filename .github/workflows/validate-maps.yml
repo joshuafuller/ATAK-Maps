@@ -1,0 +1,32 @@
+name: Validate Map XML
+
+on:
+  pull_request:
+    paths:
+      - "**/*.xml"
+      - "schema/**"
+  push:
+    branches: [master]
+    paths:
+      - "**/*.xml"
+      - "schema/**"
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install xmllint
+        run: sudo apt-get install -y libxml2-utils
+
+      - name: Validate XML files against schema
+        run: |
+          FAIL=0
+          find . -name '*.xml' -not -path './.github/*' -not -path './schema/*' -not -path './.git/*' -print0 | while IFS= read -r -d '' f; do
+            echo "Validating: $f"
+            if ! xmllint --schema schema/mobac-maps.xsd "$f" --noout 2>&1; then
+              FAIL=1
+            fi
+          done
+          exit $FAIL

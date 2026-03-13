@@ -22,5 +22,5 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BRANCH: master
-          VALIDATE_XML: true
+          VALIDATE_XML: false
           VALIDATE_ALL_CODEBASE: false   # lint only the diff

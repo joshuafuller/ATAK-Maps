@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<customMapSource>
+    <name>OS - Light 3857</name>
+    <minZoom>0</minZoom>
+    <maxZoom>16</maxZoom>
+    <tileType>png</tileType>
+    <tileUpdate>None</tileUpdate>
+    <url>https://api.os.uk/maps/raster/v1/zxy/Light_3857/{$z}/{$x}/{$y}.png?key=API_KEY_HERE</url>
+    <backgroundColor>#000000</backgroundColor>
+</customMapSource>

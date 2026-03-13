@@ -1,3 +1,10 @@
+## [1.7.1](https://github.com/joshuafuller/ATAK-Maps/compare/v1.7.0...v1.7.1) (2026-03-13)
+
+
+### Bug Fixes
+
+* **ci:** checkout latest master tip in release workflow ([330f36c](https://github.com/joshuafuller/ATAK-Maps/commit/330f36c0d19a6a568dc3745cbd4f4ce4e023e682))
+
 # [1.7.0](https://github.com/joshuafuller/ATAK-Maps/compare/v1.6.0...v1.7.0) (2026-03-13)
 
 

@@ -1,2 +1,4 @@
 
-Licensed/*
+Licensed/*__pycache__/
+*.pyc
+.coverage

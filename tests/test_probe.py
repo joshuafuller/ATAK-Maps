@@ -6,10 +6,18 @@ from pathlib import Path
 import responses
 from requests.exceptions import ConnectionError, Timeout
 
-from mapvalidator.probe import (SMOKE_SOURCES,
-                                TAK_USER_AGENT, ProbeResult, ProbeStatus,
-                                build_test_urls, classify, probe_all,
-                                probe_smoke, probe_source, probe_url)
+from mapvalidator.probe import (
+    SMOKE_SOURCES,
+    TAK_USER_AGENT,
+    ProbeResult,
+    ProbeStatus,
+    build_test_urls,
+    classify,
+    probe_all,
+    probe_smoke,
+    probe_source,
+    probe_url,
+)
 
 # ---------------------------------------------------------------------------
 # Helpers

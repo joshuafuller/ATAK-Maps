@@ -8,26 +8,43 @@ from pathlib import Path
 
 import pytest
 
-from mapvalidator.xml_checks import (ValidationResult, check_duplicates,
-                                     validate_corpus, validate_file)
-from tests.conftest import (BGCOLOR_MULTI_HEX_XML, CAMELCASE_COORDSYS_XML,
-                            COMMA_SERVERPARTS_XML, COORDSYS_900913_XML,
-                            EMPTY_SERVERPARTS_NO_PLACEHOLDER_XML,
-                            EMPTY_URL_XML, HTTP_URL_XML,
-                            INVERT_Y_CAPITAL_TRUE_XML, INVERTED_ZOOM_XML,
-                            MAX_ZOOM_23_XML, MAX_ZOOM_26_XML,
-                            MISSING_TILETYPE_TMS_XML,
-                            MISSING_URL_PLACEHOLDERS_XML, NEGATIVE_MINZOOM_XML,
-                            QUADKEY_TMS_XML, SERVERPART_URL_NO_ELEMENT_XML,
-                            SERVERPARTS_ELEMENT_NO_URL_XML,
-                            TILE_UPDATE_IFNONEMATCH_XML, TILE_UPDATE_NONE_XML,
-                            TILE_UPDATE_NUMERIC_XML, UNKNOWN_TILETYPE_XML,
-                            VALID_TMS_XML, VALID_WMS_XML,
-                            VERSION_WHITESPACE_XML,
-                            WMS_ADDITIONALPARAMETERS_CORRECT_XML,
-                            WMS_ADITIONALPARAMETERS_TYPO_XML,
-                            WMS_MISSING_LAYERS_XML, WMS_MISSING_TILETYPE_XML,
-                            WMS_MISSING_VERSION_XML)
+from mapvalidator.xml_checks import (
+    ValidationResult,
+    check_duplicates,
+    validate_corpus,
+    validate_file,
+)
+from tests.conftest import (
+    BGCOLOR_MULTI_HEX_XML,
+    CAMELCASE_COORDSYS_XML,
+    COMMA_SERVERPARTS_XML,
+    COORDSYS_900913_XML,
+    EMPTY_SERVERPARTS_NO_PLACEHOLDER_XML,
+    EMPTY_URL_XML,
+    HTTP_URL_XML,
+    INVERT_Y_CAPITAL_TRUE_XML,
+    INVERTED_ZOOM_XML,
+    MAX_ZOOM_23_XML,
+    MAX_ZOOM_26_XML,
+    MISSING_TILETYPE_TMS_XML,
+    MISSING_URL_PLACEHOLDERS_XML,
+    NEGATIVE_MINZOOM_XML,
+    QUADKEY_TMS_XML,
+    SERVERPART_URL_NO_ELEMENT_XML,
+    SERVERPARTS_ELEMENT_NO_URL_XML,
+    TILE_UPDATE_IFNONEMATCH_XML,
+    TILE_UPDATE_NONE_XML,
+    TILE_UPDATE_NUMERIC_XML,
+    UNKNOWN_TILETYPE_XML,
+    VALID_TMS_XML,
+    VALID_WMS_XML,
+    VERSION_WHITESPACE_XML,
+    WMS_ADDITIONALPARAMETERS_CORRECT_XML,
+    WMS_ADITIONALPARAMETERS_TYPO_XML,
+    WMS_MISSING_LAYERS_XML,
+    WMS_MISSING_TILETYPE_XML,
+    WMS_MISSING_VERSION_XML,
+)
 
 # ============================================================
 # Helper

@@ -101,13 +101,13 @@ All checks derived from ATAK's `MobacMapSourceFactory.java` parser behavior.
 | coordinateSystem camelCase | WARN | ATAK parser only reads `<coordinatesystem>` (lowercase); camelCase silently ignored |
 | HTTP instead of HTTPS | WARN | Security, some servers redirect |
 | serverParts comma-separated | WARN | ATAK splits on `\s+` (whitespace); commas treated as part of hostname |
-| tileType not in {png, jpg, jpeg} | WARN | Only known-good values; others may indicate a typo |
+| tileType not in {PNG, JPG, JPEG} | WARN | Only known-good values; others may indicate a typo |
 | WMS missing version | WARN | Version determines CRS vs SRS parameter (1.3.x→CRS, others→SRS); wrong default may break projection |
 | `invertYCoordinate` not exactly `"true"` or `"false"` | WARN | Parser uses `equals("true")` (case-sensitive); `"True"` silently fails |
 | Missing tileType (TMS only) | INFO | TMS stores as-is; informational |
-| `backgroundColor` with >1 hex digit | INFO | ATAK parser regex `#[0-9A-Fa-f]` only matches single-digit values (parser bug) |
+| `backgroundColor` with >1 hex digit | INFO | ATAK parser regular expression `#[0-9A-Fa-f]` only matches single-digit values (parser bug) |
 | SRIDs 900913 or 90094326 used | INFO | Auto-converted to EPSG:3857/4326 at runtime |
-| `tileUpdate` non-numeric value (e.g. `None`, `IfNoneMatch`) | WARN | ATAK parser uses `\d+` regex; non-numeric values silently ignored — element has no effect |
+| `tileUpdate` non-numeric value (e.g. `None`, `IfNoneMatch`) | WARN | ATAK parser uses `\d+` regular expression; non-numeric values silently ignored — element has no effect |
 | WMS `<aditionalparameters>` (single-d typo) used | INFO | ATAK accepts both spellings but the typo form may confuse contributors |
 | WMS `<version>` has leading/trailing whitespace | WARN | ATAK uses `equals("1.3")` (exact match); `" 1.3.0 "` won't match, breaking CRS/SRS selection |
 
@@ -230,8 +230,8 @@ Tests are structured by what they're testing, not by abstraction layer.
 **HTTP Mocking:** Uses the `responses` library to mock `requests` at the transport level — no recorded cassette files on disk. Mock responses are defined inline in test functions (`probe.py` uses the `requests` library for HTTP).
 
 **Tests include:**
-- 200 + image/png Content-Type → HEALTHY
-- 200 + text/html Content-Type → DEGRADED (error page, not a tile)
+- 200 + `image/png` Content-Type → HEALTHY
+- 200 + `text/html` Content-Type → DEGRADED (error page, not a tile)
 - 403 → correctly classified per UA combination
 - 404, 500 → correctly classified
 - DNS failure (ConnectionError) → DEAD
@@ -351,8 +351,8 @@ Parser behavior derived from `atak-civ-client` source:
 Key parser facts codified as validation rules:
 - `coordinatesystem` must be lowercase (camelCase silently ignored)
 - `serverParts` is split on `\s+` (whitespace-delimited, not comma)
-- `tileUpdate` only accepts digits (`\d+` regex; string values like "None" silently default to 0)
-- `backgroundColor` regex `#[0-9A-Fa-f]` only matches single hex digit (parser bug — `#FFFFFF` never parses)
+- `tileUpdate` only accepts digits (`\d+` pattern; string values like "None" silently default to 0)
+- `backgroundColor` pattern `#[0-9A-Fa-f]` only matches single hex digit (parser bug — `#FFFFFF` never parses)
 - `invertYCoordinate` requires exact string `"true"` (case-sensitive; `"True"` is false)
 - User-Agent is hardcoded `TAK`; also sends `x-common-site-name: {map name}`
 - Timeouts: with config object, both connect and read use `config.connectTimeout` (likely ATAK bug — same value for both); without config, fallback is connect=3000ms, read=5000ms

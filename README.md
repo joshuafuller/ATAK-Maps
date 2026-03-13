@@ -2,8 +2,8 @@
 
 ![ATAK-Maps Logo](https://github.com/joshuafuller/ATAK-Maps/blob/master/images/ATAK_MAPS_Logo.png?raw=true)
 
-![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/joshuafuller/ATAK-Maps) ![GitHub Release Date](https://img.shields.io/github/release-date/joshuafuller/ATAK-Maps?style=flat)
-![GitHub All Releases](https://img.shields.io/github/downloads/joshuafuller/ATAK-Maps/total?style=flat) [![Discord](https://img.shields.io/discord/698067185515495436?style=flat)](https://discord.gg/dQUYADMW87) [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/joshuafuller/ATAK-Maps)
+[![Latest Release](https://img.shields.io/github/v/release/joshuafuller/ATAK-Maps?style=flat)](https://github.com/joshuafuller/ATAK-Maps/releases/latest) ![Release Date](https://img.shields.io/github/release-date/joshuafuller/ATAK-Maps?style=flat) [![Downloads](https://img.shields.io/github/downloads/joshuafuller/ATAK-Maps/total?style=flat)](https://github.com/joshuafuller/ATAK-Maps/releases/latest) [![XML Validation](https://img.shields.io/github/actions/workflow/status/joshuafuller/ATAK-Maps/validate-maps.yml?label=XML%20validation&style=flat)](https://github.com/joshuafuller/ATAK-Maps/actions/workflows/validate-maps.yml)
+[![Stars](https://img.shields.io/github/stars/joshuafuller/ATAK-Maps?style=flat)](https://github.com/joshuafuller/ATAK-Maps/stargazers) [![License](https://img.shields.io/github/license/joshuafuller/ATAK-Maps?style=flat)](LICENSE) [![Discord](https://img.shields.io/discord/698067185515495436?style=flat)](https://discord.gg/dQUYADMW87) [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/joshuafuller/ATAK-Maps)
 
 ## Detailed Overview of ATAK-Maps
 

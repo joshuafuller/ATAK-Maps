@@ -5,6 +5,6 @@
     <maxZoom>20</maxZoom>
     <tileType>jpg</tileType>
     <tileUpdate>None</tileUpdate>
-    <url>http://clarity.maptiles.arcgis.com/arcgis/rest/services/World_Imagery/MapServer/tile/{$z}/{$y}/{$x}</url>
+    <url>https://clarity.maptiles.arcgis.com/arcgis/rest/services/World_Imagery/MapServer/tile/{$z}/{$y}/{$x}</url>
     <backgroundColor>#000000</backgroundColor>
 </customMapSource>

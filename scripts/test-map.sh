@@ -35,15 +35,15 @@ for MAP_FILE in "$@"; do
     echo "Testing: $(basename "$MAP_FILE")"
     echo "======================================================================"
 
-    python -c "
-import sys
+    MAP_FILE="$MAP_FILE" python -c "
+import os, sys
 from pathlib import Path
 from mapvalidator.xml_checks import validate_file
 from mapvalidator.probe import probe_source
 from mapvalidator.reporter import print_report
 import xml.etree.ElementTree as ET
 
-filepath = Path('$MAP_FILE')
+filepath = Path(os.environ['MAP_FILE'])
 
 # XML validation
 result = validate_file(filepath)

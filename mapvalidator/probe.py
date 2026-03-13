@@ -12,7 +12,11 @@ from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
 
+import urllib3
+
 import requests
+
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 # ---------------------------------------------------------------------------
 # Constants
@@ -23,7 +27,16 @@ PROBE_DELAY = 0.5
 TAK_USER_AGENT = "TAK"
 GENERIC_USER_AGENT = "Mozilla/5.0 (compatible)"
 
-EXCLUDE_DIRS_DEFAULT = {".github", ".git", "schema", "dist", "docs", "images"}
+EXCLUDE_DIRS_DEFAULT = {
+    ".github",
+    ".git",
+    "schema",
+    "dist",
+    "docs",
+    "images",
+    "mapvalidator",
+    "tests",
+}
 
 SMOKE_SOURCES = [
     "Google/google_hybrid.xml",
@@ -61,6 +74,22 @@ class ProbeResult:
 # ---------------------------------------------------------------------------
 
 
+def _tile_to_quadkey(z: int, x: int, y: int) -> str:
+    """Convert tile coordinates to a Bing Maps quadkey string."""
+    if z <= 0:
+        return "0"
+    result = []
+    for i in range(z, 0, -1):
+        digit = 0
+        mask = 1 << (i - 1)
+        if x & mask:
+            digit += 1
+        if y & mask:
+            digit += 2
+        result.append(str(digit))
+    return "".join(result)
+
+
 def build_test_urls(root: ET.Element) -> list[str]:
     """Build test tile URLs for liveness probing from an XML root element.
 
@@ -77,16 +106,34 @@ def build_test_urls(root: ET.Element) -> list[str]:
         min_zoom = 0
 
     if tag == "customMapSource":
-        test_zooms = sorted(set([min_zoom, 3, 0]))
+        # Test coordinates at different zoom levels.  (0,0) is ocean, so we
+        # also probe tiles covering populated land (Western Europe / Eastern US)
+        # to avoid false-positive DEAD on regionally-scoped servers.
+        test_tiles: list[tuple[int, int, int]] = [
+            (min_zoom, 0, 0),
+            (3, 4, 2),  # Western Europe at zoom 3
+            (3, 2, 3),  # Eastern US at zoom 3
+            (0, 0, 0),
+            (8, 134, 86),  # Central Europe at zoom 8
+        ]
+        # Deduplicate while preserving order
+        seen: set[tuple[int, int, int]] = set()
+        unique_tiles: list[tuple[int, int, int]] = []
+        for tile in test_tiles:
+            if tile not in seen:
+                seen.add(tile)
+                unique_tiles.append(tile)
+
         urls = []
-        for z in test_zooms:
+        server_parts = root.findtext("serverParts", "")
+        for z, x, y in unique_tiles:
             test_url = (
-                url.replace("{$z}", str(z)).replace("{$x}", "0").replace("{$y}", "0")
+                url.replace("{$z}", str(z))
+                .replace("{$x}", str(x))
+                .replace("{$y}", str(y))
             )
-            # Quadkey: zoom 0 -> "0" (max(z,1) digits of "0")
-            test_url = test_url.replace("{$q}", "0" * max(z, 1))
-            # Server parts: space-delimited, pick first one
-            server_parts = root.findtext("serverParts", "")
+            # Quadkey for the given tile coordinates
+            test_url = test_url.replace("{$q}", _tile_to_quadkey(z, x, y))
             if "{$serverpart}" in test_url and server_parts:
                 first_part = server_parts.split()[0]
                 test_url = test_url.replace("{$serverpart}", first_part)
@@ -128,8 +175,8 @@ def build_test_urls(root: ET.Element) -> list[str]:
 
 def probe_url(
     url: str, user_agent: str, timeout: int = PROBE_TIMEOUT
-) -> tuple[int | None, str | None, bool]:
-    """Probe a single URL and return (status_code, error_message, is_image).
+) -> tuple[int | None, str | None, bool, int]:
+    """Probe a single URL and return (status_code, error_message, is_image, content_length).
 
     Uses requests library with SSL verification disabled.
     """
@@ -141,20 +188,21 @@ def probe_url(
             verify=False,
         )
         status = resp.status_code
+        content_length = len(resp.content)
         if status == 200:
             content_type = resp.headers.get("Content-Type", "")
             is_image = content_type.startswith("image/") or content_type.startswith(
                 "application/octet-stream"
             )
-            return (200, None, is_image)
+            return (200, None, is_image, content_length)
         else:
-            return (status, f"HTTP {status}", False)
+            return (status, f"HTTP {status}", False, 0)
     except requests.exceptions.ConnectionError as e:
-        return (None, f"Connection failed: {e}", False)
+        return (None, f"Connection failed: {e}", False, 0)
     except requests.exceptions.Timeout as e:
-        return (None, f"Timeout: {e}", False)
+        return (None, f"Timeout: {e}", False, 0)
     except Exception as e:
-        return (None, f"Error: {e}", False)
+        return (None, f"Error: {e}", False, 0)
 
 
 # ---------------------------------------------------------------------------
@@ -163,25 +211,34 @@ def probe_url(
 
 
 def classify(
-    tak_result: tuple[int | None, str | None, bool],
-    generic_result: tuple[int | None, str | None, bool],
+    tak_result: tuple[int | None, str | None, bool, int],
+    generic_result: tuple[int | None, str | None, bool, int],
 ) -> ProbeStatus:
     """Classify probe results into a ProbeStatus.
 
     | TAK UA         | Generic UA     | Status   |
     |----------------|----------------|----------|
     | 200 + image    | 200 + image    | HEALTHY  |
+    | 200 + image*   | 200 + image    | BLOCKED  | *content size diverges >2x
     | 403/429        | 200 + image    | BLOCKED  |
     | fail           | fail           | DEAD     |
     | 200 + non-image| 200 + image    | DEGRADED |
     """
-    tak_code, tak_err, tak_is_image = tak_result
-    gen_code, gen_err, gen_is_image = generic_result
+    tak_code, tak_err, tak_is_image, tak_size = tak_result
+    gen_code, gen_err, gen_is_image, gen_size = generic_result
 
     gen_ok = gen_code == 200 and gen_is_image
     tak_ok = tak_code == 200 and tak_is_image
 
     if tak_ok and gen_ok:
+        # Soft-block detection: if both return images but the content sizes
+        # differ by more than 2x, the server is likely serving a block-notice
+        # image to TAK (e.g. OSM returns a "403 Access blocked" PNG with
+        # HTTP 200 to the TAK user-agent).
+        larger = max(tak_size, gen_size)
+        smaller = min(tak_size, gen_size)
+        if smaller > 0 and larger > 2 * smaller:
+            return ProbeStatus.BLOCKED
         return ProbeStatus.HEALTHY
 
     if tak_code in (403, 429) and gen_ok:
@@ -219,8 +276,18 @@ def probe_source(root: ET.Element, filepath: Path) -> ProbeResult:
         )
 
     # Try each URL; first one where at least one UA gets a 200 wins
-    best_tak: tuple[int | None, str | None, bool] = (None, "No URLs probed", False)
-    best_generic: tuple[int | None, str | None, bool] = (None, "No URLs probed", False)
+    best_tak: tuple[int | None, str | None, bool, int] = (
+        None,
+        "No URLs probed",
+        False,
+        0,
+    )
+    best_generic: tuple[int | None, str | None, bool, int] = (
+        None,
+        "No URLs probed",
+        False,
+        0,
+    )
     best_url = test_urls[0]
 
     for url in test_urls:

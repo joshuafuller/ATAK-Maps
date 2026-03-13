@@ -3,6 +3,8 @@
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
+import re
+
 import responses
 from requests.exceptions import ConnectionError, Timeout
 
@@ -11,6 +13,7 @@ from mapvalidator.probe import (
     TAK_USER_AGENT,
     ProbeResult,
     ProbeStatus,
+    _tile_to_quadkey,
     build_test_urls,
     classify,
     probe_all,
@@ -98,6 +101,26 @@ EMPTY_URL_XML = """
 
 
 # ---------------------------------------------------------------------------
+# 0. _tile_to_quadkey
+# ---------------------------------------------------------------------------
+
+
+class TestTileToQuadkey:
+    def test_zoom_0_returns_zero(self):
+        assert _tile_to_quadkey(0, 0, 0) == "0"
+
+    def test_zoom_1_tiles(self):
+        assert _tile_to_quadkey(1, 0, 0) == "0"
+        assert _tile_to_quadkey(1, 1, 0) == "1"
+        assert _tile_to_quadkey(1, 0, 1) == "2"
+        assert _tile_to_quadkey(1, 1, 1) == "3"
+
+    def test_zoom_3_western_europe(self):
+        # tile (4, 2) at zoom 3 -> quadkey "120"
+        assert _tile_to_quadkey(3, 4, 2) == "120"
+
+
+# ---------------------------------------------------------------------------
 # 1. build_test_urls — TMS with XYZ
 # ---------------------------------------------------------------------------
 
@@ -107,10 +130,12 @@ class TestBuildTestUrlsTmsXyz:
         root = _xml(TMS_XYZ_XML)
         urls = build_test_urls(root)
         assert len(urls) > 0
-        # minZoom=2, so zoom levels tried: sorted(set([2, 3, 0])) = [0, 2, 3]
-        assert "https://tiles.example.com/0/0/0.png" in urls
+        # minZoom=2 at (0,0), zoom 3 at populated coords, zoom 0, zoom 8
         assert "https://tiles.example.com/2/0/0.png" in urls
-        assert "https://tiles.example.com/3/0/0.png" in urls
+        assert "https://tiles.example.com/3/4/2.png" in urls  # W. Europe
+        assert "https://tiles.example.com/3/2/3.png" in urls  # E. US
+        assert "https://tiles.example.com/0/0/0.png" in urls
+        assert "https://tiles.example.com/8/134/86.png" in urls  # C. Europe
 
     def test_no_unresolved_placeholders(self):
         root = _xml(TMS_XYZ_XML)
@@ -129,10 +154,10 @@ class TestBuildTestUrlsQuadkey:
         root = _xml(TMS_QUADKEY_XML)
         urls = build_test_urls(root)
         assert len(urls) > 0
-        # minZoom=0, zooms: sorted(set([0, 3, 0])) = [0, 3]
-        # zoom 0 -> "0" (max(0,1)=1 -> "0"), zoom 3 -> "000"
+        # minZoom=0 at (0,0) -> quadkey "0"
         assert any("tiles/a0?" in u for u in urls)
-        assert any("tiles/a000?" in u for u in urls)
+        # zoom 3, tile (4,2) -> quadkey "120" (W. Europe)
+        assert any("tiles/a120?" in u for u in urls)
 
     def test_no_unresolved_placeholders(self):
         root = _xml(TMS_QUADKEY_XML)
@@ -152,7 +177,7 @@ class TestBuildTestUrlsServerParts:
         urls = build_test_urls(root)
         assert len(urls) > 0
         for url in urls:
-            assert "t1.openseamap.org" in url
+            assert "t1.openseamap.org" in url, f"serverpart not substituted in {url}"
             assert "{$serverpart}" not in url
 
 
@@ -230,20 +255,22 @@ class TestBuildTestUrlsEmptyUrl:
 
 class TestProbeUrl200Image:
     @responses.activate
-    def test_returns_200_none_true(self):
+    def test_returns_200_none_true_with_content_length(self):
+        tile_body = b"\x89PNG\r\n" + b"\x00" * 100
         responses.add(
             responses.GET,
             "https://tiles.example.com/0/0/0.png",
-            body=b"\x89PNG\r\n",
+            body=tile_body,
             status=200,
             content_type="image/png",
         )
-        status, error, is_image = probe_url(
+        status, error, is_image, content_length = probe_url(
             "https://tiles.example.com/0/0/0.png", TAK_USER_AGENT
         )
         assert status == 200
         assert error is None
         assert is_image is True
+        assert content_length == len(tile_body)
 
 
 # ---------------------------------------------------------------------------
@@ -254,19 +281,21 @@ class TestProbeUrl200Image:
 class TestProbeUrl200Html:
     @responses.activate
     def test_returns_200_none_false(self):
+        html_body = b"<html>not a tile</html>"
         responses.add(
             responses.GET,
             "https://tiles.example.com/0/0/0.png",
-            body=b"<html>not a tile</html>",
+            body=html_body,
             status=200,
             content_type="text/html",
         )
-        status, error, is_image = probe_url(
+        status, error, is_image, content_length = probe_url(
             "https://tiles.example.com/0/0/0.png", TAK_USER_AGENT
         )
         assert status == 200
         assert error is None
         assert is_image is False
+        assert content_length == len(html_body)
 
 
 # ---------------------------------------------------------------------------
@@ -283,12 +312,13 @@ class TestProbeUrl403:
             body=b"Forbidden",
             status=403,
         )
-        status, error, is_image = probe_url(
+        status, error, is_image, content_length = probe_url(
             "https://tiles.example.com/0/0/0.png", TAK_USER_AGENT
         )
         assert status == 403
         assert error is not None
         assert is_image is False
+        assert content_length == 0
 
 
 # ---------------------------------------------------------------------------
@@ -305,12 +335,13 @@ class TestProbeUrl404:
             body=b"Not Found",
             status=404,
         )
-        status, error, is_image = probe_url(
+        status, error, is_image, content_length = probe_url(
             "https://tiles.example.com/0/0/0.png", TAK_USER_AGENT
         )
         assert status == 404
         assert error is not None
         assert is_image is False
+        assert content_length == 0
 
 
 # ---------------------------------------------------------------------------
@@ -327,12 +358,13 @@ class TestProbeUrl500:
             body=b"Internal Server Error",
             status=500,
         )
-        status, error, is_image = probe_url(
+        status, error, is_image, content_length = probe_url(
             "https://tiles.example.com/0/0/0.png", TAK_USER_AGENT
         )
         assert status == 500
         assert error is not None
         assert is_image is False
+        assert content_length == 0
 
 
 # ---------------------------------------------------------------------------
@@ -348,13 +380,14 @@ class TestProbeUrlConnectionError:
             "https://tiles.example.com/0/0/0.png",
             body=ConnectionError("DNS resolution failed"),
         )
-        status, error, is_image = probe_url(
+        status, error, is_image, content_length = probe_url(
             "https://tiles.example.com/0/0/0.png", TAK_USER_AGENT
         )
         assert status is None
         assert error is not None
         assert "DNS" in error or "Connection" in error or "connection" in error
         assert is_image is False
+        assert content_length == 0
 
 
 # ---------------------------------------------------------------------------
@@ -370,12 +403,13 @@ class TestProbeUrlTimeout:
             "https://tiles.example.com/0/0/0.png",
             body=Timeout("Request timed out"),
         )
-        status, error, is_image = probe_url(
+        status, error, is_image, content_length = probe_url(
             "https://tiles.example.com/0/0/0.png", TAK_USER_AGENT
         )
         assert status is None
         assert error is not None
         assert is_image is False
+        assert content_length == 0
 
 
 # ---------------------------------------------------------------------------
@@ -385,8 +419,14 @@ class TestProbeUrlTimeout:
 
 class TestClassifyHealthy:
     def test_both_200_image_returns_healthy(self):
-        tak = (200, None, True)
-        generic = (200, None, True)
+        tak = (200, None, True, 15000)
+        generic = (200, None, True, 15000)
+        assert classify(tak, generic) == ProbeStatus.HEALTHY
+
+    def test_both_200_image_similar_size_returns_healthy(self):
+        """Images with similar sizes (within 2x) are HEALTHY."""
+        tak = (200, None, True, 12000)
+        generic = (200, None, True, 15000)
         assert classify(tak, generic) == ProbeStatus.HEALTHY
 
 
@@ -397,13 +437,33 @@ class TestClassifyHealthy:
 
 class TestClassifyBlocked:
     def test_tak_403_generic_ok_returns_blocked(self):
-        tak = (403, "HTTP 403", False)
-        generic = (200, None, True)
+        tak = (403, "HTTP 403", False, 0)
+        generic = (200, None, True, 15000)
         assert classify(tak, generic) == ProbeStatus.BLOCKED
 
     def test_tak_429_generic_ok_returns_blocked(self):
-        tak = (429, "HTTP 429", False)
-        generic = (200, None, True)
+        tak = (429, "HTTP 429", False, 0)
+        generic = (200, None, True, 15000)
+        assert classify(tak, generic) == ProbeStatus.BLOCKED
+
+    def test_soft_block_both_200_image_but_different_content(self):
+        """OSM-style soft block: both return 200+image/png but TAK gets a
+        'blocked' notice image (6987 bytes) while generic gets a real tile
+        (15189 bytes).  The size divergence signals a soft block."""
+        tak = (200, None, True, 6987)
+        generic = (200, None, True, 15189)
+        assert classify(tak, generic) == ProbeStatus.BLOCKED
+
+    def test_soft_block_tak_much_smaller(self):
+        """TAK image much smaller than generic — likely an error tile."""
+        tak = (200, None, True, 100)
+        generic = (200, None, True, 50000)
+        assert classify(tak, generic) == ProbeStatus.BLOCKED
+
+    def test_soft_block_tak_much_larger(self):
+        """TAK image much larger than generic (e.g. verbose error page PNG)."""
+        tak = (200, None, True, 50000)
+        generic = (200, None, True, 103)
         assert classify(tak, generic) == ProbeStatus.BLOCKED
 
 
@@ -414,13 +474,13 @@ class TestClassifyBlocked:
 
 class TestClassifyDead:
     def test_both_fail_returns_dead(self):
-        tak = (None, "Connection failed", False)
-        generic = (None, "Connection failed", False)
+        tak = (None, "Connection failed", False, 0)
+        generic = (None, "Connection failed", False, 0)
         assert classify(tak, generic) == ProbeStatus.DEAD
 
     def test_both_non_200_returns_dead(self):
-        tak = (500, "HTTP 500", False)
-        generic = (500, "HTTP 500", False)
+        tak = (500, "HTTP 500", False, 0)
+        generic = (500, "HTTP 500", False, 0)
         assert classify(tak, generic) == ProbeStatus.DEAD
 
 
@@ -431,30 +491,30 @@ class TestClassifyDead:
 
 class TestClassifyDegraded:
     def test_tak_html_generic_image_returns_degraded(self):
-        tak = (200, None, False)  # 200 but not image
-        generic = (200, None, True)
+        tak = (200, None, False, 500)  # 200 but not image
+        generic = (200, None, True, 15000)
         assert classify(tak, generic) == ProbeStatus.DEGRADED
 
 
 class TestClassifyEdgeCases:
     def test_tak_404_generic_ok_is_dead_not_blocked(self):
         """404 is not a block — it's a different failure. Only 403/429 = BLOCKED."""
-        tak = (404, "HTTP 404", False)
-        generic = (200, None, True)
+        tak = (404, "HTTP 404", False, 0)
+        generic = (200, None, True, 15000)
         # Per spec: BLOCKED requires 403 or 429. 404 falls through to DEAD.
         assert classify(tak, generic) == ProbeStatus.DEAD
 
     def test_tak_ok_generic_fail_is_dead(self):
         """Spec requires BOTH user-agents to return 200+image for HEALTHY."""
-        tak = (200, None, True)
-        generic = (500, "HTTP 500", False)
+        tak = (200, None, True, 15000)
+        generic = (500, "HTTP 500", False, 0)
         # TAK ok + generic fail doesn't match any spec matrix row → DEAD
         assert classify(tak, generic) == ProbeStatus.DEAD
 
     def test_both_200_but_both_html_is_dead(self):
         """Both return 200 but neither returns an image → server broken."""
-        tak = (200, None, False)
-        generic = (200, None, False)
+        tak = (200, None, False, 500)
+        generic = (200, None, False, 500)
         assert classify(tak, generic) == ProbeStatus.DEAD
 
 
@@ -466,16 +526,14 @@ class TestClassifyEdgeCases:
 class TestProbeSourceHealthy:
     @responses.activate
     def test_healthy_tms_returns_healthy_result(self):
-        # Mock all zoom-level URLs for both user agents
-        for z in [0, 2, 3]:
-            url = f"https://tiles.example.com/{z}/0/0.png"
-            responses.add(
-                responses.GET,
-                url,
-                body=b"\x89PNG\r\n",
-                status=200,
-                content_type="image/png",
-            )
+        # Mock all tile URLs from example.com with a regex pattern
+        responses.add(
+            responses.GET,
+            re.compile(r"https://tiles\.example\.com/\d+/\d+/\d+\.png"),
+            body=b"\x89PNG\r\n",
+            status=200,
+            content_type="image/png",
+        )
 
         root = _xml(TMS_XYZ_XML)
         result = probe_source(root, Path("Test/test.xml"))
@@ -497,46 +555,24 @@ class TestProbeSourceHealthy:
 
 class TestProbeSourceMultiZoomFallback:
     @responses.activate
-    def test_first_zoom_404_second_zoom_200_returns_healthy(self):
-        # Zoom 0 -> 404 for both UAs
+    def test_first_url_404_later_url_200_returns_healthy(self):
+        # First URL (minZoom=2 at 0,0) -> 404, remaining URLs -> 200
         responses.add(
             responses.GET,
-            "https://tiles.example.com/0/0/0.png",
+            "https://tiles.example.com/2/0/0.png",
             status=404,
             body=b"Not Found",
         )
         responses.add(
             responses.GET,
-            "https://tiles.example.com/0/0/0.png",
+            "https://tiles.example.com/2/0/0.png",
             status=404,
             body=b"Not Found",
         )
-        # Zoom 2 -> 200+image for both UAs
+        # All other URLs return healthy tiles
         responses.add(
             responses.GET,
-            "https://tiles.example.com/2/0/0.png",
-            body=b"\x89PNG\r\n",
-            status=200,
-            content_type="image/png",
-        )
-        responses.add(
-            responses.GET,
-            "https://tiles.example.com/2/0/0.png",
-            body=b"\x89PNG\r\n",
-            status=200,
-            content_type="image/png",
-        )
-        # Zoom 3 shouldn't be needed but mock just in case
-        responses.add(
-            responses.GET,
-            "https://tiles.example.com/3/0/0.png",
-            body=b"\x89PNG\r\n",
-            status=200,
-            content_type="image/png",
-        )
-        responses.add(
-            responses.GET,
-            "https://tiles.example.com/3/0/0.png",
+            re.compile(r"https://tiles\.example\.com/\d+/\d+/\d+\.png"),
             body=b"\x89PNG\r\n",
             status=200,
             content_type="image/png",
@@ -554,13 +590,14 @@ class TestProbeSourceMultiZoomFallback:
 
 class TestProbeSourceDead:
     @responses.activate
-    def test_all_zooms_fail_returns_dead(self):
-        # All zoom levels return 500 for all requests
-        for z in [0, 2, 3]:
-            url = f"https://tiles.example.com/{z}/0/0.png"
-            # Add multiple responses per URL (TAK + generic UA)
-            responses.add(responses.GET, url, status=500, body=b"Error")
-            responses.add(responses.GET, url, status=500, body=b"Error")
+    def test_all_urls_fail_returns_dead(self):
+        # All tile URLs return 500
+        responses.add(
+            responses.GET,
+            re.compile(r"https://tiles\.example\.com/\d+/\d+/\d+\.png"),
+            status=500,
+            body=b"Error",
+        )
 
         root = _xml(TMS_XYZ_XML)
         result = probe_source(root, Path("Test/test.xml"))
@@ -616,18 +653,14 @@ class TestProbeSmoke:
         (bing_dir / "Bing_Satellite.xml").write_text(tms_xml)
         (other_dir / "some_other_map.xml").write_text(tms_xml)
 
-        # Mock HTTP responses for all zoom levels
-        for z in [0, 3]:
-            url = f"https://tiles.example.com/{z}/0/0.png"
-            # Each source probes multiple URLs with 2 user agents
-            for _ in range(10):
-                responses.add(
-                    responses.GET,
-                    url,
-                    body=b"\x89PNG\r\n",
-                    status=200,
-                    content_type="image/png",
-                )
+        # Mock all tile URLs from example.com
+        responses.add(
+            responses.GET,
+            re.compile(r"https://tiles\.example\.com/\d+/\d+/\d+\.png"),
+            body=b"\x89PNG\r\n",
+            status=200,
+            content_type="image/png",
+        )
 
         results = probe_smoke(tmp_path)
 
@@ -657,16 +690,13 @@ class TestProbeSmoke:
 
         (google_dir / "google_hybrid.xml").write_text(tms_xml)
 
-        for z in [0, 3]:
-            url = f"https://tiles.example.com/{z}/0/0.png"
-            for _ in range(10):
-                responses.add(
-                    responses.GET,
-                    url,
-                    body=b"\x89PNG\r\n",
-                    status=200,
-                    content_type="image/png",
-                )
+        responses.add(
+            responses.GET,
+            re.compile(r"https://tiles\.example\.com/\d+/\d+/\d+\.png"),
+            body=b"\x89PNG\r\n",
+            status=200,
+            content_type="image/png",
+        )
 
         results = probe_smoke(tmp_path)
         assert len(results) == 1
@@ -699,16 +729,13 @@ class TestProbeAllSmokeFlag:
         (google_dir / "google_hybrid.xml").write_text(tms_xml)
         (other_dir / "other_map.xml").write_text(tms_xml)
 
-        for z in [0, 3]:
-            url = f"https://tiles.example.com/{z}/0/0.png"
-            for _ in range(10):
-                responses.add(
-                    responses.GET,
-                    url,
-                    body=b"\x89PNG\r\n",
-                    status=200,
-                    content_type="image/png",
-                )
+        responses.add(
+            responses.GET,
+            re.compile(r"https://tiles\.example\.com/\d+/\d+/\d+\.png"),
+            body=b"\x89PNG\r\n",
+            status=200,
+            content_type="image/png",
+        )
 
         results = probe_all(tmp_path, smoke_only=True)
         assert len(results) == 1

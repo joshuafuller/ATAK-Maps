@@ -134,7 +134,8 @@ Probes each map source with two user-agents to distinguish "server dead" from "A
 **Classification matrix:**
 | TAK UA | Generic UA | Status | Action |
 |--------|-----------|--------|--------|
-| 200 + image | 200 + image | HEALTHY | None |
+| 200 + image | 200 + image (similar size) | HEALTHY | None |
+| 200 + image | 200 + image (size diverges >2x) | BLOCKED | Issue: "Soft block — different content per UA" |
 | 403/429 | 200 + image | BLOCKED | Issue: "Map X blocks ATAK clients" |
 | fail | fail | DEAD | Issue: "Map X server unreachable" |
 | 200 + non-image | 200 + image | DEGRADED | Issue: "Map X returns error page to ATAK" |
@@ -144,6 +145,7 @@ Probes each map source with two user-agents to distinguish "server dead" from "A
 - For TMS: substitutes z/x/y or quadkey into URL template
 - For WMS: constructs GetMap request with `service=WMS&request=GetMap`, source's `layers`, `version` (default 1.1.1), `SRS=EPSG:4326` (or `CRS=CRS:84` for 1.3.x), `format=image/png`, `width=256&height=256`, and a global bbox `-180,-90,180,90` (EPSG:4326) to guarantee a valid response regardless of layer extent
 - Validates response is actually an image (Content-Type check)
+- Soft-block detection: compares response content sizes between user-agents; if both return images but sizes differ by more than 2x, classifies as BLOCKED (catches servers like OpenStreetMap that serve a "403 Access blocked" PNG image with HTTP 200 to the TAK user-agent)
 - Timeout: 10s per request
 - Rate limiting: 0.5s delay between requests
 - User agents: `TAK` (matches ATAK hardcoded header) and `Mozilla/5.0 (compatible)`

@@ -58,13 +58,10 @@ All available map layers, auto-generated from the XML files in this repository:
 | GRG | FEMA NFHL - Flood Hazard Zones (WMS) | 5–19 | PNG | WMS |
 | GRG | GRG - Google Road Only Overlay | 0–20 | jpg | TMS |
 | GRG | GRG - Google Terrain Shading Overlay | 0–20 | jpg | TMS |
-| GRG | GRG - USDA Fstopo Overlay | 0–17 | png | TMS |
 | GRG | GRG - WaymarkedTrails Cycle Routes Overlay | 0–18 | png | TMS |
-| michelin | Michelin - OSM Michelin | 0–19 | — | TMS |
+| michelin | Michelin - OSM Michelin | 5–19 | — | TMS |
 | mtbmapcz | MTBMap.cz - MTB Map Europe | 0–21 | png | TMS |
 | NAIP | NAIP – USDA CONUS Prime | 0–17 | jpg | TMS |
-| NAIP | NAIP – USGS National Map | 0–17 | jpg | TMS |
-| NationalLandSurveyOfFinland | National Land Survey of Finland - MML | 2–19 | jpg | TMS |
 | NaturalResourcesCanada | Canada - Toporama | 0–23 | jpg | WMS |
 | NaturalResourcesCanada | Canada Base Map – Transportation | 0–23 | jpg | WMS |
 | openseamap | OpenSeaMap – Base Chart | 0–18 | png | TMS |

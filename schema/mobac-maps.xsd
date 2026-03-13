@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  XSD schema for MOBAC map source XML files used by ATAK.
+
+  Derived from ATAK's MobacMapSourceFactory.java parser.
+  Supports three root element types:
+    - customMapSource        (TMS/XYZ tile sources)
+    - customWmsMapSource     (WMS services)
+    - customMultiLayerMapSource (composite layers)
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="unqualified">
+
+  <!-- ================================================================== -->
+  <!-- Root elements                                                       -->
+  <!-- ================================================================== -->
+
+  <xs:element name="customMapSource"          type="customMapSourceType"/>
+  <xs:element name="customWmsMapSource"       type="customWmsMapSourceType"/>
+  <xs:element name="customMultiLayerMapSource" type="customMultiLayerMapSourceType"/>
+
+  <!-- ================================================================== -->
+  <!-- customMapSource                                                     -->
+  <!--   Required: name, url, maxZoom                                      -->
+  <!--   Optional: minZoom, tileType, tileUpdate, serverParts,             -->
+  <!--             invertYCoordinate, backgroundColor,                     -->
+  <!--             coordinatesystem/coordinateSystem, ignoreErrors          -->
+  <!-- ================================================================== -->
+
+  <xs:complexType name="customMapSourceType">
+    <xs:all>
+      <xs:element name="name"               type="xs:string"/>
+      <xs:element name="url"                type="xs:string"/>
+      <xs:element name="maxZoom"            type="xs:nonNegativeInteger"/>
+      <xs:element name="minZoom"            type="xs:nonNegativeInteger"  minOccurs="0"/>
+      <xs:element name="tileType"           type="xs:string"              minOccurs="0"/>
+      <xs:element name="tileUpdate"         type="xs:string"              minOccurs="0"/>
+      <xs:element name="serverParts"        type="xs:string"              minOccurs="0"/>
+      <xs:element name="invertYCoordinate"  type="xs:string"              minOccurs="0"/>
+      <xs:element name="backgroundColor"    type="xs:string"              minOccurs="0"/>
+      <xs:element name="coordinatesystem"   type="xs:string"              minOccurs="0"/>
+      <xs:element name="coordinateSystem"   type="xs:string"              minOccurs="0"/>
+      <xs:element name="ignoreErrors"       type="xs:string"              minOccurs="0"/>
+    </xs:all>
+  </xs:complexType>
+
+  <!-- ================================================================== -->
+  <!-- customWmsMapSource                                                  -->
+  <!--   Required: name, url, layers, maxZoom, tileType                    -->
+  <!--   Optional: minZoom, styles, version, coordinatesystem,             -->
+  <!--             coordinateSystem, aditionalparameters,                  -->
+  <!--             additionalparameters, backgroundColor,                  -->
+  <!--             north/south/east/west, tileUpdate, ignoreErrors         -->
+  <!-- ================================================================== -->
+
+  <xs:complexType name="customWmsMapSourceType">
+    <xs:all>
+      <xs:element name="name"                    type="xs:string"/>
+      <xs:element name="url"                     type="xs:string"/>
+      <xs:element name="layers"                  type="xs:string"/>
+      <xs:element name="maxZoom"                 type="xs:nonNegativeInteger"/>
+      <xs:element name="tileType"                type="xs:string"/>
+      <xs:element name="minZoom"                 type="xs:nonNegativeInteger"  minOccurs="0"/>
+      <xs:element name="styles"                  type="xs:string"              minOccurs="0"/>
+      <xs:element name="version"                 type="xs:string"              minOccurs="0"/>
+      <xs:element name="coordinatesystem"        type="xs:string"              minOccurs="0"/>
+      <xs:element name="coordinateSystem"        type="xs:string"              minOccurs="0"/>
+      <xs:element name="aditionalparameters"     type="xs:string"              minOccurs="0"/>
+      <xs:element name="additionalparameters"    type="xs:string"              minOccurs="0"/>
+      <xs:element name="backgroundColor"         type="xs:string"              minOccurs="0"/>
+      <xs:element name="north"                   type="xs:decimal"             minOccurs="0"/>
+      <xs:element name="south"                   type="xs:decimal"             minOccurs="0"/>
+      <xs:element name="east"                    type="xs:decimal"             minOccurs="0"/>
+      <xs:element name="west"                    type="xs:decimal"             minOccurs="0"/>
+      <xs:element name="tileUpdate"              type="xs:string"              minOccurs="0"/>
+      <xs:element name="ignoreErrors"            type="xs:string"              minOccurs="0"/>
+    </xs:all>
+  </xs:complexType>
+
+  <!-- ================================================================== -->
+  <!-- customMultiLayerMapSource                                           -->
+  <!--   Required: name, layers                                            -->
+  <!--   Optional: backgroundColor, layersAlpha                            -->
+  <!-- ================================================================== -->
+
+  <xs:complexType name="customMultiLayerMapSourceType">
+    <xs:all>
+      <xs:element name="name"             type="xs:string"/>
+      <xs:element name="layers"           type="multiLayerLayersType"/>
+      <xs:element name="backgroundColor"  type="xs:string"  minOccurs="0"/>
+      <xs:element name="layersAlpha"      type="xs:string"  minOccurs="0"/>
+    </xs:all>
+  </xs:complexType>
+
+  <!-- Container for nested layers inside customMultiLayerMapSource -->
+  <xs:complexType name="multiLayerLayersType">
+    <xs:choice maxOccurs="unbounded">
+      <xs:element name="customMapSource"          type="customMapSourceType"/>
+      <xs:element name="customWmsMapSource"       type="customWmsMapSourceType"/>
+      <xs:element name="customMultiLayerMapSource" type="customMultiLayerMapSourceType"/>
+    </xs:choice>
+  </xs:complexType>
+
+</xs:schema>

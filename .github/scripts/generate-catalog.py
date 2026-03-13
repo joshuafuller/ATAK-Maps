@@ -8,7 +8,16 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 README_PATH = REPO_ROOT / "README.md"
-EXCLUDE_DIRS = {".github", ".git", "schema", "dist", "docs"}
+EXCLUDE_DIRS = {
+    ".github",
+    ".git",
+    "schema",
+    "dist",
+    "docs",
+    "mapvalidator",
+    "tests",
+    "images",
+}
 
 START_MARKER = "<!-- MAP_CATALOG_START -->"
 END_MARKER = "<!-- MAP_CATALOG_END -->"

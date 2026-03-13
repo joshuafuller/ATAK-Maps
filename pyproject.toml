@@ -1,0 +1,25 @@
+[project]
+name = "atak-maps-validator"
+version = "0.1.0"
+requires-python = ">=3.10"
+dependencies = ["requests"]
+
+[project.optional-dependencies]
+dev = ["pytest", "pytest-cov", "responses"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--cov=mapvalidator --cov-report=term-missing"
+
+[tool.coverage.run]
+source = ["mapvalidator"]
+
+[tool.coverage.report]
+fail_under = 80
+show_missing = true
+
+[tool.isort]
+profile = "black"
+
+[tool.black]
+line-length = 88

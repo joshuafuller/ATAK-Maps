@@ -5,6 +5,6 @@
     <maxZoom>20</maxZoom>
     <tileType>jpg</tileType>
     <tileUpdate>None</tileUpdate>
-    <url>http://mt1.google.com/vt/lyrs=t&amp;x={$x}&amp;y={$y}&amp;z={$z}</url>
+    <url>https://mt1.google.com/vt/lyrs=t&amp;x={$x}&amp;y={$y}&amp;z={$z}</url>
     <backgroundColor>#000000</backgroundColor>
 </customMapSource>

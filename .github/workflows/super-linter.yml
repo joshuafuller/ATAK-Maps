@@ -23,4 +23,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BRANCH: master
           VALIDATE_XML: false
-          VALIDATE_ALL_CODEBASE: false   # lint only the diff
+          VALIDATE_JSCPD: false
+          VALIDATE_PYTHON_ISORT: false
+          VALIDATE_ALL_CODEBASE: false

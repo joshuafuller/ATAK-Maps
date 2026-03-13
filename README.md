@@ -25,13 +25,58 @@ The MOBAC format is integral to the functionality of ATAK-Maps. It enables the d
 
 ## Installation Guide
 
-To integrate ATAK-Maps into your ATAK application, follow these steps:
+1. **Download** the latest `atak-maps-<version>.zip` from the [Releases page](https://github.com/joshuafuller/ATAK-Maps/releases).
+2. **Import** — open the ZIP in ATAK using the Import feature. Maps populate automatically.
+3. **Verify** the new maps appear in ATAK's map layer selector.
 
-1. **Download**: Get `ATAK-Maps.zip` from the [Releases page](https://github.com/joshuafuller/ATAK-Maps/releases).
-2. **Locate**: Navigate to 'Downloads' in your file manager.
-3. **Extract**: Open `ATAK-Maps.zip` and extract its contents.
-4. **Transfer**: Move the map files (anything not prefixed `grg_`) to the `ATAK/imagery` directory and the overlays (anything prefixed `grg_`) into the `ATAK/grg` directory.
-5. **Verify**: In ATAK, ensure the new maps appear in the map list and the overlays appear in the overlay list.
+For manual installation, troubleshooting, and offline caching, see the **[Install Guide](docs/install-guide.md)**.
+
+## Map Catalog
+
+All available map layers, auto-generated from the XML files in this repository:
+
+<!-- MAP_CATALOG_START -->
+
+| Provider | Map Name | Zoom (min–max) | Tile Type | Source |
+|----------|----------|----------------|-----------|--------|
+| basemapDE | basemap.de Raster, Farbe | 0–19 | PNG | WMS |
+| basemapDE | basemap.de Raster, grau | 0–19 | PNG | WMS |
+| Bing | Bing - Hybrid | 0–20 | png | TMS |
+| Bing | Bing - Maps | 0–20 | png | TMS |
+| Bing | Bing - Satellite | 0–20 | jpg | TMS |
+| cycleosm | CycleOSM - OSM Cycle | 0–21 | png | TMS |
+| ESRI | Esri - Clarity | 1–20 | jpg | TMS |
+| ESRI | Esri - Nat Geo World | 1–20 | jpg | TMS |
+| ESRI | Esri - USA Topo Maps | 0–15 | png | TMS |
+| ESRI | Esri - World Topo | 1–20 | jpg | TMS |
+| Google | Google - Hybrid | 0–20 | jpg | TMS |
+| Google | Google - Roadmap Alt | 0–20 | jpg | TMS |
+| Google | Google - Roadmap No Poi | 0–20 | jpg | TMS |
+| Google | Google - Roadmap Standard | 0–20 | jpg | TMS |
+| Google | Google - Satellite Only | 0–20 | jpg | TMS |
+| Google | Google - Terrain | 0–20 | jpg | TMS |
+| GRG | FEMA NFHL - Flood Hazard Zones (WMS) | 5–19 | PNG | WMS |
+| GRG | GRG - Google Road Only Overlay | 0–20 | jpg | TMS |
+| GRG | GRG - Google Terrain Shading Overlay | 0–20 | jpg | TMS |
+| GRG | GRG - USDA Fstopo Overlay | 0–17 | png | TMS |
+| GRG | GRG - WaymarkedTrails Cycle Routes Overlay | 0–18 | png | TMS |
+| michelin | Michelin - OSM Michelin | 0–19 | — | TMS |
+| mtbmapcz | MTBMap.cz - MTB Map Europe | 0–21 | png | TMS |
+| NAIP | NAIP – USDA CONUS Prime | 0–17 | jpg | TMS |
+| NAIP | NAIP – USGS National Map | 0–17 | jpg | TMS |
+| NationalLandSurveyOfFinland | National Land Survey of Finland - MML | 2–19 | jpg | TMS |
+| NaturalResourcesCanada | Canada - Toporama | 0–23 | jpg | WMS |
+| NaturalResourcesCanada | Canada Base Map – Transportation | 0–23 | jpg | WMS |
+| openseamap | OpenSeaMap – Base Chart | 0–18 | png | TMS |
+| openseamap | OpenSeaMap – Seamarks | 0–18 | png | TMS |
+| opentopo | OpenTopo - Opentopomap | 1–17 | png | TMS |
+| Poland | PL Ortofoto Std (WMTS EPSG3857) | 0–20 | JPG | TMS |
+| usgs | USGS - Usgsbasemap | 0–15 | png | TMS |
+| usgs | USGS - Usgsimageryonly | 0–15 | png | TMS |
+| usgs | USGS - Usgsimagerytopo | 0–15 | png | TMS |
+| usgs | USGS - Usgsshadedrelief | 0–15 | png | TMS |
+
+<!-- MAP_CATALOG_END -->
 
 ## Frequently Asked Questions (FAQ)
 
@@ -44,7 +89,7 @@ Please note that OpenStreetMap may restrict ATAK client access. These maps are i
 
 ## Creating Custom Maps
 
-Want to add your own map sources? See the [Creating Custom Maps guide](docs/creating-custom-maps.md) for details on the MOBAC XML structure, choosing tile servers, configuring zoom levels, and testing new files in ATAK.
+Want to add your own map sources? See the [Creating Custom Maps quickstart](docs/creating-custom-maps.md) to get started, or the [MOBAC XML Reference](docs/xml-reference.md) for the complete specification.
 
 ## Contributing
 

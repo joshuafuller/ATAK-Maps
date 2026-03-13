@@ -41,7 +41,7 @@ Schema at `schema/mobac-maps.xsd` validates all three types. Derived from ATAK's
 
 - **One XML file per map layer** — no multi-source bundles
 - **Directory = provider name** — group by tile source provider
-- **Overlay prefix**: files in `GRG/` must start with `grg_`
+- **Overlay prefix**: files in `GRG/` should start with `grg_` by convention (ATAK does not require this — it distinguishes overlays by directory, not filename)
 - **Commits**: use [Conventional Commits](https://www.conventionalcommits.org/) (`feat:`, `fix:`, `docs:`, etc.) — semantic-release parses these for versioning
 - **No API keys in XML** — if a source requires auth, document it but don't commit secrets
 

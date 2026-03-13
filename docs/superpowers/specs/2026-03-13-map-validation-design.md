@@ -27,9 +27,13 @@ Known issues found during initial analysis:
 
 1. A Python validation library that catches every issue XSD cannot express
 2. Dual user-agent liveness probing (TAK vs generic) to detect ATAK-specific blocks
-3. TDD test suite with 80%+ coverage, using real XML fixtures and HTTP cassettes
+3. TDD test suite with 80%+ coverage, using real XML fixtures and the `responses` library for HTTP mocking
 4. Automated weekly monitoring with GitHub issue creation for failures
 5. Fast PR feedback for contributors on XML quality
+
+## Prior Art
+
+The existing `.github/scripts/validate-maps-deep.py` (346 lines, added on this branch) is a standalone script implementing filename checks, zoom validation, URL placeholder checks, WMS checks, duplicate detection, and basic single-UA liveness probing. It will be **refactored into the `mapvalidator/` package** — the logic is reused, not rewritten. Once the package is complete, `validate-maps-deep.py` is deleted and CI workflows point to `python -m mapvalidator` instead.
 
 ## Non-Goals
 
@@ -52,18 +56,8 @@ mapvalidator/                # Python package
 
 tests/
   conftest.py                # Shared fixtures from real XML files
-  cassettes/                 # Recorded HTTP responses
-    tile_200_png.bin
-    tile_200_html_error.bin
-    blocked_403.bin
-    not_found_404.bin
-    server_error_500.bin
-    dns_failure.bin
-    timeout.bin
-    osm_tak_blocked.bin      # Control case: OSM blocks TAK UA
-    osm_generic_ok.bin       # Control case: OSM allows generic UA
   test_xml_checks.py
-  test_probe.py
+  test_probe.py              # Uses `responses` library for HTTP mocking
   test_reporter.py
 
 .github/workflows/
@@ -72,6 +66,11 @@ tests/
   test-mapvalidator.yml      # pytest on .py changes
 
 pyproject.toml               # uv-managed, pytest config, coverage thresholds
+
+scripts/
+  validate.sh                # Validate all XML files (no network)
+  probe.sh                   # Validate + probe all tile servers
+  test-map.sh                # Validate + probe a single XML file
 ```
 
 ### Module Responsibilities
@@ -84,20 +83,29 @@ All checks derived from ATAK's `MobacMapSourceFactory.java` parser behavior.
 | Check | Severity | Rationale |
 |-------|----------|-----------|
 | minZoom > maxZoom | ERROR | Inverted range, map won't load |
-| maxZoom > 22 | ERROR | No tile servers serve beyond 22 |
+| maxZoom > 25 | ERROR | Well beyond any tile server ceiling |
+| maxZoom > 22 | WARN | Uncommon but some servers (e.g. Canadian WMS) legitimately serve 23 |
 | minZoom < 0 | ERROR | Invalid zoom level |
 | TMS URL missing {$x}/{$y}/{$z} or {$q} | ERROR | No tiles can be fetched |
 | Empty URL | ERROR | Non-functional map |
 | WMS missing layers | ERROR | WMS requires layer specification |
+| WMS missing tileType | ERROR | Required by parser (`tileFormat` maps to image MIME type) |
 | Duplicate map name across corpus | ERROR | Confusing in ATAK map selector |
 | Filename contains spaces | ERROR | Shell scripts and CI break |
 | Filename non-ASCII | ERROR | Cross-platform compatibility |
-| coordinateSystem camelCase | WARN | ATAK parser silently ignores it |
+| URL has `{$serverpart}` but no `<serverParts>` element (or vice versa) | ERROR | URL substitution will produce broken tile requests |
+| coordinateSystem camelCase | WARN | ATAK parser only reads `<coordinatesystem>` (lowercase); camelCase silently ignored |
 | HTTP instead of HTTPS | WARN | Security, some servers redirect |
-| serverParts comma-separated | WARN | ATAK expects space-separated |
-| tileType unknown value | WARN | May indicate a typo |
-| WMS missing version | WARN | Defaults may not match server |
-| Missing tileType | INFO | Informational for TMS |
+| serverParts comma-separated | WARN | ATAK splits on `\s+` (whitespace); commas treated as part of hostname |
+| tileType not in {png, jpg, jpeg} | WARN | Only known-good values; others may indicate a typo |
+| WMS missing version | WARN | Version determines CRS vs SRS parameter (1.3.x→CRS, others→SRS); wrong default may break projection |
+| `invertYCoordinate` not exactly `"true"` or `"false"` | WARN | Parser uses `equals("true")` (case-sensitive); `"True"` silently fails |
+| Missing tileType (TMS only) | INFO | TMS stores as-is; informational |
+| `backgroundColor` with >1 hex digit | INFO | ATAK parser regex `#[0-9A-Fa-f]` only matches single-digit values (parser bug) |
+| SRIDs 900913 or 90094326 used | INFO | Auto-converted to EPSG:3857/4326 at runtime |
+| `tileUpdate` non-numeric value (e.g. `None`, `IfNoneMatch`) | WARN | ATAK parser uses `\d+` regex; non-numeric values silently ignored — element has no effect |
+| WMS `<aditionalparameters>` (single-d typo) used | INFO | ATAK accepts both spellings but the typo form may confuse contributors |
+| WMS `<version>` has leading/trailing whitespace | WARN | ATAK uses `equals("1.3")` (exact match); `" 1.3.0 "` won't match, breaking CRS/SRS selection |
 
 **Interface:**
 ```python
@@ -130,7 +138,7 @@ Probes each map source with two user-agents to distinguish "server dead" from "A
 **Probe behavior:**
 - Tries multiple zoom levels per source: `[minZoom, 3, 0]` (first success wins)
 - For TMS: substitutes z/x/y or quadkey into URL template
-- For WMS: constructs minimal GetMap request
+- For WMS: constructs GetMap request with `service=WMS&request=GetMap`, source's `layers`, `version` (default 1.1.1), `SRS=EPSG:4326` (or `CRS=CRS:84` for 1.3.x), `format=image/png`, `width=256&height=256`, and a global bbox `-180,-90,180,90` (EPSG:4326) to guarantee a valid response regardless of layer extent
 - Validates response is actually an image (Content-Type check)
 - Timeout: 10s per request
 - Rate limiting: 0.5s delay between requests
@@ -208,14 +216,14 @@ Tests are structured by what they're testing, not by abstraction layer.
 - Every XML file in corpus parses without error
 - Every XML file has required fields for its type
 - Every TMS URL contains valid placeholders
-- Zoom range: corpus property test (all files satisfy minZoom <= maxZoom <= 22)
+- Zoom range: corpus property test (all files satisfy minZoom <= maxZoom <= 25)
 - Known bad cases: craft XML with inverted zoom, missing placeholders, spaces in filename, camelCase coordinateSystem, comma serverParts, HTTP URL, duplicate names
 - Each check function tested independently with minimal input
 - Coverage target: 95%+ on `xml_checks.py`
 
 #### Contract Tests: `test_probe.py`
 
-**Cassettes:** Pre-recorded HTTP responses stored as files in `tests/cassettes/`. Using the `responses` library to mock `urllib` at the transport level.
+**HTTP Mocking:** Uses the `responses` library to mock `requests` at the transport level — no recorded cassette files on disk. Mock responses are defined inline in test functions (`probe.py` uses the `requests` library for HTTP).
 
 **Tests include:**
 - 200 + image/png Content-Type → HEALTHY
@@ -286,7 +294,7 @@ on:
 
 - Installs uv, runs `uv sync --dev`
 - Runs `pytest --cov=mapvalidator --cov-fail-under=80`
-- No network calls (cassettes only)
+- No network calls (HTTP mocked via `responses` library)
 
 ### Python Environment
 
@@ -298,6 +306,7 @@ on:
 name = "atak-maps-validator"
 version = "0.1.0"
 requires-python = ">=3.10"
+dependencies = ["requests"]
 
 [project.optional-dependencies]
 dev = ["pytest", "pytest-cov", "responses"]
@@ -325,30 +334,39 @@ uv run python -m mapvalidator --probe  # Run validation locally
 
 The release workflow (`map-release.yml`) uses `git ls-files -z '*.xml'` — only XML files are included. The `mapvalidator/`, `tests/`, `pyproject.toml`, etc. are all non-XML and won't leak into the release ZIP.
 
-The catalog generator (`generate-catalog.py`) already excludes non-map directories. Will add `mapvalidator` and `tests` to its `EXCLUDE_DIRS` set.
+The catalog generator (`generate-catalog.py`) excludes `{".github", ".git", "schema", "dist", "docs"}`. The existing `validate-maps-deep.py` has a separate set that also includes `"images"`. Will unify both by adding `mapvalidator`, `tests`, and `images` to `generate-catalog.py`'s `EXCLUDE_DIRS`.
 
 ## ATAK Source Reference
 
 Parser behavior derived from `atak-civ-client` source:
 - `takkernel/.../mobac/MobacMapSourceFactory.java` — XML parsing, element handling
 - `takkernel/.../mobac/MobacTileClient2.java` — HTTP requests, `TAK` user-agent
-- `takkernel/.../mobac/AbstractMobacMapSource.java` — URL template substitution
+- `takkernel/.../mobac/CustomMobacMapSource.java` — TMS URL template substitution, connection config
+- `takkernel/.../mobac/CustomWmsMobacMapSource.java` — WMS GetMap construction, CRS/SRS version logic
 
 Key parser facts codified as validation rules:
 - `coordinatesystem` must be lowercase (camelCase silently ignored)
-- `serverParts` is space-delimited
-- `tileUpdate` only accepts integers (string values like "None" are ignored)
-- `backgroundColor` regex is broken in parser (never actually parses)
-- User-Agent is hardcoded `TAK`
-- Connect timeout 3000ms, read timeout 5000ms
+- `serverParts` is split on `\s+` (whitespace-delimited, not comma)
+- `tileUpdate` only accepts digits (`\d+` regex; string values like "None" silently default to 0)
+- `backgroundColor` regex `#[0-9A-Fa-f]` only matches single hex digit (parser bug — `#FFFFFF` never parses)
+- `invertYCoordinate` requires exact string `"true"` (case-sensitive; `"True"` is false)
+- User-Agent is hardcoded `TAK`; also sends `x-common-site-name: {map name}`
+- Timeouts: with config object, both connect and read use `config.connectTimeout` (likely ATAK bug — same value for both); without config, fallback is connect=3000ms, read=5000ms
+- URLs and `additionalParameters` are HTML-entity-unescaped (`&amp;` → `&`) — validator must not flag escaped entities in URLs as malformed
+- WMS version determines projection parameter: 1.3.x uses `CRS` param with `CRS:84`, others use `SRS` param with `EPSG:` prefix
+- WMS default SRID is 4326 (WGS84); TMS default SRID is 3857 (Web Mercator)
+- `maxZoom` is required (defaults to -1, parse fails if absent)
+- SRIDs 900913 and 90094326 are auto-converted to proper EPSG codes at runtime
 
 ## Implementation Order
 
 1. `pyproject.toml` + `mapvalidator/__init__.py` — skeleton
-2. `xml_checks.py` + `test_xml_checks.py` — TDD red/green/refactor
-3. `probe.py` + `test_probe.py` + cassettes — TDD with recorded responses
+2. `xml_checks.py` + `test_xml_checks.py` — TDD red/green/refactor (refactor logic from existing `validate-maps-deep.py`)
+3. `probe.py` + `test_probe.py` — TDD with `responses` library for HTTP mocking (refactor probe logic from existing script; switch from `urllib` to `requests`)
 4. `reporter.py` + `test_reporter.py` — TDD with mocked subprocess
 5. `__main__.py` — wire it all together
-6. CI workflows — `validate-maps-deep.yml`, `test-mapvalidator.yml`, `map-health-check.yml`
-7. Fix known issues — Canada zoom, Finland dead DNS, HTTP→HTTPS, serverParts, casing
-8. Record OSM cassette — live capture of TAK UA block for control case
+6. Delete `.github/scripts/validate-maps-deep.py` — all logic now lives in `mapvalidator/`
+7. CI workflows — `validate-maps-deep.yml`, `test-mapvalidator.yml`, `map-health-check.yml`
+8. Update `generate-catalog.py` `EXCLUDE_DIRS` — add `mapvalidator`, `tests`, `images`
+9. Fix known issues — Finland dead DNS, HTTP→HTTPS, serverParts, casing, openseamap coordinateSystem
+10. Verify OSM control case — confirm TAK UA block behavior is correctly mocked in `test_probe.py`

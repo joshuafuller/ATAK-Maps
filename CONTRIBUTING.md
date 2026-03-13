@@ -27,6 +27,21 @@ To contribute to ATAK Maps, follow these steps:
 * Make sure your map files do not contain any sensitive or proprietary information.
 * Verify that your map files are accurate and up-to-date.
 
+## Testing Your Changes
+
+Before submitting a pull request, use the helper scripts in `scripts/` to catch problems early. All three require Python and the `mapvalidator` package in this repo.
+
+* **`./scripts/validate.sh`** — Validates every XML map file against the XSD schema. No network access needed, so it runs fast. Pass `--strict` to treat warnings as errors (this is what CI does).
+
+* **`./scripts/test-map.sh <file>`** — Validates and probes a single map file. Use this when you're adding or editing one map:
+  ```bash
+  ./scripts/test-map.sh Google/google_hybrid.xml
+  ```
+
+* **`./scripts/probe.sh`** — Validates all maps and probes every tile server for liveness. This makes network requests, so it takes longer. Useful for a final check before opening your PR.
+
+CI will run schema validation automatically on every pull request, but running these locally first saves time and review cycles.
+
 ## Contact
 
 If you have any questions or issues, feel free to contact us.

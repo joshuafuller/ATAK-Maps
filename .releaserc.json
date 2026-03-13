@@ -21,7 +21,9 @@
             "label": "atak-maps-${nextRelease.version}.zip"
           }
         ],
-        "failComment": false
+        "failComment": false,
+        "successComment": false,
+        "releasedLabels": false
       }
     ]
   ]

@@ -1,3 +1,16 @@
+# [1.6.0](https://github.com/joshuafuller/ATAK-Maps/compare/v1.5.0...v1.6.0) (2026-03-13)
+
+
+### Bug Fixes
+
+* address PR review comments ([537b23d](https://github.com/joshuafuller/ATAK-Maps/commit/537b23df6af0ee55ffca0e26a6314245d7708ade))
+* rename basemapDE files to remove spaces in filenames ([8d23b1e](https://github.com/joshuafuller/ATAK-Maps/commit/8d23b1ebd3117cdccd07eacc7619fd1d3c0c24d0))
+
+
+### Features
+
+* add XSD schema for MOBAC XML map validation ([9da31a9](https://github.com/joshuafuller/ATAK-Maps/commit/9da31a993c14da2fe7e741d5fa67d743ab486516))
+
 # Changelog
 
 ## [1.5.0](https://github.com/joshuafuller/ATAK-Maps/compare/v1.4.1...v1.5.0) (2025-10-02)

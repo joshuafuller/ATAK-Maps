@@ -32,8 +32,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0
-          fetch-tags: true
+          ref: master          # Always use latest master tip, not the triggering SHA.
+          fetch-depth: 0       # @semantic-release/git may have pushed a chore(release)
+          fetch-tags: true     # commit since the push that triggered this run.
 
       # Defense-in-depth: abort if the latest tag isn't reachable from HEAD.
       # This catches history rewrites that orphan tags (e.g. filter-branch).

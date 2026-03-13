@@ -3,28 +3,18 @@
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
-import pytest
 import responses
 from requests.exceptions import ConnectionError, Timeout
 
-from mapvalidator.probe import (
-    GENERIC_USER_AGENT,
-    SMOKE_SOURCES,
-    TAK_USER_AGENT,
-    ProbeResult,
-    ProbeStatus,
-    build_test_urls,
-    classify,
-    probe_all,
-    probe_smoke,
-    probe_source,
-    probe_url,
-)
-
+from mapvalidator.probe import (SMOKE_SOURCES,
+                                TAK_USER_AGENT, ProbeResult, ProbeStatus,
+                                build_test_urls, classify, probe_all,
+                                probe_smoke, probe_source, probe_url)
 
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
+
 
 def _xml(text: str) -> ET.Element:
     """Parse XML string into an Element."""
@@ -103,6 +93,7 @@ EMPTY_URL_XML = """
 # 1. build_test_urls — TMS with XYZ
 # ---------------------------------------------------------------------------
 
+
 class TestBuildTestUrlsTmsXyz:
     def test_returns_urls_with_zoom_levels_substituted(self):
         root = _xml(TMS_XYZ_XML)
@@ -123,6 +114,7 @@ class TestBuildTestUrlsTmsXyz:
 # ---------------------------------------------------------------------------
 # 2. build_test_urls — TMS with quadkey
 # ---------------------------------------------------------------------------
+
 
 class TestBuildTestUrlsQuadkey:
     def test_returns_urls_with_quadkey_substituted(self):
@@ -145,6 +137,7 @@ class TestBuildTestUrlsQuadkey:
 # 3. build_test_urls — TMS with serverParts
 # ---------------------------------------------------------------------------
 
+
 class TestBuildTestUrlsServerParts:
     def test_first_server_part_substituted(self):
         root = _xml(TMS_SERVERPARTS_XML)
@@ -158,6 +151,7 @@ class TestBuildTestUrlsServerParts:
 # ---------------------------------------------------------------------------
 # 4. build_test_urls — WMS 1.1.1
 # ---------------------------------------------------------------------------
+
 
 class TestBuildTestUrlsWms:
     def test_returns_getmap_url_with_correct_params(self):
@@ -189,6 +183,7 @@ class TestBuildTestUrlsWms:
 # 5. build_test_urls — WMS version 1.3.0
 # ---------------------------------------------------------------------------
 
+
 class TestBuildTestUrlsWms130:
     def test_uses_crs_instead_of_srs(self):
         root = _xml(WMS_130_XML)
@@ -212,6 +207,7 @@ class TestBuildTestUrlsWms130:
 # 6. build_test_urls — empty URL
 # ---------------------------------------------------------------------------
 
+
 class TestBuildTestUrlsEmptyUrl:
     def test_returns_empty_list(self):
         root = _xml(EMPTY_URL_XML)
@@ -222,6 +218,7 @@ class TestBuildTestUrlsEmptyUrl:
 # ---------------------------------------------------------------------------
 # 7. probe_url — 200 + image/png
 # ---------------------------------------------------------------------------
+
 
 class TestProbeUrl200Image:
     @responses.activate
@@ -245,6 +242,7 @@ class TestProbeUrl200Image:
 # 8. probe_url — 200 + text/html (not an image)
 # ---------------------------------------------------------------------------
 
+
 class TestProbeUrl200Html:
     @responses.activate
     def test_returns_200_none_false(self):
@@ -267,6 +265,7 @@ class TestProbeUrl200Html:
 # 9. probe_url — 403
 # ---------------------------------------------------------------------------
 
+
 class TestProbeUrl403:
     @responses.activate
     def test_returns_403_with_error(self):
@@ -287,6 +286,7 @@ class TestProbeUrl403:
 # ---------------------------------------------------------------------------
 # 10. probe_url — 404
 # ---------------------------------------------------------------------------
+
 
 class TestProbeUrl404:
     @responses.activate
@@ -309,6 +309,7 @@ class TestProbeUrl404:
 # 11. probe_url — 500
 # ---------------------------------------------------------------------------
 
+
 class TestProbeUrl500:
     @responses.activate
     def test_returns_500_with_error(self):
@@ -329,6 +330,7 @@ class TestProbeUrl500:
 # ---------------------------------------------------------------------------
 # 12. probe_url — ConnectionError (DNS failure)
 # ---------------------------------------------------------------------------
+
 
 class TestProbeUrlConnectionError:
     @responses.activate
@@ -351,6 +353,7 @@ class TestProbeUrlConnectionError:
 # 13. probe_url — Timeout
 # ---------------------------------------------------------------------------
 
+
 class TestProbeUrlTimeout:
     @responses.activate
     def test_returns_none_with_error(self):
@@ -371,6 +374,7 @@ class TestProbeUrlTimeout:
 # 14. classify — both healthy
 # ---------------------------------------------------------------------------
 
+
 class TestClassifyHealthy:
     def test_both_200_image_returns_healthy(self):
         tak = (200, None, True)
@@ -381,6 +385,7 @@ class TestClassifyHealthy:
 # ---------------------------------------------------------------------------
 # 15. classify — TAK blocked, generic ok
 # ---------------------------------------------------------------------------
+
 
 class TestClassifyBlocked:
     def test_tak_403_generic_ok_returns_blocked(self):
@@ -398,6 +403,7 @@ class TestClassifyBlocked:
 # 16. classify — both fail
 # ---------------------------------------------------------------------------
 
+
 class TestClassifyDead:
     def test_both_fail_returns_dead(self):
         tak = (None, "Connection failed", False)
@@ -413,6 +419,7 @@ class TestClassifyDead:
 # ---------------------------------------------------------------------------
 # 17. classify — TAK gets HTML, generic gets image → DEGRADED
 # ---------------------------------------------------------------------------
+
 
 class TestClassifyDegraded:
     def test_tak_html_generic_image_returns_degraded(self):
@@ -447,6 +454,7 @@ class TestClassifyEdgeCases:
 # 18. probe_source — healthy TMS
 # ---------------------------------------------------------------------------
 
+
 class TestProbeSourceHealthy:
     @responses.activate
     def test_healthy_tms_returns_healthy_result(self):
@@ -477,6 +485,7 @@ class TestProbeSourceHealthy:
 # ---------------------------------------------------------------------------
 # 19. probe_source — multi-zoom fallback
 # ---------------------------------------------------------------------------
+
 
 class TestProbeSourceMultiZoomFallback:
     @responses.activate
@@ -534,6 +543,7 @@ class TestProbeSourceMultiZoomFallback:
 # 20. probe_source — dead server
 # ---------------------------------------------------------------------------
 
+
 class TestProbeSourceDead:
     @responses.activate
     def test_all_zooms_fail_returns_dead(self):
@@ -554,6 +564,7 @@ class TestProbeSourceDead:
 # 21. SMOKE_SOURCES constant
 # ---------------------------------------------------------------------------
 
+
 class TestSmokeSources:
     def test_smoke_sources_contains_expected_files(self):
         assert "Google/google_hybrid.xml" in SMOKE_SOURCES
@@ -567,6 +578,7 @@ class TestSmokeSources:
 # ---------------------------------------------------------------------------
 # 22. probe_smoke — filters to only SMOKE_SOURCES
 # ---------------------------------------------------------------------------
+
 
 class TestProbeSmoke:
     @responses.activate
@@ -656,6 +668,7 @@ class TestProbeSmoke:
 # ---------------------------------------------------------------------------
 # 23. probe_all with smoke_only flag
 # ---------------------------------------------------------------------------
+
 
 class TestProbeAllSmokeFlag:
     @responses.activate

@@ -2,18 +2,39 @@ import argparse
 import sys
 from pathlib import Path
 
-from mapvalidator.xml_checks import validate_corpus, check_duplicates
-from mapvalidator.probe import probe_all, probe_source, ProbeStatus
-from mapvalidator.reporter import print_report, manage_github_issues
+from mapvalidator.probe import probe_all
+from mapvalidator.reporter import manage_github_issues, print_report
+from mapvalidator.xml_checks import check_duplicates, validate_corpus
 
 
 def main():
-    parser = argparse.ArgumentParser(description="ATAK Maps deep validation and liveness monitoring")
-    parser.add_argument("--probe", action="store_true", help="Test tile server liveness (dual user-agent)")
-    parser.add_argument("--issues", action="store_true", help="Create/close GitHub issues for probe failures")
-    parser.add_argument("--smoke", action="store_true", help="Quick smoke test of a few reliable sources")
-    parser.add_argument("--strict", action="store_true", help="Treat warnings as errors")
-    parser.add_argument("directory", nargs="?", default=".", help="Root directory to scan (default: current)")
+    parser = argparse.ArgumentParser(
+        description="ATAK Maps deep validation and liveness monitoring"
+    )
+    parser.add_argument(
+        "--probe",
+        action="store_true",
+        help="Test tile server liveness (dual user-agent)",
+    )
+    parser.add_argument(
+        "--issues",
+        action="store_true",
+        help="Create/close GitHub issues for probe failures",
+    )
+    parser.add_argument(
+        "--smoke",
+        action="store_true",
+        help="Quick smoke test of a few reliable sources",
+    )
+    parser.add_argument(
+        "--strict", action="store_true", help="Treat warnings as errors"
+    )
+    parser.add_argument(
+        "directory",
+        nargs="?",
+        default=".",
+        help="Root directory to scan (default: current)",
+    )
     args = parser.parse_args()
 
     repo_dir = Path(args.directory).resolve()

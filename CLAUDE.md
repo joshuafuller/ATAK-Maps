@@ -4,7 +4,7 @@ Collection of MOBAC-format XML map source files for [ATAK](https://tak.gov). Eac
 
 ## Project Structure
 
-```
+```text
 <Provider>/              # e.g. Bing/, Google/, ESRI/, NAIP/, usgs/
   ├── map_name.xml       # Base map layers
 GRG/
@@ -33,7 +33,7 @@ Three root element types (see `docs/xml-reference.md` for full spec):
 
 - **`customMapSource`** — TMS/XYZ tile sources (most files). Placeholders: `{$z}`, `{$x}`, `{$y}`, `{$q}` (quadkey), `{$serverpart}`
 - **`customWmsMapSource`** — OGC Web Map Service sources (basemapDE, Canada, FEMA, Poland)
-- **`customMultiLayerMapSource`** — Composite layers with per-layer opacity (not currently used in repo)
+- **`customMultiLayerMapSource`** — Composite layers with per-layer opacity (not currently used in repository)
 
 Schema at `schema/mobac-maps.xsd` validates all three types. Derived from ATAK's `MobacMapSourceFactory.java`.
 

@@ -1,20 +1,17 @@
 """Tests for mapvalidator.reporter module."""
 
 import json
-import subprocess
 from pathlib import Path
-from unittest.mock import MagicMock, call, patch
+from unittest.mock import MagicMock, patch
 
-import pytest
-
-from mapvalidator.xml_checks import ValidationResult
 from mapvalidator.probe import ProbeResult, ProbeStatus
 from mapvalidator.reporter import manage_github_issues, print_report
-
+from mapvalidator.xml_checks import ValidationResult
 
 # ---------------------------------------------------------------------------
 # Helpers to build test fixtures
 # ---------------------------------------------------------------------------
+
 
 def _vr(
     name: str = "TestMap",
@@ -147,9 +144,7 @@ class TestManageGithubIssues:
     def test_creates_issue_for_dead_probe(self, mock_run):
         """DEAD probe should trigger gh issue create."""
         # gh issue list returns empty (no existing issues)
-        mock_run.return_value = MagicMock(
-            stdout="[]", returncode=0
-        )
+        mock_run.return_value = MagicMock(stdout="[]", returncode=0)
 
         probe = _pr(
             name="BrokenMap",
@@ -162,7 +157,9 @@ class TestManageGithubIssues:
         # Should have called: 1) gh issue list, 2) gh issue create
         assert mock_run.call_count == 2
         create_call = mock_run.call_args_list[1]
-        args = create_call[0][0] if create_call[0] else create_call.kwargs.get("args", [])
+        args = (
+            create_call[0][0] if create_call[0] else create_call.kwargs.get("args", [])
+        )
         args_str = " ".join(args)
         assert "issue" in args_str
         assert "create" in args_str
@@ -173,9 +170,7 @@ class TestManageGithubIssues:
     @patch("mapvalidator.reporter.subprocess.run")
     def test_creates_issue_for_blocked_probe(self, mock_run):
         """BLOCKED probe should trigger gh issue create."""
-        mock_run.return_value = MagicMock(
-            stdout="[]", returncode=0
-        )
+        mock_run.return_value = MagicMock(stdout="[]", returncode=0)
 
         probe = _pr(
             name="BlockedMap",
@@ -187,7 +182,9 @@ class TestManageGithubIssues:
 
         assert mock_run.call_count == 2
         create_call = mock_run.call_args_list[1]
-        args = create_call[0][0] if create_call[0] else create_call.kwargs.get("args", [])
+        args = (
+            create_call[0][0] if create_call[0] else create_call.kwargs.get("args", [])
+        )
         args_str = " ".join(args)
         assert "issue" in args_str
         assert "create" in args_str
@@ -197,9 +194,7 @@ class TestManageGithubIssues:
     @patch("mapvalidator.reporter.subprocess.run")
     def test_no_issue_for_healthy_probe_no_existing(self, mock_run):
         """HEALTHY probe with no existing open issue -> no gh issue create."""
-        mock_run.return_value = MagicMock(
-            stdout="[]", returncode=0
-        )
+        mock_run.return_value = MagicMock(stdout="[]", returncode=0)
 
         probe = _pr(name="GoodMap", status=ProbeStatus.HEALTHY)
         manage_github_issues([probe])
@@ -213,9 +208,7 @@ class TestManageGithubIssues:
     @patch("mapvalidator.reporter.subprocess.run")
     def test_deduplication_no_duplicate_issue(self, mock_run):
         """If an open issue already exists with matching title, don't create a new one."""
-        existing_issues = [
-            {"title": "Map Health: BrokenMap \u2014 DEAD", "number": 42}
-        ]
+        existing_issues = [{"title": "Map Health: BrokenMap \u2014 DEAD", "number": 42}]
         mock_run.return_value = MagicMock(
             stdout=json.dumps(existing_issues), returncode=0
         )

@@ -29,9 +29,9 @@ To contribute to ATAK Maps, follow these steps:
 
 ## Testing Your Changes
 
-Before submitting a pull request, use the helper scripts in `scripts/` to catch problems early. All three require Python and the `mapvalidator` package in this repo.
+Before submitting a pull request, use the helper scripts in `scripts/` to catch problems early. All three require Python and the `mapvalidator` package in this repository.
 
-* **`./scripts/validate.sh`** — Validates every XML map file against the XSD schema. No network access needed, so it runs fast. Pass `--strict` to treat warnings as errors (this is what CI does).
+* **`./scripts/validate.sh`** — Runs deep deterministic validation on every XML map file (zoom ranges, URL placeholders, casing, serverParts, and more). No network access needed, so it runs fast. Pass `--strict` to treat warnings as errors (this is what CI does).
 
 * **`./scripts/test-map.sh <file>`** — Validates and probes a single map file. Use this when you're adding or editing one map:
   ```bash

@@ -36,6 +36,7 @@ SMOKE_SOURCES = [
 # Data types
 # ---------------------------------------------------------------------------
 
+
 class ProbeStatus(Enum):
     HEALTHY = "healthy"
     BLOCKED = "blocked"
@@ -59,6 +60,7 @@ class ProbeResult:
 # URL construction
 # ---------------------------------------------------------------------------
 
+
 def build_test_urls(root: ET.Element) -> list[str]:
     """Build test tile URLs for liveness probing from an XML root element.
 
@@ -69,16 +71,17 @@ def build_test_urls(root: ET.Element) -> list[str]:
     if not url.strip():
         return []
 
-    min_zoom = int(root.findtext("minZoom", "0"))
+    try:
+        min_zoom = int(root.findtext("minZoom", "0"))
+    except ValueError:
+        min_zoom = 0
 
     if tag == "customMapSource":
         test_zooms = sorted(set([min_zoom, 3, 0]))
         urls = []
         for z in test_zooms:
             test_url = (
-                url.replace("{$z}", str(z))
-                .replace("{$x}", "0")
-                .replace("{$y}", "0")
+                url.replace("{$z}", str(z)).replace("{$x}", "0").replace("{$y}", "0")
             )
             # Quadkey: zoom 0 -> "0" (max(z,1) digits of "0")
             test_url = test_url.replace("{$q}", "0" * max(z, 1))
@@ -122,6 +125,7 @@ def build_test_urls(root: ET.Element) -> list[str]:
 # HTTP probing
 # ---------------------------------------------------------------------------
 
+
 def probe_url(
     url: str, user_agent: str, timeout: int = PROBE_TIMEOUT
 ) -> tuple[int | None, str | None, bool]:
@@ -139,9 +143,8 @@ def probe_url(
         status = resp.status_code
         if status == 200:
             content_type = resp.headers.get("Content-Type", "")
-            is_image = (
-                content_type.startswith("image/")
-                or content_type.startswith("application/octet-stream")
+            is_image = content_type.startswith("image/") or content_type.startswith(
+                "application/octet-stream"
             )
             return (200, None, is_image)
         else:
@@ -157,6 +160,7 @@ def probe_url(
 # ---------------------------------------------------------------------------
 # Classification
 # ---------------------------------------------------------------------------
+
 
 def classify(
     tak_result: tuple[int | None, str | None, bool],
@@ -193,6 +197,7 @@ def classify(
 # Source-level probing
 # ---------------------------------------------------------------------------
 
+
 def probe_source(root: ET.Element, filepath: Path) -> ProbeResult:
     """Probe a single map source with both user agents.
 
@@ -214,8 +219,8 @@ def probe_source(root: ET.Element, filepath: Path) -> ProbeResult:
         )
 
     # Try each URL; first one where at least one UA gets a 200 wins
-    best_tak = (None, "No URLs probed", False)
-    best_generic = (None, "No URLs probed", False)
+    best_tak: tuple[int | None, str | None, bool] = (None, "No URLs probed", False)
+    best_generic: tuple[int | None, str | None, bool] = (None, "No URLs probed", False)
     best_url = test_urls[0]
 
     for url in test_urls:
@@ -255,6 +260,7 @@ def probe_source(root: ET.Element, filepath: Path) -> ProbeResult:
 # Directory-level probing
 # ---------------------------------------------------------------------------
 
+
 def probe_smoke(directory: Path) -> list[ProbeResult]:
     """Probe only the SMOKE_SOURCES for a fast sanity check.
 
@@ -273,7 +279,11 @@ def probe_smoke(directory: Path) -> list[ProbeResult]:
             continue
 
         root = tree.getroot()
-        if root.tag not in ("customMapSource", "customWmsMapSource", "customMultiLayerMapSource"):
+        if root.tag not in (
+            "customMapSource",
+            "customWmsMapSource",
+            "customMultiLayerMapSource",
+        ):
             continue
 
         result = probe_source(root, filepath)
@@ -316,7 +326,11 @@ def probe_all(
             continue
 
         root = tree.getroot()
-        if root.tag not in ("customMapSource", "customWmsMapSource", "customMultiLayerMapSource"):
+        if root.tag not in (
+            "customMapSource",
+            "customWmsMapSource",
+            "customMultiLayerMapSource",
+        ):
             continue
 
         result = probe_source(root, filepath)

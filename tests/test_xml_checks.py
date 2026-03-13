@@ -4,47 +4,35 @@ Tests are organized by check category. Synthetic XML fixtures are defined
 in conftest.py; real repo XML files are discovered dynamically.
 """
 
-import pytest
 from pathlib import Path
 
-from mapvalidator.xml_checks import validate_file, validate_corpus, check_duplicates, ValidationResult
+import pytest
 
-from tests.conftest import (
-    VALID_TMS_XML,
-    VALID_WMS_XML,
-    INVERTED_ZOOM_XML,
-    MAX_ZOOM_26_XML,
-    MAX_ZOOM_23_XML,
-    MISSING_URL_PLACEHOLDERS_XML,
-    EMPTY_URL_XML,
-    WMS_MISSING_LAYERS_XML,
-    WMS_MISSING_TILETYPE_XML,
-    CAMELCASE_COORDSYS_XML,
-    COMMA_SERVERPARTS_XML,
-    HTTP_URL_XML,
-    UNKNOWN_TILETYPE_XML,
-    WMS_MISSING_VERSION_XML,
-    INVERT_Y_CAPITAL_TRUE_XML,
-    SERVERPART_URL_NO_ELEMENT_XML,
-    SERVERPARTS_ELEMENT_NO_URL_XML,
-    BGCOLOR_MULTI_HEX_XML,
-    COORDSYS_900913_XML,
-    QUADKEY_TMS_XML,
-    NEGATIVE_MINZOOM_XML,
-    MISSING_TILETYPE_TMS_XML,
-    TILE_UPDATE_NONE_XML,
-    TILE_UPDATE_IFNONEMATCH_XML,
-    TILE_UPDATE_NUMERIC_XML,
-    WMS_ADITIONALPARAMETERS_TYPO_XML,
-    WMS_ADDITIONALPARAMETERS_CORRECT_XML,
-    VERSION_WHITESPACE_XML,
-    EMPTY_SERVERPARTS_NO_PLACEHOLDER_XML,
-)
-
+from mapvalidator.xml_checks import (ValidationResult, check_duplicates,
+                                     validate_corpus, validate_file)
+from tests.conftest import (BGCOLOR_MULTI_HEX_XML, CAMELCASE_COORDSYS_XML,
+                            COMMA_SERVERPARTS_XML, COORDSYS_900913_XML,
+                            EMPTY_SERVERPARTS_NO_PLACEHOLDER_XML,
+                            EMPTY_URL_XML, HTTP_URL_XML,
+                            INVERT_Y_CAPITAL_TRUE_XML, INVERTED_ZOOM_XML,
+                            MAX_ZOOM_23_XML, MAX_ZOOM_26_XML,
+                            MISSING_TILETYPE_TMS_XML,
+                            MISSING_URL_PLACEHOLDERS_XML, NEGATIVE_MINZOOM_XML,
+                            QUADKEY_TMS_XML, SERVERPART_URL_NO_ELEMENT_XML,
+                            SERVERPARTS_ELEMENT_NO_URL_XML,
+                            TILE_UPDATE_IFNONEMATCH_XML, TILE_UPDATE_NONE_XML,
+                            TILE_UPDATE_NUMERIC_XML, UNKNOWN_TILETYPE_XML,
+                            VALID_TMS_XML, VALID_WMS_XML,
+                            VERSION_WHITESPACE_XML,
+                            WMS_ADDITIONALPARAMETERS_CORRECT_XML,
+                            WMS_ADITIONALPARAMETERS_TYPO_XML,
+                            WMS_MISSING_LAYERS_XML, WMS_MISSING_TILETYPE_XML,
+                            WMS_MISSING_VERSION_XML)
 
 # ============================================================
 # Helper
 # ============================================================
+
 
 def _has_message(messages: list[str], substring: str) -> bool:
     """Check if any message contains the given substring (case-insensitive)."""
@@ -55,13 +43,16 @@ def _has_message(messages: list[str], substring: str) -> bool:
 # 1. Real XML corpus — all files parse without error
 # ============================================================
 
+
 class TestRealCorpus:
     def test_all_real_files_parse(self, real_xml_files):
         """Every real XML file should parse and produce a ValidationResult."""
         assert len(real_xml_files) > 0, "No XML files found in repo"
         for filepath in real_xml_files:
             result = validate_file(filepath)
-            assert isinstance(result, ValidationResult), f"{filepath} did not return ValidationResult"
+            assert isinstance(
+                result, ValidationResult
+            ), f"{filepath} did not return ValidationResult"
             assert result.filepath == filepath
             assert result.map_name, f"{filepath} has empty map_name"
 
@@ -69,34 +60,37 @@ class TestRealCorpus:
         """Each real file should have a source_type set."""
         for filepath in real_xml_files:
             result = validate_file(filepath)
-            assert result.source_type in ("TMS", "WMS", "Multi-Layer"), (
-                f"{filepath}: unexpected source_type={result.source_type}"
-            )
+            assert result.source_type in (
+                "TMS",
+                "WMS",
+                "Multi-Layer",
+            ), f"{filepath}: unexpected source_type={result.source_type}"
 
     def test_all_tms_urls_have_valid_placeholders(self, real_xml_files):
         """Every TMS file should NOT have a missing-placeholder error."""
         for filepath in real_xml_files:
             result = validate_file(filepath)
             if result.source_type == "TMS":
-                assert not _has_message(result.errors, "missing placeholder"), (
-                    f"{filepath}: TMS URL missing placeholders; errors={result.errors}"
-                )
+                assert not _has_message(
+                    result.errors, "missing placeholder"
+                ), f"{filepath}: TMS URL missing placeholders; errors={result.errors}"
 
     def test_zoom_ranges_valid(self, real_xml_files):
         """All real files: minZoom <= maxZoom <= 25."""
         for filepath in real_xml_files:
             result = validate_file(filepath)
-            assert not _has_message(result.errors, "minZoom"), (
-                f"{filepath}: zoom error; errors={result.errors}"
-            )
-            assert not _has_message(result.errors, "maxZoom"), (
-                f"{filepath}: zoom error; errors={result.errors}"
-            )
+            assert not _has_message(
+                result.errors, "minZoom"
+            ), f"{filepath}: zoom error; errors={result.errors}"
+            assert not _has_message(
+                result.errors, "maxZoom"
+            ), f"{filepath}: zoom error; errors={result.errors}"
 
 
 # ============================================================
 # 2. Valid files — no issues
 # ============================================================
+
 
 class TestValidFiles:
     def test_valid_tms(self, tmp_xml):
@@ -116,6 +110,7 @@ class TestValidFiles:
 # ============================================================
 # 3. Zoom level checks
 # ============================================================
+
 
 class TestZoomLevels:
     def test_inverted_zoom_error(self, tmp_xml):
@@ -137,12 +132,15 @@ class TestZoomLevels:
     def test_negative_minzoom_error(self, tmp_xml):
         result = validate_file(tmp_xml(NEGATIVE_MINZOOM_XML))
         assert _has_message(result.errors, "minZoom")
-        assert _has_message(result.errors, "negative") or _has_message(result.errors, "< 0")
+        assert _has_message(result.errors, "negative") or _has_message(
+            result.errors, "< 0"
+        )
 
 
 # ============================================================
 # 4. TMS URL checks
 # ============================================================
+
 
 class TestTmsUrl:
     def test_missing_placeholders_error(self, tmp_xml):
@@ -151,7 +149,9 @@ class TestTmsUrl:
 
     def test_empty_url_error(self, tmp_xml):
         result = validate_file(tmp_xml(EMPTY_URL_XML))
-        assert _has_message(result.errors, "empty") or _has_message(result.errors, "url")
+        assert _has_message(result.errors, "empty") or _has_message(
+            result.errors, "url"
+        )
 
     def test_quadkey_no_error(self, tmp_xml):
         """Bing-style {$q} quadkey should NOT produce a missing-placeholder error."""
@@ -163,6 +163,7 @@ class TestTmsUrl:
 # ============================================================
 # 5. WMS checks
 # ============================================================
+
 
 class TestWmsChecks:
     def test_wms_missing_layers_error(self, tmp_xml):
@@ -183,6 +184,7 @@ class TestWmsChecks:
 # 6. Filename checks
 # ============================================================
 
+
 class TestFilenameChecks:
     def test_spaces_in_filename_error(self, tmp_xml):
         result = validate_file(tmp_xml(VALID_TMS_XML, filename="my map.xml"))
@@ -190,17 +192,22 @@ class TestFilenameChecks:
 
     def test_non_ascii_filename_error(self, tmp_xml):
         result = validate_file(tmp_xml(VALID_TMS_XML, filename="m\u00e4p.xml"))
-        assert _has_message(result.errors, "ascii") or _has_message(result.errors, "non-ascii")
+        assert _has_message(result.errors, "ascii") or _has_message(
+            result.errors, "non-ascii"
+        )
 
 
 # ============================================================
 # 7. Warning checks
 # ============================================================
 
+
 class TestWarnings:
     def test_camelcase_coordinate_system_warn(self, tmp_xml):
         result = validate_file(tmp_xml(CAMELCASE_COORDSYS_XML))
-        assert _has_message(result.warnings, "coordinateSystem") or _has_message(result.warnings, "camelCase")
+        assert _has_message(result.warnings, "coordinateSystem") or _has_message(
+            result.warnings, "camelCase"
+        )
 
     def test_comma_serverparts_warn(self, tmp_xml):
         result = validate_file(tmp_xml(COMMA_SERVERPARTS_XML))
@@ -212,35 +219,47 @@ class TestWarnings:
 
     def test_unknown_tiletype_warn(self, tmp_xml):
         result = validate_file(tmp_xml(UNKNOWN_TILETYPE_XML))
-        assert _has_message(result.warnings, "tileType") or _has_message(result.warnings, "gif")
+        assert _has_message(result.warnings, "tileType") or _has_message(
+            result.warnings, "gif"
+        )
 
     def test_invert_y_capital_true_warn(self, tmp_xml):
         result = validate_file(tmp_xml(INVERT_Y_CAPITAL_TRUE_XML))
-        assert _has_message(result.warnings, "invertYCoordinate") or _has_message(result.warnings, "true")
+        assert _has_message(result.warnings, "invertYCoordinate") or _has_message(
+            result.warnings, "true"
+        )
 
 
 # ============================================================
 # 8. serverParts / {$serverpart} mismatch
 # ============================================================
 
+
 class TestServerParts:
     def test_serverpart_url_no_element_error(self, tmp_xml):
         result = validate_file(tmp_xml(SERVERPART_URL_NO_ELEMENT_XML))
-        assert _has_message(result.errors, "serverParts") or _has_message(result.errors, "serverpart")
+        assert _has_message(result.errors, "serverParts") or _has_message(
+            result.errors, "serverpart"
+        )
 
     def test_serverparts_element_no_url_error(self, tmp_xml):
         result = validate_file(tmp_xml(SERVERPARTS_ELEMENT_NO_URL_XML))
-        assert _has_message(result.errors, "serverParts") or _has_message(result.errors, "serverpart")
+        assert _has_message(result.errors, "serverParts") or _has_message(
+            result.errors, "serverpart"
+        )
 
 
 # ============================================================
 # 9. Info checks
 # ============================================================
 
+
 class TestInfoChecks:
     def test_bgcolor_multi_hex_info(self, tmp_xml):
         result = validate_file(tmp_xml(BGCOLOR_MULTI_HEX_XML))
-        assert _has_message(result.info, "backgroundColor") or _has_message(result.info, "hex")
+        assert _has_message(result.info, "backgroundColor") or _has_message(
+            result.info, "hex"
+        )
 
     def test_coordsys_900913_info(self, tmp_xml):
         result = validate_file(tmp_xml(COORDSYS_900913_XML))
@@ -254,6 +273,7 @@ class TestInfoChecks:
 # ============================================================
 # 10. Duplicate map names
 # ============================================================
+
 
 class TestDuplicates:
     def test_check_duplicates_finds_dupes(self, tmp_xml):
@@ -286,6 +306,7 @@ class TestDuplicates:
 # 11. validate_corpus
 # ============================================================
 
+
 class TestValidateCorpus:
     def test_returns_results_for_all_files(self, repo_root):
         results = validate_corpus(repo_root)
@@ -305,6 +326,7 @@ class TestValidateCorpus:
 # ============================================================
 # 13. Edge cases for full coverage
 # ============================================================
+
 
 class TestEdgeCases:
     def test_missing_max_zoom_error(self, tmp_xml):
@@ -364,7 +386,9 @@ class TestEdgeCases:
         </customWmsMapSource>
         """
         result = validate_file(tmp_xml(xml))
-        assert _has_message(result.errors, "url") or _has_message(result.errors, "empty")
+        assert _has_message(result.errors, "url") or _has_message(
+            result.errors, "empty"
+        )
 
     def test_multi_layer_source_type(self, tmp_xml):
         xml = """\
@@ -381,7 +405,9 @@ class TestEdgeCases:
     def test_invalid_xml_parse_error(self, tmp_xml):
         xml = "this is not valid xml <<<"
         result = validate_file(tmp_xml(xml))
-        assert _has_message(result.errors, "parse error") or _has_message(result.errors, "xml")
+        assert _has_message(result.errors, "parse error") or _has_message(
+            result.errors, "xml"
+        )
 
     def test_srid_90094326_info(self, tmp_xml):
         xml = """\
@@ -399,8 +425,12 @@ class TestEdgeCases:
         assert _has_message(result.info, "90094326")
 
     def test_check_duplicates_skips_unknown_names(self):
-        r1 = ValidationResult(filepath=Path("/a.xml"), map_name="Unknown", source_type="TMS")
-        r2 = ValidationResult(filepath=Path("/b.xml"), map_name="Unknown", source_type="TMS")
+        r1 = ValidationResult(
+            filepath=Path("/a.xml"), map_name="Unknown", source_type="TMS"
+        )
+        r2 = ValidationResult(
+            filepath=Path("/b.xml"), map_name="Unknown", source_type="TMS"
+        )
         errors = check_duplicates([r1, r2])
         assert errors == []
 
@@ -408,6 +438,7 @@ class TestEdgeCases:
 # ============================================================
 # 12. Bing Satellite specifically uses quadkey
 # ============================================================
+
 
 class TestBingSatellite:
     def test_bing_satellite_no_placeholder_error(self, repo_root):
@@ -422,6 +453,7 @@ class TestBingSatellite:
 # ============================================================
 # 14. Real corpus — known issues produce expected diagnostics
 # ============================================================
+
 
 class TestKnownCorpusIssues:
     """Verify the validator catches the known issues documented in the spec."""
@@ -489,12 +521,15 @@ class TestKnownCorpusIssues:
 # 15. tileUpdate non-numeric values
 # ============================================================
 
+
 class TestTileUpdate:
     def test_tile_update_none_warns(self, tmp_xml):
         """ATAK parser regex \\d+ silently ignores 'None' — should WARN."""
         result = validate_file(tmp_xml(TILE_UPDATE_NONE_XML))
         assert _has_message(result.warnings, "tileUpdate")
-        assert _has_message(result.warnings, "numeric") or _has_message(result.warnings, "digits")
+        assert _has_message(result.warnings, "numeric") or _has_message(
+            result.warnings, "digits"
+        )
 
     def test_tile_update_ifnonematch_warns(self, tmp_xml):
         """'IfNoneMatch' is also non-numeric — should WARN."""
@@ -516,11 +551,14 @@ class TestTileUpdate:
 # 16. WMS aditionalparameters typo detection
 # ============================================================
 
+
 class TestAditionalParameters:
     def test_typo_spelling_info(self, tmp_xml):
         """ATAK accepts 'aditionalparameters' (typo) but should INFO."""
         result = validate_file(tmp_xml(WMS_ADITIONALPARAMETERS_TYPO_XML))
-        assert _has_message(result.info, "aditionalparameters") or _has_message(result.info, "typo")
+        assert _has_message(result.info, "aditionalparameters") or _has_message(
+            result.info, "typo"
+        )
 
     def test_correct_spelling_no_info(self, tmp_xml):
         """'additionalparameters' (correct) — no INFO about typo."""
@@ -532,16 +570,20 @@ class TestAditionalParameters:
 # 17. WMS version whitespace sensitivity
 # ============================================================
 
+
 class TestVersionWhitespace:
     def test_version_with_whitespace_warns(self, tmp_xml):
         """' 1.3.0 ' won't match ATAK's equals() — should WARN."""
         result = validate_file(tmp_xml(VERSION_WHITESPACE_XML))
-        assert _has_message(result.warnings, "version") and _has_message(result.warnings, "whitespace")
+        assert _has_message(result.warnings, "version") and _has_message(
+            result.warnings, "whitespace"
+        )
 
 
 # ============================================================
 # 18. Empty serverParts — no false positive
 # ============================================================
+
 
 class TestEmptyServerParts:
     def test_empty_serverparts_no_placeholder_no_error(self, tmp_xml):

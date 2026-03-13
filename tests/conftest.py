@@ -31,10 +31,12 @@ def real_xml_files(repo_root):
 @pytest.fixture
 def tmp_xml(tmp_path):
     """Factory fixture: write XML content to a temp file and return its Path."""
+
     def _make(xml_content: str, filename: str = "test_map.xml") -> Path:
         filepath = tmp_path / filename
         filepath.write_text(textwrap.dedent(xml_content).strip(), encoding="utf-8")
         return filepath
+
     return _make
 
 

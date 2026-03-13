@@ -4,11 +4,9 @@ from __future__ import annotations
 
 import json
 import subprocess
-from pathlib import Path
 
-from mapvalidator.xml_checks import ValidationResult
 from mapvalidator.probe import ProbeResult, ProbeStatus
-
+from mapvalidator.xml_checks import ValidationResult
 
 # ---------------------------------------------------------------------------
 # Console report
@@ -70,7 +68,9 @@ def print_report(
 
     # Summary
     print("-" * 70)
-    print(f"Errors: {total_errors}   Warnings: {total_warnings}   Files: {len(validations)}")
+    print(
+        f"Errors: {total_errors}   Warnings: {total_warnings}   Files: {len(validations)}"
+    )
     print("-" * 70)
 
     return 1 if total_errors > 0 else 0
@@ -88,11 +88,17 @@ def _find_open_issues(repo: str) -> list[dict]:
     """Query open map-health issues via gh CLI."""
     result = subprocess.run(
         [
-            "gh", "issue", "list",
-            "--label", "map-health",
-            "--state", "open",
-            "--json", "title,number",
-            "--repo", repo,
+            "gh",
+            "issue",
+            "list",
+            "--label",
+            "map-health",
+            "--state",
+            "open",
+            "--json",
+            "title,number",
+            "--repo",
+            repo,
         ],
         capture_output=True,
         text=True,
@@ -126,27 +132,33 @@ def manage_github_issues(
 
             error_detail = probe.tak_error or probe.generic_error or "No error details"
             body_lines = [
-                f"## Map Health Alert",
-                f"",
+                "## Map Health Alert",
+                "",
                 f"**Map:** {probe.map_name}",
                 f"**Status:** {status_label}",
                 f"**Test URL:** {probe.test_url}",
                 f"**Error:** {error_detail}",
-                f"",
-                f"### Suggested Action",
-                f"Verify the tile server is still operational. "
-                f"If the server has permanently shut down, consider removing or "
-                f"replacing this map source.",
+                "",
+                "### Suggested Action",
+                "Verify the tile server is still operational. "
+                "If the server has permanently shut down, consider removing or "
+                "replacing this map source.",
             ]
             body = "\n".join(body_lines)
 
             subprocess.run(
                 [
-                    "gh", "issue", "create",
-                    "--title", title,
-                    "--body", body,
-                    "--label", "map-health",
-                    "--repo", repo,
+                    "gh",
+                    "issue",
+                    "create",
+                    "--title",
+                    title,
+                    "--body",
+                    body,
+                    "--label",
+                    "map-health",
+                    "--repo",
+                    repo,
                 ],
                 capture_output=True,
                 text=True,
@@ -157,10 +169,14 @@ def manage_github_issues(
             for issue in matching:
                 subprocess.run(
                     [
-                        "gh", "issue", "close", str(issue["number"]),
+                        "gh",
+                        "issue",
+                        "close",
+                        str(issue["number"]),
                         "--comment",
                         f"Map {probe.map_name} is now HEALTHY. Auto-closing.",
-                        "--repo", repo,
+                        "--repo",
+                        repo,
                     ],
                     capture_output=True,
                     text=True,

@@ -6,7 +6,7 @@
 
 ## Problem
 
-The ATAK-Maps repo has 36 XML map source files with no validation beyond basic XSD schema checks. The schema only validates structure — it can't catch:
+The ATAK-Maps repository has 36 XML map source files with no validation beyond basic XSD schema checks. The schema only validates structure — it can't catch:
 
 - Inverted zoom ranges, unreasonable maxZoom values
 - Dead tile servers, DNS failures
@@ -33,7 +33,11 @@ Known issues found during initial analysis:
 
 ## Prior Art
 
-The existing `.github/scripts/validate-maps-deep.py` (346 lines, added on this branch) is a standalone script implementing filename checks, zoom validation, URL placeholder checks, WMS checks, duplicate detection, and basic single-UA liveness probing. It will be **refactored into the `mapvalidator/` package** — the logic is reused, not rewritten. Once the package is complete, `validate-maps-deep.py` is deleted and CI workflows point to `python -m mapvalidator` instead.
+The existing `.github/scripts/validate-maps-deep.py` (346 lines, added on this branch) is a standalone script
+implementing filename checks, zoom validation, URL placeholder checks, WMS checks, duplicate detection,
+and basic single-UA liveness probing. It will be **refactored into the `mapvalidator/` package** — the logic
+is reused, not rewritten. Once the package is complete, `validate-maps-deep.py` is deleted and CI workflows
+point to `python -m mapvalidator` instead.
 
 ## Non-Goals
 
@@ -46,7 +50,7 @@ The existing `.github/scripts/validate-maps-deep.py` (346 lines, added on this b
 
 ### Package Layout
 
-```
+```text
 mapvalidator/                # Python package
   __init__.py
   xml_checks.py              # Deterministic XML validation
@@ -197,7 +201,7 @@ def manage_github_issues(
 
 #### `__main__.py` — CLI Entry Point
 
-```
+```bash
 python -m mapvalidator                    # XML checks only (fast)
 python -m mapvalidator --probe            # XML checks + liveness probing
 python -m mapvalidator --probe --issues   # + create/close GitHub issues
@@ -210,7 +214,7 @@ Tests are structured by what they're testing, not by abstraction layer.
 
 #### Unit Tests: `test_xml_checks.py`
 
-**Fixtures:** Real XML files from the repo, loaded via `conftest.py`. Additional synthetic XML strings for edge cases.
+**Fixtures:** Real XML files from the repository, loaded via `conftest.py`. Additional synthetic XML strings for edge cases.
 
 **Tests include:**
 - Every XML file in corpus parses without error

@@ -5,18 +5,27 @@ express, such as zoom level sanity, URL placeholder presence, duplicate
 map names, and filename conventions.
 """
 
-from dataclasses import dataclass, field
-from pathlib import Path
 import os
 import re
 import xml.etree.ElementTree as ET
+from dataclasses import dataclass, field
+from pathlib import Path
 
-EXCLUDE_DIRS = {".github", ".git", "schema", "dist", "docs", "images", "mapvalidator", "tests"}
+EXCLUDE_DIRS = {
+    ".github",
+    ".git",
+    "schema",
+    "dist",
+    "docs",
+    "images",
+    "mapvalidator",
+    "tests",
+}
 VALID_TILE_TYPES = {"png", "jpg", "jpeg"}
 
 # Zoom thresholds
-_MAX_ZOOM_HARD = 25   # above this is ERROR
-_MAX_ZOOM_SOFT = 22   # above this but <= hard is WARN
+_MAX_ZOOM_HARD = 25  # above this is ERROR
+_MAX_ZOOM_SOFT = 22  # above this but <= hard is WARN
 
 
 @dataclass
@@ -76,17 +85,13 @@ def _check_zoom_levels(root: ET.Element, result: ValidationResult) -> None:
         try:
             min_zoom = int(min_zoom_text)
         except ValueError:
-            result.errors.append(
-                f"<minZoom> is not a valid integer: {min_zoom_text}"
-            )
+            result.errors.append(f"<minZoom> is not a valid integer: {min_zoom_text}")
             return
 
         if min_zoom < 0:
             result.errors.append(f"<minZoom> is < 0: {min_zoom}")
         if min_zoom > max_zoom:
-            result.errors.append(
-                f"<minZoom> ({min_zoom}) > <maxZoom> ({max_zoom})"
-            )
+            result.errors.append(f"<minZoom> ({min_zoom}) > <maxZoom> ({max_zoom})")
 
 
 def _check_tms_url(root: ET.Element, result: ValidationResult) -> None:
@@ -164,7 +169,7 @@ def _check_serverparts(root: ET.Element, result: ValidationResult) -> None:
         )
 
     # Comma warning
-    if has_element:
+    if has_element and server_parts_el is not None:
         sp_text = (server_parts_el.text or "").strip()
         if "," in sp_text:
             result.warnings.append(
@@ -190,11 +195,11 @@ def _check_coordinate_system(root: ET.Element, result: ValidationResult) -> None
 
     if "900913" in cs:
         result.info.append(
-            f"coordinatesystem contains SRID 900913 — auto-converted at runtime"
+            "coordinatesystem contains SRID 900913 — auto-converted at runtime"
         )
     if "90094326" in cs:
         result.info.append(
-            f"coordinatesystem contains SRID 90094326 — auto-converted at runtime"
+            "coordinatesystem contains SRID 90094326 — auto-converted at runtime"
         )
 
 
@@ -203,7 +208,7 @@ def _check_http_url(root: ET.Element, result: ValidationResult) -> None:
     url = root.findtext("url") or ""
     if url.strip().lower().startswith("http://"):
         result.warnings.append(
-            f"URL uses HTTP instead of HTTPS — consider upgrading for security"
+            "URL uses HTTP instead of HTTPS — consider upgrading for security"
         )
 
 
@@ -338,9 +343,7 @@ def check_duplicates(results: list[ValidationResult]) -> list[str]:
         if not name or name == "Unknown":
             continue
         if name in seen:
-            errors.append(
-                f"Duplicate map name '{name}': {seen[name]} and {r.filepath}"
-            )
+            errors.append(f"Duplicate map name '{name}': {seen[name]} and {r.filepath}")
         else:
             seen[name] = r.filepath
     return errors

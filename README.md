@@ -26,12 +26,10 @@ The MOBAC format is integral to the functionality of ATAK-Maps. It enables the d
 ## Installation Guide
 
 1. **Download** `ATAK-Maps.zip` from the [Releases page](https://github.com/joshuafuller/ATAK-Maps/releases).
-2. **Extract** the ZIP contents.
-3. **Copy** base map XMLs to `atak/imagery/mobile/mapsources/` on your device.
-4. **Copy** overlay XMLs (prefixed `grg_`) to `atak/grg/`.
-5. **Verify** the new maps appear in ATAK's map layer selector.
+2. **Import** — open the ZIP in ATAK using the Import feature. Maps populate automatically.
+3. **Verify** the new maps appear in ATAK's map layer selector.
 
-For detailed instructions, troubleshooting, and offline caching, see the **[Install Guide](docs/install-guide.md)**.
+For manual installation, troubleshooting, and offline caching, see the **[Install Guide](docs/install-guide.md)**.
 
 ## Map Catalog
 

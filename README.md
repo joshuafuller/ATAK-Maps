@@ -25,13 +25,13 @@ The MOBAC format is integral to the functionality of ATAK-Maps. It enables the d
 
 ## Installation Guide
 
-To integrate ATAK-Maps into your ATAK application, follow these steps:
+1. **Download** `ATAK-Maps.zip` from the [Releases page](https://github.com/joshuafuller/ATAK-Maps/releases).
+2. **Extract** the ZIP contents.
+3. **Copy** base map XMLs to `atak/imagery/mobile/mapsources/` on your device.
+4. **Copy** overlay XMLs (prefixed `grg_`) to `atak/grg/`.
+5. **Verify** the new maps appear in ATAK's map layer selector.
 
-1. **Download**: Get `ATAK-Maps.zip` from the [Releases page](https://github.com/joshuafuller/ATAK-Maps/releases).
-2. **Locate**: Navigate to 'Downloads' in your file manager.
-3. **Extract**: Open `ATAK-Maps.zip` and extract its contents.
-4. **Transfer**: Move the map files (anything not prefixed `grg_`) to the `ATAK/imagery` directory and the overlays (anything prefixed `grg_`) into the `ATAK/grg` directory.
-5. **Verify**: In ATAK, ensure the new maps appear in the map list and the overlays appear in the overlay list.
+For detailed instructions, troubleshooting, and offline caching, see the **[Install Guide](docs/install-guide.md)**.
 
 ## Map Catalog
 
@@ -91,7 +91,7 @@ Please note that OpenStreetMap may restrict ATAK client access. These maps are i
 
 ## Creating Custom Maps
 
-Want to add your own map sources? See the [Creating Custom Maps guide](docs/creating-custom-maps.md) for details on the MOBAC XML structure, choosing tile servers, configuring zoom levels, and testing new files in ATAK.
+Want to add your own map sources? See the [Creating Custom Maps quickstart](docs/creating-custom-maps.md) to get started, or the [MOBAC XML Reference](docs/xml-reference.md) for the complete specification.
 
 ## Contributing
 

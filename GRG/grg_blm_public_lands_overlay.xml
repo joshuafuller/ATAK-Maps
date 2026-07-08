@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<customMapSource>
+    <name>GRG - BLM Public Lands Overlay</name>
+    <minZoom>1</minZoom>
+    <maxZoom>14</maxZoom>
+    <tileType>png</tileType>
+    <!--
+        BLM Surface Management Agency variant that leaves private/unknown land
+        fully transparent, so it works as an overlay above any basemap:
+        color = public (or otherwise government-managed) land, clear = private.
+        Data: Bureau of Land Management, public domain. Cache ends at zoom 14.
+    -->
+    <url>https://gis.blm.gov/arcgis/rest/services/lands/BLM_Natl_SMA_Cached_without_PriUnk/MapServer/tile/{$z}/{$y}/{$x}</url>
+    <backgroundColor>#000000</backgroundColor>
+</customMapSource>

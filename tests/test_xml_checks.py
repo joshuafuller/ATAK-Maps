@@ -32,10 +32,14 @@ from tests.conftest import (
     QUADKEY_TMS_XML,
     SERVERPART_URL_NO_ELEMENT_XML,
     SERVERPARTS_ELEMENT_NO_URL_XML,
+    MULTILAYER_ALPHA_COUNT_MISMATCH_XML,
+    MULTILAYER_LAYER_MISSING_MAXZOOM_XML,
+    MULTILAYER_NO_LAYERS_XML,
     TILE_UPDATE_IFNONEMATCH_XML,
     TILE_UPDATE_NONE_XML,
     TILE_UPDATE_NUMERIC_XML,
     UNKNOWN_TILETYPE_XML,
+    VALID_MULTILAYER_XML,
     VALID_TMS_XML,
     VALID_WMS_XML,
     VERSION_WHITESPACE_XML,
@@ -608,3 +612,37 @@ class TestEmptyServerParts:
         result = validate_file(tmp_xml(EMPTY_SERVERPARTS_NO_PLACEHOLDER_XML))
         assert not _has_message(result.errors, "serverParts")
         assert not _has_message(result.errors, "serverpart")
+
+
+# ============================================================
+# 19. Multi-layer sources — per-layer checks, layersAlpha sanity
+# ============================================================
+
+
+class TestMultiLayer:
+    def test_valid_multilayer_no_errors(self, tmp_xml):
+        """A well-formed customMultiLayerMapSource passes with no errors."""
+        result = validate_file(tmp_xml(VALID_MULTILAYER_XML))
+        assert result.errors == []
+        assert result.source_type == "Multi-Layer"
+
+    def test_multilayer_maxzoom_checked_per_layer_not_root(self, tmp_xml):
+        """Root carries no maxZoom (per the XSD); a valid file must not error."""
+        result = validate_file(tmp_xml(VALID_MULTILAYER_XML))
+        assert not _has_message(result.errors, "maxZoom")
+
+    def test_multilayer_layer_missing_maxzoom_errors(self, tmp_xml):
+        """A nested layer without <maxZoom> is reported, prefixed by layer name."""
+        result = validate_file(tmp_xml(MULTILAYER_LAYER_MISSING_MAXZOOM_XML))
+        assert _has_message(result.errors, "maxZoom")
+        assert _has_message(result.errors, "layer Base")
+
+    def test_multilayer_alpha_count_mismatch_errors(self, tmp_xml):
+        """layersAlpha value count must equal the layer count."""
+        result = validate_file(tmp_xml(MULTILAYER_ALPHA_COUNT_MISMATCH_XML))
+        assert _has_message(result.errors, "layersAlpha")
+
+    def test_multilayer_no_layers_errors(self, tmp_xml):
+        """An empty <layers> container is an error."""
+        result = validate_file(tmp_xml(MULTILAYER_NO_LAYERS_XML))
+        assert _has_message(result.errors, "no <layers>")

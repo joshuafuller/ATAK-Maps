@@ -96,6 +96,18 @@ def build_test_urls(root: ET.Element) -> list[str]:
     Returns a list of URLs to try (first success wins).
     """
     tag = root.tag
+
+    # Multi-layer sources carry their URLs on nested layers; probe those.
+    # The flat list means the source counts as reachable when any layer
+    # responds (first success wins, matching the single-source semantics).
+    if tag == "customMultiLayerMapSource":
+        layers_el = root.find("layers")
+        urls: list[str] = []
+        if layers_el is not None:
+            for layer in layers_el:
+                urls.extend(build_test_urls(layer))
+        return urls
+
     url = root.findtext("url", "")
     if not url.strip():
         return []

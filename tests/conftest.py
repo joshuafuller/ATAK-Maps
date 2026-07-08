@@ -389,3 +389,74 @@ EMPTY_SERVERPARTS_NO_PLACEHOLDER_XML = """\
     <serverParts></serverParts>
 </customMapSource>
 """
+
+VALID_MULTILAYER_XML = """\
+<?xml version="1.0" encoding="UTF-8"?>
+<customMultiLayerMapSource>
+    <name>Test Multi-Layer Map</name>
+    <layersAlpha>1.0 0.5</layersAlpha>
+    <layers>
+        <customMapSource>
+            <name>Base</name>
+            <minZoom>1</minZoom>
+            <maxZoom>18</maxZoom>
+            <tileType>jpg</tileType>
+            <url>https://tiles.example.com/base/{$z}/{$y}/{$x}</url>
+        </customMapSource>
+        <customMapSource>
+            <name>Overlay</name>
+            <minZoom>1</minZoom>
+            <maxZoom>14</maxZoom>
+            <tileType>png</tileType>
+            <url>https://tiles.example.com/overlay/{$z}/{$y}/{$x}</url>
+        </customMapSource>
+    </layers>
+</customMultiLayerMapSource>
+"""
+
+MULTILAYER_LAYER_MISSING_MAXZOOM_XML = """\
+<?xml version="1.0" encoding="UTF-8"?>
+<customMultiLayerMapSource>
+    <name>Multi-Layer Missing MaxZoom</name>
+    <layers>
+        <customMapSource>
+            <name>Base</name>
+            <minZoom>1</minZoom>
+            <tileType>jpg</tileType>
+            <url>https://tiles.example.com/base/{$z}/{$y}/{$x}</url>
+        </customMapSource>
+    </layers>
+</customMultiLayerMapSource>
+"""
+
+MULTILAYER_ALPHA_COUNT_MISMATCH_XML = """\
+<?xml version="1.0" encoding="UTF-8"?>
+<customMultiLayerMapSource>
+    <name>Multi-Layer Alpha Mismatch</name>
+    <layersAlpha>1.0</layersAlpha>
+    <layers>
+        <customMapSource>
+            <name>Base</name>
+            <minZoom>1</minZoom>
+            <maxZoom>18</maxZoom>
+            <tileType>jpg</tileType>
+            <url>https://tiles.example.com/base/{$z}/{$y}/{$x}</url>
+        </customMapSource>
+        <customMapSource>
+            <name>Overlay</name>
+            <minZoom>1</minZoom>
+            <maxZoom>14</maxZoom>
+            <tileType>png</tileType>
+            <url>https://tiles.example.com/overlay/{$z}/{$y}/{$x}</url>
+        </customMapSource>
+    </layers>
+</customMultiLayerMapSource>
+"""
+
+MULTILAYER_NO_LAYERS_XML = """\
+<?xml version="1.0" encoding="UTF-8"?>
+<customMultiLayerMapSource>
+    <name>Multi-Layer Empty</name>
+    <layers></layers>
+</customMultiLayerMapSource>
+"""

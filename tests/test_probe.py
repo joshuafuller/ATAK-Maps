@@ -740,3 +740,15 @@ class TestProbeAllSmokeFlag:
         results = probe_all(tmp_path, smoke_only=True)
         assert len(results) == 1
         assert results[0].filepath.name == "google_hybrid.xml"
+
+
+class TestBuildTestUrlsMultiLayer:
+    def test_multilayer_collects_urls_from_nested_layers(self):
+        """Multi-layer sources have no root <url>; URLs come from each layer."""
+        from tests.conftest import VALID_MULTILAYER_XML
+
+        root = ET.fromstring(VALID_MULTILAYER_XML)
+        urls = build_test_urls(root)
+        assert urls, "expected test URLs built from nested layers"
+        assert any("tiles.example.com/base" in u for u in urls)
+        assert any("tiles.example.com/overlay" in u for u in urls)

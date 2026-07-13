@@ -13,6 +13,7 @@ EXCLUDE_DIRS = {
     ".git",
     "schema",
     "dist",
+    "site",
     "docs",
     "mapvalidator",
     "tests",

@@ -1,3 +1,18 @@
+# [1.8.0](https://github.com/joshuafuller/ATAK-Maps/compare/v1.7.1...v1.8.0) (2026-07-13)
+
+
+### Bug Fixes
+
+* **bc-wildfire:** conform merged source to schema and conventions ([#82](https://github.com/joshuafuller/ATAK-Maps/issues/82)) ([767d630](https://github.com/joshuafuller/ATAK-Maps/commit/767d630970780ec567d5dfe6914a095f5a1bee06)), closes [#76](https://github.com/joshuafuller/ATAK-Maps/issues/76)
+
+
+### Features
+
+* add BC Wildfire Overlay source ([#76](https://github.com/joshuafuller/ATAK-Maps/issues/76)) ([d6c4bf9](https://github.com/joshuafuller/ATAK-Maps/commit/d6c4bf9f40ced3fbda8aefd0675c91a47dee93c9))
+* add BLM land ownership (SMA) map sources ([#80](https://github.com/joshuafuller/ATAK-Maps/issues/80)) ([39b2eda](https://github.com/joshuafuller/ATAK-Maps/commit/39b2edaf4ddb426c4e6df3484f493e7338db49b1))
+* add Ordnance Survey map layers (Great Britain) ([#83](https://github.com/joshuafuller/ATAK-Maps/issues/83)) ([ddba21d](https://github.com/joshuafuller/ATAK-Maps/commit/ddba21d0d664ede6552b6b97edcaf9a0a4de674a)), closes [#68](https://github.com/joshuafuller/ATAK-Maps/issues/68)
+* GitHub Pages site with per-map QR codes and Add-to-ATAK ([#84](https://github.com/joshuafuller/ATAK-Maps/issues/84)) ([4935b03](https://github.com/joshuafuller/ATAK-Maps/commit/4935b0335a92c69643d7b9367d7a0e7cd55c65bf)), closes [#81](https://github.com/joshuafuller/ATAK-Maps/issues/81)
+
 ## [1.7.1](https://github.com/joshuafuller/ATAK-Maps/compare/v1.7.0...v1.7.1) (2026-03-13)
 
 

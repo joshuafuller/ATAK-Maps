@@ -66,24 +66,37 @@ def test_build_map_entry_fields(tmp_path):
     assert e["needs_key"] is True
 
 
-def test_render_maps_page_structure():
-    entries = [
-        {
-            "provider": "OrdnanceSurvey",
-            "name": "OS - Road 3857",
-            "source_type": "TMS",
-            "slug": "ordnancesurvey-os-road-3857",
-            "raw_url": "https://raw.example/os.xml",
-            "import_uri": "tak://com.atakmap.app/import?url=ENC",
-            "needs_key": True,
+_OS_ENTRY = {
+    "provider": "OrdnanceSurvey",
+    "name": "OS - Road 3857",
+    "source_type": "TMS",
+    "slug": "ordnancesurvey-os-road-3857",
+    "raw_url": "https://raw.example/os.xml",
+    "import_uri": "tak://com.atakmap.app/import?url=ENC",
+    "needs_key": True,
+}
+
+
+def test_render_maps_page_card_html():
+    descriptions = {
+        "ordnancesurvey-os-road-3857": {
+            "category": "Street",
+            "text": "OS road map of Great Britain.",
         }
-    ]
-    md = render_maps_page(entries)
-    assert "## OrdnanceSurvey" in md
-    assert "![QR for OS - Road 3857](qr/ordnancesurvey-os-road-3857.png)" in md
-    assert "[Add to ATAK](tak://com.atakmap.app/import?url=ENC)" in md
-    assert "[Download XML](https://raw.example/os.xml)" in md
-    assert "Requires a free API key" in md
+    }
+    md = render_maps_page([_OS_ENTRY], descriptions=descriptions)
+    assert 'class="am-card"' in md
+    assert 'data-cat="Street"' in md
+    assert "am-badge--street" in md
+    assert "OS road map of Great Britain." in md
+    # the Add-to-ATAK button links the import URI
+    assert 'href="tak://com.atakmap.app/import?url=ENC"' in md
+    assert "Add to ATAK" in md
+    assert "qr/ordnancesurvey-os-road-3857.png" in md
+    assert 'href="https://raw.example/os.xml"' in md  # view source
+    assert "key required" in md  # needs_key badge
+    # a Street filter chip is present
+    assert '<button class="am-chip" data-cat="Street">Street</button>' in md
 
 
 def test_iter_map_files_skips_dot_directories(tmp_path):
@@ -94,45 +107,41 @@ def test_iter_map_files_skips_dot_directories(tmp_path):
     assert "sitemap.xml" not in names
 
 
-def test_render_maps_page_no_key_note_when_not_needed():
-    entries = [
-        {
-            "provider": "USGS",
-            "name": "USGS Topo",
-            "source_type": "TMS",
-            "slug": "usgs-topo",
-            "raw_url": "https://raw.example/usgs.xml",
-            "import_uri": "tak://com.atakmap.app/import?url=ENC",
-            "needs_key": False,
-        }
-    ]
-    md = render_maps_page(entries)
-    assert "Requires a free API key" not in md
+_USGS_ENTRY = {
+    "provider": "USGS",
+    "name": "USGS Topo",
+    "source_type": "TMS",
+    "slug": "usgs-topo",
+    "raw_url": "https://raw.example/usgs.xml",
+    "import_uri": "tak://com.atakmap.app/import?url=ENC",
+    "needs_key": False,
+}
 
 
-def test_render_maps_page_provider_heading_deduped():
-    entries = [
-        {
-            "provider": "ESRI",
-            "name": "A",
-            "source_type": "TMS",
-            "slug": "esri-a",
-            "raw_url": "https://x/a.xml",
-            "import_uri": "tak://com.atakmap.app/import?url=A",
-            "needs_key": False,
-        },
-        {
-            "provider": "ESRI",
-            "name": "B",
-            "source_type": "TMS",
-            "slug": "esri-b",
-            "raw_url": "https://x/b.xml",
-            "import_uri": "tak://com.atakmap.app/import?url=B",
-            "needs_key": False,
-        },
-    ]
-    md = render_maps_page(entries)
-    assert md.count("## ESRI") == 1
+def test_render_maps_page_no_key_badge_when_not_needed():
+    md = render_maps_page(
+        [_USGS_ENTRY],
+        descriptions={"usgs-topo": {"category": "Topographic", "text": "t"}},
+    )
+    assert "key required" not in md
+
+
+def test_render_maps_page_hero_when_package_given():
+    md = render_maps_page(
+        [_USGS_ENTRY],
+        descriptions={},
+        package_uri="tak://com.atakmap.app/import?url=PKG",
+        package_qr="qr/_all-maps.png",
+    )
+    assert "am-hero" in md
+    assert 'href="tak://com.atakmap.app/import?url=PKG"' in md
+    assert "qr/_all-maps.png" in md
+    assert "Add all 1 maps to ATAK" in md
+
+
+def test_render_maps_page_no_hero_without_package():
+    md = render_maps_page([_USGS_ENTRY])
+    assert "am-hero" not in md
 
 
 def test_build_manifest_structure():

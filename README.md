@@ -1,54 +1,62 @@
+<div align="center">
+
+<img src="https://github.com/joshuafuller/ATAK-Maps/blob/master/images/ATAK_MAPS_Logo.png?raw=true" alt="ATAK-Maps" width="440">
+
 # ATAK-Maps
 
-![ATAK-Maps Logo](https://github.com/joshuafuller/ATAK-Maps/blob/master/images/ATAK_MAPS_Logo.png?raw=true)
+**Install any map into [ATAK](https://tak.gov) in one tap.**
+
+A curated, open collection of **40** satellite, topographic, nautical, trail and
+overlay map sources — scan a QR, tap **Add to ATAK**, or side-load. No manual
+file wrangling. ATAK&nbsp;5.1+.
 
 [![Latest Release](https://img.shields.io/github/v/release/joshuafuller/ATAK-Maps?style=flat)](https://github.com/joshuafuller/ATAK-Maps/releases/latest) ![Release Date](https://img.shields.io/github/release-date/joshuafuller/ATAK-Maps?style=flat) [![Downloads](https://img.shields.io/github/downloads/joshuafuller/ATAK-Maps/total?style=flat)](https://github.com/joshuafuller/ATAK-Maps/releases/latest) [![XML Validation](https://img.shields.io/github/actions/workflow/status/joshuafuller/ATAK-Maps/validate-maps.yml?label=XML%20validation&style=flat)](https://github.com/joshuafuller/ATAK-Maps/actions/workflows/validate-maps.yml)
 [![Stars](https://img.shields.io/github/stars/joshuafuller/ATAK-Maps?style=flat)](https://github.com/joshuafuller/ATAK-Maps/stargazers) [![License](https://img.shields.io/github/license/joshuafuller/ATAK-Maps?style=flat)](LICENSE) [![Discord](https://img.shields.io/discord/698067185515495436?style=flat)](https://discord.gg/dQUYADMW87) [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/joshuafuller/ATAK-Maps)
 
-## Detailed Overview of ATAK-Maps
+### [Browse &amp; install from the catalog site&nbsp;&rarr;](https://joshuafuller.github.io/ATAK-Maps/)
 
-ATAK-Maps is a comprehensive collection of XML files, formatted in the Mobile Atlas Creator (MOBAC) format. This format is used in [Android Tactical Assault Kit (ATAK)](https://tak.gov), an advanced geospatial mapping tool employed in various sectors including military, law enforcement, and emergency services. This repository and its contents are not affiliated with TAK.GOV in any way.
+</div>
 
-### What are ATAK-Maps?
+## Add to ATAK
 
-These XML files in ATAK-Maps act as pointers or references to a multitude of online map sources. By using these files, ATAK can seamlessly access and display current and relevant map imagery from these sources. This capability is vital for operations requiring up-to-date geospatial information.
+<table>
+<tr>
+<td width="180" align="center">
+<img src="images/add-to-atak.png" width="160" alt="QR code to add all maps to ATAK"><br>
+<sub>Scan to add all 40 maps</sub>
+</td>
+<td>
 
-### MOBAC Format
+**Fastest — per map:** open the **[catalog site](https://joshuafuller.github.io/ATAK-Maps/maps/)**
+on your ATAK device and tap **Add to ATAK** on any map (filter by style, or
+scan a QR from another screen).
 
-The MOBAC format is integral to the functionality of ATAK-Maps. It enables the definition of how ATAK accesses these online map sources. For more detailed information on the MOBAC format, visit [Mobile Atlas Creator](https://mobac.sourceforge.io/).
-
-### Usage and Functionality
-
-- **Dynamic Map Access**: ATAK-Maps facilitates the dynamic access of various map sources, ensuring that users have the most current imagery available for their operational needs.
-- **Offline Caching**: One of the key features of ATAK is its ability to cache these maps. With ATAK-Maps, users can download and store map areas for offline use, which is crucial in environments with limited or no internet access.
-- **Customization and Selection**: Users can also select specific areas and set the desired image quality for downloads, allowing for tailored map coverage based on operational requirements.
-
-## Installation Guide
-
-1. **Download** the latest `atak-maps.zip` from the [Releases page](https://github.com/joshuafuller/ATAK-Maps/releases).
-2. **Import** — open the ZIP in ATAK using the Import feature. Maps populate automatically.
-3. **Verify** the new maps appear in ATAK's map layer selector.
-
-For manual installation, troubleshooting, and offline caching, see the **[Install Guide](docs/install-guide.md)**.
-
-## Add to ATAK (QR)
-
-**Scan to install the whole map set.** On an ATAK 5.1+ device, scan this QR
-(from another screen) — ATAK downloads and imports an ATAK data package
-containing every map source:
-
-![Add all maps to ATAK](images/add-to-atak.png)
-
-Viewing this on the ATAK device itself? Paste this into the device browser:
+**Whole set at once:** scan the QR, or on the device paste this into a browser —
+it imports a data package with all 40 maps, kept in ATAK's Mission Package Tool
+so you can remove them later:
 
 `tak://com.atakmap.app/import?url=https%3A%2F%2Fjoshuafuller.github.io%2FATAK-Maps%2Fpack%2Fatak-maps-all.zip`
 
-The package is kept after import (it is not deleted on receive), so you can
-remove all the maps later by deleting it from ATAK's Mission Package Tool.
+**Manual:** download the latest `atak-maps.zip` from the
+[Releases page](https://github.com/joshuafuller/ATAK-Maps/releases) and open it
+with ATAK's Import feature. See the **[Install Guide](docs/install-guide.md)**
+for troubleshooting and offline caching.
 
-> GitHub can't make a `tak://` link tappable in this README. For per-map QR
-> codes and one-tap **Add to ATAK** buttons, visit the
-> **[ATAK-Maps site](https://joshuafuller.github.io/ATAK-Maps/maps/)**.
+</td>
+</tr>
+</table>
+
+> Requires ATAK 5.1+ (the version that added the `tak://` import scheme). GitHub
+> can't render a tappable `tak://` link here — use the QR or the catalog site,
+> where the buttons are tappable on-device.
+
+## What is ATAK-Maps?
+
+A collection of [MOBAC-format](https://mobac.sourceforge.io/) XML files, each a
+pointer to an online map/imagery source. [ATAK](https://tak.gov) reads them to
+display live imagery and **cache map areas for offline use** — essential where
+connectivity is limited. Pick a region and quality, and ATAK downloads it for
+the field. (Not affiliated with TAK.GOV.)
 
 ## Map Catalog
 

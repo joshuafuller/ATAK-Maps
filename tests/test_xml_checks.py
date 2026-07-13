@@ -28,6 +28,14 @@ from tests.conftest import (
     MAX_ZOOM_26_XML,
     MISSING_TILETYPE_TMS_XML,
     MISSING_URL_PLACEHOLDERS_XML,
+    MULTILAYER_ALPHA_COUNT_MISMATCH_XML,
+    MULTILAYER_ALPHA_NON_NUMERIC_XML,
+    MULTILAYER_ALPHA_OUT_OF_RANGE_XML,
+    MULTILAYER_LAYER_MISSING_MAXZOOM_XML,
+    MULTILAYER_NESTED_XML,
+    MULTILAYER_NO_ALPHA_XML,
+    MULTILAYER_NO_LAYERS_XML,
+    MULTILAYER_ROOT_BACKGROUND_XML,
     NEGATIVE_MINZOOM_XML,
     QUADKEY_TMS_XML,
     SERVERPART_URL_NO_ELEMENT_XML,
@@ -36,6 +44,7 @@ from tests.conftest import (
     TILE_UPDATE_NONE_XML,
     TILE_UPDATE_NUMERIC_XML,
     UNKNOWN_TILETYPE_XML,
+    VALID_MULTILAYER_XML,
     VALID_TMS_XML,
     VALID_WMS_XML,
     VERSION_WHITESPACE_XML,
@@ -608,3 +617,71 @@ class TestEmptyServerParts:
         result = validate_file(tmp_xml(EMPTY_SERVERPARTS_NO_PLACEHOLDER_XML))
         assert not _has_message(result.errors, "serverParts")
         assert not _has_message(result.errors, "serverpart")
+
+
+# ============================================================
+# 19. Multi-layer sources — per-layer checks, layersAlpha sanity
+# ============================================================
+
+
+class TestMultiLayer:
+    def test_valid_multilayer_no_errors(self, tmp_xml):
+        """A well-formed customMultiLayerMapSource passes with no errors."""
+        result = validate_file(tmp_xml(VALID_MULTILAYER_XML))
+        assert result.errors == []
+        assert result.source_type == "Multi-Layer"
+
+    def test_multilayer_maxzoom_checked_per_layer_not_root(self, tmp_xml):
+        """Root carries no maxZoom (per the XSD); a valid file must not error."""
+        result = validate_file(tmp_xml(VALID_MULTILAYER_XML))
+        assert not _has_message(result.errors, "maxZoom")
+
+    def test_multilayer_layer_missing_maxzoom_errors(self, tmp_xml):
+        """A nested layer without <maxZoom> is reported, prefixed by layer name."""
+        result = validate_file(tmp_xml(MULTILAYER_LAYER_MISSING_MAXZOOM_XML))
+        assert _has_message(result.errors, "maxZoom")
+        assert _has_message(result.errors, "layer Base")
+
+    def test_multilayer_alpha_count_mismatch_errors(self, tmp_xml):
+        """layersAlpha value count must equal the layer count."""
+        result = validate_file(tmp_xml(MULTILAYER_ALPHA_COUNT_MISMATCH_XML))
+        assert _has_message(result.errors, "layersAlpha")
+
+    def test_multilayer_no_layers_errors(self, tmp_xml):
+        """An empty <layers> container is an error."""
+        result = validate_file(tmp_xml(MULTILAYER_NO_LAYERS_XML))
+        assert _has_message(result.errors, "no <layers>")
+
+    def test_multilayer_absent_alpha_is_info_not_error(self, tmp_xml):
+        """A missing <layersAlpha> is informational, not a validation error."""
+        result = validate_file(tmp_xml(MULTILAYER_NO_ALPHA_XML))
+        assert not _has_message(result.errors, "layersAlpha")
+        assert _has_message(result.info, "layersAlpha")
+
+    def test_multilayer_root_background_color_checked(self, tmp_xml):
+        """backgroundColor on the multi-layer root is run through the check."""
+        result = validate_file(tmp_xml(MULTILAYER_ROOT_BACKGROUND_XML))
+        # Not prefixed with "layer ..." — it belongs to the root, not a layer.
+        assert any(
+            "backgroundColor" in msg and not msg.startswith("layer ")
+            for msg in result.info
+        )
+
+    def test_multilayer_alpha_out_of_range_errors(self, tmp_xml):
+        """layersAlpha values must fall within 0..1."""
+        result = validate_file(tmp_xml(MULTILAYER_ALPHA_OUT_OF_RANGE_XML))
+        assert _has_message(result.errors, "out of range")
+
+    def test_multilayer_alpha_non_numeric_errors(self, tmp_xml):
+        """Non-numeric layersAlpha values are reported."""
+        result = validate_file(tmp_xml(MULTILAYER_ALPHA_NON_NUMERIC_XML))
+        assert _has_message(result.errors, "not a number")
+
+    def test_nested_multilayer_errors_surface_with_double_prefix(self, tmp_xml):
+        """A layer that is itself a multi-layer source is validated recursively,
+        and inner errors surface through two levels of layer-name prefixing."""
+        result = validate_file(tmp_xml(MULTILAYER_NESTED_XML))
+        assert _has_message(result.errors, "maxZoom")
+        assert any(
+            "layer Inner" in msg and "layer InnerBad" in msg for msg in result.errors
+        )

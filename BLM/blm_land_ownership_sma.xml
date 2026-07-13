@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<customMapSource>
+    <name>BLM - Land Ownership (SMA)</name>
+    <minZoom>1</minZoom>
+    <maxZoom>14</maxZoom>
+    <tileType>jpg</tileType>
+    <!--
+        BLM Surface Management Agency (SMA): federal/state/local land ownership
+        for the United States. Yellow = BLM, green = USFS, lavender = NPS,
+        orange = BIA, light blue = state, white = private/unknown.
+        Data: Bureau of Land Management, public domain. Cache tops out at
+        zoom 14 (~10 m/px); tiles are MIXED format (jpg where opaque, png
+        where transparent).
+    -->
+    <url>https://gis.blm.gov/arcgis/rest/services/lands/BLM_Natl_SMA_Cached_with_PriUnk/MapServer/tile/{$z}/{$y}/{$x}</url>
+    <backgroundColor>#000000</backgroundColor>
+</customMapSource>

@@ -33,7 +33,7 @@ Three root element types (see `docs/xml-reference.md` for full spec):
 
 - **`customMapSource`** — TMS/XYZ tile sources (most files). Placeholders: `{$z}`, `{$x}`, `{$y}`, `{$q}` (quadkey), `{$serverpart}`
 - **`customWmsMapSource`** — OGC Web Map Service sources (basemapDE, Canada, FEMA, Poland)
-- **`customMultiLayerMapSource`** — Composite layers with per-layer opacity (not currently used in repository)
+- **`customMultiLayerMapSource`** — Composite layers with per-layer opacity (e.g. `BLM/blm_satellite_land_ownership.xml`)
 
 Schema at `schema/mobac-maps.xsd` validates all three types. Derived from ATAK's `MobacMapSourceFactory.java`.
 

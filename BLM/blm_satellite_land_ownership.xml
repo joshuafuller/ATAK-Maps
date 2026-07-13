@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<customMultiLayerMapSource>
+    <name>BLM - Satellite + Land Ownership</name>
+    <!--
+        Esri World Imagery with BLM Surface Management Agency land-ownership
+        colors composited on top at 50% opacity. Private/unknown land is
+        transparent in this SMA variant, so it stays clean satellite.
+        ATAK fetches both layers per tile and blends them client-side
+        (per-layer alpha via layersAlpha). maxZoom is capped at 14 on both
+        layers because the BLM cache ends there.
+        Data: Bureau of Land Management (public domain) + Esri World Imagery.
+    -->
+    <layersAlpha>1.0 0.5</layersAlpha>
+    <layers>
+        <customMapSource>
+            <name>World Imagery</name>
+            <minZoom>1</minZoom>
+            <maxZoom>14</maxZoom>
+            <tileType>jpg</tileType>
+            <url>https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{$z}/{$y}/{$x}</url>
+        </customMapSource>
+        <customMapSource>
+            <name>BLM SMA</name>
+            <minZoom>1</minZoom>
+            <maxZoom>14</maxZoom>
+            <tileType>png</tileType>
+            <url>https://gis.blm.gov/arcgis/rest/services/lands/BLM_Natl_SMA_Cached_without_PriUnk/MapServer/tile/{$z}/{$y}/{$x}</url>
+        </customMapSource>
+    </layers>
+</customMultiLayerMapSource>

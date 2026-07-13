@@ -272,6 +272,83 @@ def _check_background_color(root: ET.Element, result: ValidationResult) -> None:
         )
 
 
+def _check_single_source(root: ET.Element, result: ValidationResult) -> None:
+    """Run the per-source checks shared by plain and nested map sources."""
+    _check_zoom_levels(root, result)
+    _check_tile_type(root, result)
+
+    if root.tag == "customMapSource":
+        _check_tms_url(root, result)
+    elif root.tag == "customWmsMapSource":
+        _check_wms_source(root, result)
+
+    _check_serverparts(root, result)
+    _check_coordinate_system(root, result)
+    _check_http_url(root, result)
+    _check_invert_y(root, result)
+    _check_tile_update(root, result)
+    _check_background_color(root, result)
+
+
+def _check_multilayer(root: ET.Element, result: ValidationResult) -> None:
+    """Validate a customMultiLayerMapSource.
+
+    The root carries only name/layers/layersAlpha/backgroundColor (see
+    schema/mobac-maps.xsd); zoom, url, and tileType live on each nested
+    layer, so the per-source checks run per layer with messages prefixed
+    by the layer name.
+    """
+    layers_el = root.find("layers")
+    layers = list(layers_el) if layers_el is not None else []
+    if not layers:
+        result.errors.append("customMultiLayerMapSource has no <layers>")
+        return
+
+    # backgroundColor is valid on the multi-layer root (xs:string in the XSD,
+    # so the schema can't catch the ATAK single-hex-digit parser bug); the
+    # per-layer dispatch below never sees the root, so check it here.
+    _check_background_color(root, result)
+
+    alpha_text = root.findtext("layersAlpha")
+    if alpha_text is None:
+        result.info.append(
+            "<layersAlpha> not specified — ATAK applies its default "
+            "per-layer opacity"
+        )
+    else:
+        parts = alpha_text.split()
+        if len(parts) != len(layers):
+            result.errors.append(
+                f"<layersAlpha> has {len(parts)} values for {len(layers)} "
+                "layers — ATAK rejects the source when the counts differ"
+            )
+        for part in parts:
+            try:
+                value = float(part)
+            except ValueError:
+                result.errors.append(f"<layersAlpha> value is not a number: {part}")
+                continue
+            if not 0.0 <= value <= 1.0:
+                result.errors.append(f"<layersAlpha> value out of range 0..1: {part}")
+
+    for i, layer in enumerate(layers, start=1):
+        sub = ValidationResult(
+            filepath=result.filepath,
+            map_name=layer.findtext("name") or f"layer {i}",
+            source_type=_source_type_from_tag(layer.tag),
+        )
+        # The XSD allows a customMultiLayerMapSource to nest another one, so
+        # dispatch by tag rather than assuming every layer is a plain source.
+        if layer.tag == "customMultiLayerMapSource":
+            _check_multilayer(layer, sub)
+        else:
+            _check_single_source(layer, sub)
+        label = layer.findtext("name") or f"#{i}"
+        result.errors.extend(f"layer {label}: {msg}" for msg in sub.errors)
+        result.warnings.extend(f"layer {label}: {msg}" for msg in sub.warnings)
+        result.info.extend(f"layer {label}: {msg}" for msg in sub.info)
+
+
 def validate_file(filepath: Path) -> ValidationResult:
     """Run all checks on a single XML map file and return a ValidationResult."""
     result = ValidationResult(
@@ -294,25 +371,12 @@ def validate_file(filepath: Path) -> ValidationResult:
     result.map_name = root.findtext("name") or "Unknown"
     result.source_type = _source_type_from_tag(root.tag)
 
-    # Zoom level checks
-    _check_zoom_levels(root, result)
-
-    # Tile type checks
-    _check_tile_type(root, result)
-
-    # Type-specific checks
-    if root.tag == "customMapSource":
-        _check_tms_url(root, result)
-    elif root.tag == "customWmsMapSource":
-        _check_wms_source(root, result)
-
-    # Common checks
-    _check_serverparts(root, result)
-    _check_coordinate_system(root, result)
-    _check_http_url(root, result)
-    _check_invert_y(root, result)
-    _check_tile_update(root, result)
-    _check_background_color(root, result)
+    # Per-source checks: multi-layer sources carry zoom/url/tileType on their
+    # nested layers rather than the root, so dispatch accordingly
+    if root.tag == "customMultiLayerMapSource":
+        _check_multilayer(root, result)
+    else:
+        _check_single_source(root, result)
     _check_additional_parameters(root, result)
     _check_version_whitespace(root, result)
 

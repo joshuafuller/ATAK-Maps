@@ -866,3 +866,37 @@ class TestProbeSourceMultiLayerAggregatesWorst:
         assert result.status == ProbeStatus.DEAD
         assert "No URL" in (result.tak_error or "")
         assert "No test URLs" in (result.tak_error or "")
+
+
+# ---------------------------------------------------------------------------
+# 23. probe_source — sources needing an unfilled API key are skipped, not dead
+# ---------------------------------------------------------------------------
+
+
+OS_KEY_PLACEHOLDER_XML = """
+<customMapSource>
+    <name>OS - Road 3857</name>
+    <minZoom>0</minZoom>
+    <maxZoom>16</maxZoom>
+    <tileType>png</tileType>
+    <url>https://api.example.com/{$z}/{$x}/{$y}.png?key=API_KEY_HERE</url>
+</customMapSource>
+"""
+
+
+class TestProbeSkipsUnconfiguredKeySources:
+    @responses.activate
+    def test_key_placeholder_source_is_skipped_without_http(self):
+        # No responses are registered: if probe_source made any HTTP call,
+        # the responses library would raise ConnectionError. A key-gated
+        # source must short-circuit to SKIPPED before probing.
+        root = _xml(OS_KEY_PLACEHOLDER_XML)
+        result = probe_source(root, Path("OrdnanceSurvey/os_road_3857.xml"))
+        assert result.status == ProbeStatus.SKIPPED
+        assert "key" in (result.tak_error or "").lower()
+
+    def test_skipped_status_is_not_unhealthy(self):
+        """A SKIPPED source must never trigger a map-health issue."""
+        from mapvalidator.reporter import _UNHEALTHY
+
+        assert ProbeStatus.SKIPPED not in _UNHEALTHY

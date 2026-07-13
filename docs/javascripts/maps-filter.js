@@ -36,6 +36,40 @@
     });
     search.addEventListener("input", apply);
     apply();
+
+    wireLightbox();
+  }
+
+  // Tap any small QR to open a large, scannable version.
+  function wireLightbox() {
+    var lb = document.querySelector(".am-lightbox");
+    if (!lb || lb.dataset.wired) return;
+    lb.dataset.wired = "1";
+    var img = lb.querySelector(".am-lightbox__img");
+    var cap = lb.querySelector(".am-lightbox__cap");
+
+    function open(qr) {
+      img.src = qr.getAttribute("src");
+      cap.textContent = (qr.getAttribute("alt") || "").replace(/^QR code to /, "");
+      lb.classList.add("is-open");
+    }
+    function close() { lb.classList.remove("is-open"); img.src = ""; }
+
+    document.querySelectorAll("img.am-card__qr, img.am-hero__qr").forEach(function (qr) {
+      qr.addEventListener("click", function () { open(qr); });
+    });
+    lb.addEventListener("click", function (e) {
+      if (e.target === lb || e.target.classList.contains("am-lightbox__close")) close();
+    });
+    if (!window.__amLbKey) {
+      window.__amLbKey = true;
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape") {
+          var open = document.querySelector(".am-lightbox.is-open");
+          if (open) open.classList.remove("is-open");
+        }
+      });
+    }
   }
 
   if (typeof window.document$ !== "undefined" && window.document$.subscribe) {

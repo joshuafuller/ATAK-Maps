@@ -111,9 +111,15 @@
 }
 .am-card__actions { display: flex; align-items: center; gap: .7rem; }
 .am-card__qr {
-  width: 58px; height: 58px; border-radius: 7px; background: #fff; padding: 4px;
+  width: 66px; height: 66px; border-radius: 7px; background: #fff; padding: 4px;
   flex: 0 0 auto; border: 1px solid var(--am-line);
+  cursor: zoom-in; transition: transform .12s ease, box-shadow .12s ease;
 }
+.am-card__qr:hover {
+  transform: scale(1.08);
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--md-default-fg-color) 22%, transparent);
+}
+.am-hero__qr { cursor: zoom-in; }
 .am-card__foot {
   display: flex; align-items: center; justify-content: space-between;
   margin-top: .7rem; padding-top: .55rem; border-top: 1px solid var(--am-line);
@@ -166,6 +172,32 @@
   .am-card { animation: none; }
   .am-card:hover { transform: none; }
 }
+
+/* ---- QR lightbox (tap a small QR to enlarge it for scanning) ---- */
+.am-lightbox {
+  position: fixed; inset: 0; z-index: 1000; display: none;
+  place-items: center; padding: 1.5rem;
+  background: rgba(0, 0, 0, .74);
+}
+.am-lightbox.is-open { display: grid; animation: am-fade .15s ease; }
+.am-lightbox__panel {
+  position: relative; background: #fff; color: #111;
+  border-radius: 16px; padding: 1.2rem 1.2rem 1rem; text-align: center;
+  width: min(340px, 90vw); box-shadow: 0 24px 70px rgba(0, 0, 0, .5);
+}
+.am-lightbox__img {
+  width: 100%; max-width: 300px; height: auto; display: block; margin: 0 auto;
+  border-radius: 8px; image-rendering: pixelated;
+}
+.am-lightbox__cap { margin: .75rem 0 .1rem; font-weight: 700; font-size: .95rem; }
+.am-lightbox__hint { margin: 0; color: #555; font-size: .78rem; }
+.am-lightbox__close {
+  position: absolute; top: -2.6rem; right: 0; width: 2rem; height: 2rem;
+  border: 0; border-radius: 50%; background: rgba(255, 255, 255, .15);
+  color: #fff; font-size: 1.3rem; line-height: 1; cursor: pointer;
+}
+.am-lightbox__close:hover { background: rgba(255, 255, 255, .3); }
+@keyframes am-fade { from { opacity: 0; } }
 
 /* ---- Landing page ---- */
 .am-landing {

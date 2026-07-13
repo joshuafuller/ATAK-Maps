@@ -133,3 +133,31 @@ def test_render_maps_page_provider_heading_deduped():
     ]
     md = render_maps_page(entries)
     assert md.count("## ESRI") == 1
+
+
+def test_build_manifest_structure():
+    from mapvalidator.catalog import PACKAGE_UID, build_manifest
+
+    md = build_manifest(
+        ["BLM/blm_land_ownership_sma.xml", "OrdnanceSurvey/os_road_3857.xml"]
+    )
+    assert '<MissionPackageManifest version="2">' in md
+    assert f'<Parameter name="uid" value="{PACKAGE_UID}"/>' in md
+    assert '<Parameter name="onReceiveImport" value="true"/>' in md
+    assert '<Content ignore="false" zipEntry="BLM/blm_land_ownership_sma.xml"/>' in md
+    assert '<Content ignore="false" zipEntry="OrdnanceSurvey/os_road_3857.xml"/>' in md
+    # sorted + well-formed
+    import xml.etree.ElementTree as ET
+
+    root = ET.fromstring(md)
+    assert root.tag == "MissionPackageManifest"
+    assert len(root.find("Contents").findall("Content")) == 2
+
+
+def test_package_import_uri_targets_pages_pack():
+    from mapvalidator.catalog import package_import_uri
+
+    uri = package_import_uri()
+    assert uri.startswith("tak://com.atakmap.app/import?url=")
+    assert "joshuafuller.github.io%2FATAK-Maps%2Fpack%2Fatak-maps-all.zip" in uri
+    assert "raw.githubusercontent" not in uri

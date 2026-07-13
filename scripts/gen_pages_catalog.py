@@ -3,6 +3,7 @@
 
 import shutil
 import sys
+import zipfile
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -14,7 +15,10 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 from mapvalidator.catalog import (  # noqa: E402
+    PACKAGE_FILENAME,
+    PACKAGE_SUBDIR,
     SOURCES_SUBDIR,
+    build_manifest,
     build_map_entry,
     iter_map_files,
     render_maps_page,
@@ -23,6 +27,7 @@ from mapvalidator.catalog import (  # noqa: E402
 DOCS = REPO_ROOT / "docs"
 QR_DIR = DOCS / "qr"
 SOURCES_DIR = DOCS / SOURCES_SUBDIR
+PACKAGE_DIR = DOCS / PACKAGE_SUBDIR
 
 
 def write_qr(data: str, out_path: Path) -> None:
@@ -31,6 +36,21 @@ def write_qr(data: str, out_path: Path) -> None:
 
     out_path.parent.mkdir(parents=True, exist_ok=True)
     qrcode.make(data).save(out_path)
+
+
+def build_data_package(map_files: list[Path], out_zip: Path) -> None:
+    """Write an ATAK data package (Mission Package .zip) bundling every source.
+
+    Contains MANIFEST/manifest.xml plus each source XML at its provider/name
+    path (the manifest's zipEntry). Served from the site so one QR installs the
+    whole set.
+    """
+    zip_entries = [f.relative_to(REPO_ROOT).as_posix() for f in map_files]
+    out_zip.parent.mkdir(parents=True, exist_ok=True)
+    with zipfile.ZipFile(out_zip, "w", zipfile.ZIP_DEFLATED) as z:
+        z.writestr("MANIFEST/manifest.xml", build_manifest(zip_entries))
+        for f, entry in zip(map_files, zip_entries):
+            z.write(f, entry)
 
 
 def main() -> None:
@@ -45,10 +65,11 @@ def main() -> None:
         dest = SOURCES_DIR / f.relative_to(REPO_ROOT)
         dest.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy(f, dest)
+    build_data_package(map_files, PACKAGE_DIR / PACKAGE_FILENAME)
     (DOCS / "maps.md").write_text(render_maps_page(entries))
     print(
-        f"Generated {len(entries)} map entries + QR codes + hosted sources "
-        "into docs/."
+        f"Generated {len(entries)} map entries + QR codes + hosted sources + "
+        "data package into docs/."
     )
 
 

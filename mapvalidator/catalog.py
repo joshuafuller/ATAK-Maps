@@ -40,7 +40,7 @@ def iter_map_files(root: Path) -> list[Path]:
             d for d in dirnames if d not in EXCLUDE_DIRS and not d.startswith(".")
         ]
         for fname in filenames:
-            if fname.lower().endswith(".xml"):
+            if fname.lower().endswith(".xml") and not fname.startswith("."):
                 files.append(Path(dirpath) / fname)
     return sorted(files)
 

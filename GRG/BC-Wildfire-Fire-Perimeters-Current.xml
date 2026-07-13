@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<customWmsMapSource>
+    <name>BC Wildfire Fire Perimeters - Current on DataBC Public Web Map Service</name>
+    <version>1.3.0</version>
+    <minZoom>0</minZoom>
+    <maxZoom>23</maxZoom>
+    <tileType>png</tileType>
+    <url>https://openmaps.gov.bc.ca/geo/pub/WHSE_LAND_AND_NATURAL_RESOURCE.PROT_CURRENT_FIRE_POLYS_SP/ows?SERVICE=WMS&amp;</url>
+    <coordinatesystem>EPSG:3857</coordinatesystem>
+    <layers>pub:WHSE_LAND_AND_NATURAL_RESOURCE.PROT_CURRENT_FIRE_POLYS_SP</layers>
+    <styles>1751_1752</styles>
+    <north>8534215.479697939</north>
+    <east>-1.229275523998929E7</east>
+    <south>6045873.0184186315</south>
+    <west>-1.5479220221745186E7</west>
+    <backgroundColor>#000000</backgroundColor>
+    <aditionalparameters>&amp;transparent=true</aditionalparameters>
+</customWmsMapSource>

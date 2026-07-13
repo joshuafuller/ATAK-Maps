@@ -44,6 +44,8 @@ All available map layers, auto-generated from the XML files in this repository:
 | Bing | Bing - Hybrid | 0–20 | png | TMS |
 | Bing | Bing - Maps | 0–20 | png | TMS |
 | Bing | Bing - Satellite | 0–20 | jpg | TMS |
+| BLM | BLM - Land Ownership (SMA) | 1–14 | jpg | TMS |
+| BLM | BLM - Satellite + Land Ownership | —–— | — | Multi-Layer |
 | cycleosm | CycleOSM - OSM Cycle | 0–21 | png | TMS |
 | ESRI | Esri - Clarity | 1–20 | jpg | TMS |
 | ESRI | Esri - Nat Geo World | 1–20 | jpg | TMS |
@@ -56,6 +58,7 @@ All available map layers, auto-generated from the XML files in this repository:
 | Google | Google - Satellite Only | 0–20 | jpg | TMS |
 | Google | Google - Terrain | 0–20 | jpg | TMS |
 | GRG | FEMA NFHL - Flood Hazard Zones (WMS) | 5–19 | PNG | WMS |
+| GRG | GRG - BLM Public Lands Overlay | 1–14 | png | TMS |
 | GRG | GRG - Google Road Only Overlay | 0–20 | jpg | TMS |
 | GRG | GRG - Google Terrain Shading Overlay | 0–20 | jpg | TMS |
 | GRG | GRG - WaymarkedTrails Cycle Routes Overlay | 0–18 | png | TMS |

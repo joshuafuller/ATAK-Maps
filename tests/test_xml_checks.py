@@ -28,10 +28,6 @@ from tests.conftest import (
     MAX_ZOOM_26_XML,
     MISSING_TILETYPE_TMS_XML,
     MISSING_URL_PLACEHOLDERS_XML,
-    NEGATIVE_MINZOOM_XML,
-    QUADKEY_TMS_XML,
-    SERVERPART_URL_NO_ELEMENT_XML,
-    SERVERPARTS_ELEMENT_NO_URL_XML,
     MULTILAYER_ALPHA_COUNT_MISMATCH_XML,
     MULTILAYER_ALPHA_NON_NUMERIC_XML,
     MULTILAYER_ALPHA_OUT_OF_RANGE_XML,
@@ -40,6 +36,10 @@ from tests.conftest import (
     MULTILAYER_NO_ALPHA_XML,
     MULTILAYER_NO_LAYERS_XML,
     MULTILAYER_ROOT_BACKGROUND_XML,
+    NEGATIVE_MINZOOM_XML,
+    QUADKEY_TMS_XML,
+    SERVERPART_URL_NO_ELEMENT_XML,
+    SERVERPARTS_ELEMENT_NO_URL_XML,
     TILE_UPDATE_IFNONEMATCH_XML,
     TILE_UPDATE_NONE_XML,
     TILE_UPDATE_NUMERIC_XML,
@@ -683,6 +683,5 @@ class TestMultiLayer:
         result = validate_file(tmp_xml(MULTILAYER_NESTED_XML))
         assert _has_message(result.errors, "maxZoom")
         assert any(
-            "layer Inner" in msg and "layer InnerBad" in msg
-            for msg in result.errors
+            "layer Inner" in msg and "layer InnerBad" in msg for msg in result.errors
         )

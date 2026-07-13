@@ -326,14 +326,10 @@ def _check_multilayer(root: ET.Element, result: ValidationResult) -> None:
             try:
                 value = float(part)
             except ValueError:
-                result.errors.append(
-                    f"<layersAlpha> value is not a number: {part}"
-                )
+                result.errors.append(f"<layersAlpha> value is not a number: {part}")
                 continue
             if not 0.0 <= value <= 1.0:
-                result.errors.append(
-                    f"<layersAlpha> value out of range 0..1: {part}"
-                )
+                result.errors.append(f"<layersAlpha> value out of range 0..1: {part}")
 
     for i, layer in enumerate(layers, start=1):
         sub = ValidationResult(

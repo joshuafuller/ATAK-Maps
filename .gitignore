@@ -6,4 +6,5 @@ __pycache__/
 /site/
 /docs/qr/
 /docs/maps.md
+/docs/sources/
 .cache/

@@ -97,6 +97,8 @@ def test_render_maps_page_card_html():
     assert "key required" in md  # needs_key badge
     # a Street filter chip is present
     assert '<button class="am-chip" data-cat="Street">Street</button>' in md
+    # the tap-to-enlarge QR lightbox is present
+    assert "am-lightbox" in md
 
 
 def test_iter_map_files_skips_dot_directories(tmp_path):

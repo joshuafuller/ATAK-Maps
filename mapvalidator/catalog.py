@@ -265,6 +265,20 @@ def render_maps_page(
     cards = [_card_html(e, descriptions.get(e["slug"]) or {}) for e in ordered]
     out += ['<div class="am-grid">', *cards, "</div>"]
 
+    # Lightbox: tap a small QR to enlarge it for scanning.
+    out += [
+        "",
+        '<div class="am-lightbox" role="dialog" aria-modal="true" '
+        'aria-label="QR code">',
+        '  <button class="am-lightbox__close" aria-label="Close">&times;</button>',
+        '  <div class="am-lightbox__panel">',
+        '    <img class="am-lightbox__img" src="" alt="">',
+        '    <p class="am-lightbox__cap"></p>',
+        '    <p class="am-lightbox__hint">Scan with the ATAK device to install.</p>',
+        "  </div>",
+        "</div>",
+    ]
+
     if missing:
         out += [
             "",

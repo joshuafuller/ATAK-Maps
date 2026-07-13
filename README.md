@@ -21,8 +21,8 @@ file wrangling. ATAK&nbsp;5.1+.
 
 <table>
 <tr>
-<td width="180" align="center">
-<img src="images/add-to-atak.png" width="160" alt="QR code to add all maps to ATAK"><br>
+<td width="260" align="center">
+<img src="images/add-to-atak.png" width="240" alt="QR code to add all maps to ATAK"><br>
 <sub>Scan to add all 40 maps</sub>
 </td>
 <td>

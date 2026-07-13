@@ -6,6 +6,7 @@ dependencies = ["requests"]
 
 [project.optional-dependencies]
 dev = ["pytest", "pytest-cov", "responses"]
+docs = ["mkdocs-material", "qrcode[pil]"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

@@ -13,6 +13,7 @@ EXCLUDE_DIRS = {
     ".git",
     "schema",
     "dist",
+    "site",
     "docs",
     "mapvalidator",
     "tests",
@@ -34,12 +35,14 @@ def find_xml_files():
     xml_files = []
     for dirpath, dirnames, filenames in os.walk(REPO_ROOT):
         # Prune excluded directories so os.walk doesn't descend into them
-        dirnames[:] = [d for d in dirnames if d not in EXCLUDE_DIRS]
+        dirnames[:] = [
+            d for d in dirnames if d not in EXCLUDE_DIRS and not d.startswith(".")
+        ]
         rel = Path(dirpath).relative_to(REPO_ROOT)
         if rel.parts and rel.parts[0] in EXCLUDE_DIRS:
             continue
         for fname in filenames:
-            if fname.lower().endswith(".xml"):
+            if fname.lower().endswith(".xml") and not fname.startswith("."):
                 xml_files.append(Path(dirpath) / fname)
     return xml_files
 

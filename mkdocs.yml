@@ -1,0 +1,40 @@
+site_name: ATAK-Maps
+site_description: Map sources for ATAK — install by QR code or one tap.
+site_url: https://joshuafuller.github.io/ATAK-Maps/
+repo_url: https://github.com/joshuafuller/ATAK-Maps
+docs_dir: docs
+
+theme:
+  name: material
+  logo: images/atak-maps-logo.png
+  favicon: images/atak-maps-logo.png
+  palette:
+    - scheme: default
+      primary: blue grey
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - scheme: slate
+      primary: blue grey
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+  features:
+    - navigation.instant
+    - navigation.top
+    - search.suggest
+    - content.code.copy
+
+nav:
+  - Home: index.md
+  - Maps: maps.md
+  - Installation: install-guide.md
+  - Creating Custom Maps: creating-custom-maps.md
+  - XML Reference: xml-reference.md
+  - Releases: release-guide.md
+
+exclude_docs: |
+  superpowers/
+
+plugins:
+  - search

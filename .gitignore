@@ -1,3 +1,9 @@
 __pycache__/
 *.pyc
 .coverage
+
+# Generated Pages site artefacts
+/site/
+/docs/qr/
+/docs/maps.md
+.cache/

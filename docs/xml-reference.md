@@ -44,7 +44,7 @@ addressed by zoom/x/y or quadkey.
 
 ### Full annotated example
 
-From [`opentopo/opentopo_opentopomap.xml`](../opentopo/opentopo_opentopomap.xml):
+From [`opentopo/opentopo_opentopomap.xml`](https://github.com/joshuafuller/ATAK-Maps/blob/master/opentopo/opentopo_opentopomap.xml):
 
 ```xml
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -85,7 +85,7 @@ From [`opentopo/opentopo_opentopomap.xml`](../opentopo/opentopo_opentopomap.xml)
 
 ### Quadkey example
 
-From [`Bing/Bing_Maps.xml`](../Bing/Bing_Maps.xml):
+From [`Bing/Bing_Maps.xml`](https://github.com/joshuafuller/ATAK-Maps/blob/master/Bing/Bing_Maps.xml):
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -170,7 +170,7 @@ Alternatively, use XML entities (`&amp;` for `&`).
 
 ### Full annotated example
 
-From [`basemapDE/basemap.de Raster Farbe.xml`](../basemapDE/basemap.de%20Raster%20Farbe.xml):
+From [`basemapDE/basemapde_raster_farbe.xml`](https://github.com/joshuafuller/ATAK-Maps/blob/master/basemapDE/basemapde_raster_farbe.xml):
 
 ```xml
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -190,7 +190,7 @@ From [`basemapDE/basemap.de Raster Farbe.xml`](../basemapDE/basemap.de%20Raster%
 
 ### WMS example with additional parameters
 
-From [`GRG/grg_FEMA_NFHL_Flood_Hazard_Zones.xml`](../GRG/grg_FEMA_NFHL_Flood_Hazard_Zones.xml):
+From [`GRG/grg_FEMA_NFHL_Flood_Hazard_Zones.xml`](https://github.com/joshuafuller/ATAK-Maps/blob/master/GRG/grg_FEMA_NFHL_Flood_Hazard_Zones.xml):
 
 ```xml
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -489,7 +489,7 @@ Source: `MobacMapSourceFactory.java` line 380-381:
 Only `coordinatesystem` (all lowercase) is recognized by the parser.  The
 camelCase variant `coordinateSystem` is silently ignored.  Some files in
 this repository use the wrong casing (e.g.,
-[`openseamap/openseamap_base_chart.xml`](../openseamap/openseamap_base_chart.xml)),
+[`openseamap/openseamap_base_chart.xml`](https://github.com/joshuafuller/ATAK-Maps/blob/master/openseamap/openseamap_base_chart.xml)),
 which means their coordinate system setting has no effect and the default
 SRID applies instead.
 
@@ -570,7 +570,7 @@ All elements across all three root types, with which types they belong to:
 
 ## Validation
 
-This repository includes an XSD schema at [`schema/mobac-maps.xsd`](../schema/mobac-maps.xsd)
+This repository includes an XSD schema at [`schema/mobac-maps.xsd`](https://github.com/joshuafuller/ATAK-Maps/blob/master/schema/mobac-maps.xsd)
 that validates all three XML root element types.  CI validates every XML file
 in the repository against this schema on pull requests.
 

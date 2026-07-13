@@ -16,6 +16,7 @@ EXCLUDE_DIRS = {
     ".git",
     "schema",
     "dist",
+    "site",
     "docs",
     "images",
     "mapvalidator",
@@ -387,9 +388,11 @@ def validate_corpus(directory: Path) -> list[ValidationResult]:
     """Validate all XML map files under `directory`, skipping excluded dirs."""
     results = []
     for dirpath, dirnames, filenames in os.walk(directory):
-        dirnames[:] = [d for d in dirnames if d not in EXCLUDE_DIRS]
+        dirnames[:] = [
+            d for d in dirnames if d not in EXCLUDE_DIRS and not d.startswith(".")
+        ]
         for fname in sorted(filenames):
-            if fname.lower().endswith(".xml"):
+            if fname.lower().endswith(".xml") and not fname.startswith("."):
                 filepath = Path(dirpath) / fname
                 results.append(validate_file(filepath))
     return sorted(results, key=lambda r: r.filepath)

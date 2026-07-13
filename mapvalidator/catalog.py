@@ -19,6 +19,45 @@ PAGES_BASE = "https://joshuafuller.github.io/ATAK-Maps"
 # Directory (relative to the MkDocs docs dir) the generator copies sources into.
 SOURCES_SUBDIR = "sources"
 
+# Whole-map-pack: an ATAK data package (Mission Package) bundling every source,
+# served from the site. One QR/link installs the full set. UID is fixed so
+# re-imports are recognised as the same package.
+PACKAGE_SUBDIR = "pack"
+PACKAGE_FILENAME = "atak-maps-all.zip"
+PACKAGE_UID = "4e29c057-7d12-40cb-9651-01b9bec4edf3"
+PACKAGE_NAME = "ATAK-Maps - All Maps"
+
+
+def build_manifest(zip_entries: list[str]) -> str:
+    """Return the MANIFEST/manifest.xml (Mission Package v2) for the data package.
+
+    ``zip_entries`` are the in-zip paths of the bundled source XML files. Format
+    matches ATAK's MissionPackageManifest: a Configuration block (uid/name and
+    onReceiveImport=true so ATAK imports the contents) and a Contents block with
+    one <Content zipEntry="..."/> per file.
+    """
+    lines = [
+        '<?xml version="1.0" encoding="UTF-8"?>',
+        '<MissionPackageManifest version="2">',
+        "   <Configuration>",
+        f'      <Parameter name="uid" value="{PACKAGE_UID}"/>',
+        f'      <Parameter name="name" value="{PACKAGE_NAME}"/>',
+        '      <Parameter name="onReceiveImport" value="true"/>',
+        '      <Parameter name="onReceiveDelete" value="false"/>',
+        "   </Configuration>",
+        "   <Contents>",
+    ]
+    for entry in sorted(zip_entries):
+        lines.append(f'      <Content ignore="false" zipEntry="{entry}"/>')
+    lines += ["   </Contents>", "</MissionPackageManifest>", ""]
+    return "\n".join(lines)
+
+
+def package_import_uri() -> str:
+    """tak:// import URI for the whole-map-pack data package hosted on Pages."""
+    return build_import_uri(f"{PAGES_BASE}/{PACKAGE_SUBDIR}/{PACKAGE_FILENAME}")
+
+
 EXCLUDE_DIRS = {
     ".github",
     ".git",

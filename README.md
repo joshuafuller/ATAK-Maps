@@ -34,13 +34,17 @@ For manual installation, troubleshooting, and offline caching, see the **[Instal
 ## Add to ATAK (QR)
 
 **Scan to install the whole map set.** On an ATAK 5.1+ device, scan this QR
-(from another screen) — ATAK will download and import every map:
+(from another screen) — ATAK downloads and imports an ATAK data package
+containing every map source:
 
 ![Add all maps to ATAK](images/add-to-atak.png)
 
 Viewing this on the ATAK device itself? Paste this into the device browser:
 
-`tak://com.atakmap.app/import?url=https%3A%2F%2Fgithub.com%2Fjoshuafuller%2FATAK-Maps%2Freleases%2Flatest%2Fdownload%2Fatak-maps.zip`
+`tak://com.atakmap.app/import?url=https%3A%2F%2Fjoshuafuller.github.io%2FATAK-Maps%2Fpack%2Fatak-maps-all.zip`
+
+The package is kept after import (it is not deleted on receive), so you can
+remove all the maps later by deleting it from ATAK's Mission Package Tool.
 
 > GitHub can't make a `tak://` link tappable in this README. For per-map QR
 > codes and one-tap **Add to ATAK** buttons, visit the

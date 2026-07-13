@@ -71,6 +71,9 @@ All available map layers, auto-generated from the XML files in this repository:
 | openseamap | OpenSeaMap – Base Chart | 0–18 | png | TMS |
 | openseamap | OpenSeaMap – Seamarks | 0–18 | png | TMS |
 | opentopo | OpenTopo - Opentopomap | 1–17 | png | TMS |
+| OrdnanceSurvey | OS - Light 3857 | 0–16 | png | TMS |
+| OrdnanceSurvey | OS - Outdoor 3857 | 0–16 | png | TMS |
+| OrdnanceSurvey | OS - Road 3857 | 0–16 | png | TMS |
 | Poland | PL Ortofoto Std (WMTS EPSG3857) | 0–20 | JPG | TMS |
 | usgs | USGS - Usgsbasemap | 0–15 | png | TMS |
 | usgs | USGS - Usgsimageryonly | 0–15 | png | TMS |

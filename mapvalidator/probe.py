@@ -54,6 +54,7 @@ class ProbeStatus(Enum):
     BLOCKED = "blocked"
     DEAD = "dead"
     DEGRADED = "degraded"
+    SKIPPED = "skipped"  # not probed (e.g. URL needs an API key not yet filled)
 
 
 @dataclass
@@ -368,18 +369,46 @@ def _probe_multilayer(root: ET.Element, filepath: Path, map_name: str) -> ProbeR
     return worst
 
 
+# Placeholder tokens contributors leave in a URL where the user must paste
+# their own API key. Such a source can't be liveness-probed until configured,
+# so it's SKIPPED rather than reported DEAD (which would file a health issue).
+_KEY_PLACEHOLDERS = ("API_KEY_HERE", "YOUR_API_KEY", "YOUR_KEY_HERE", "{key}")
+
+
+def _needs_api_key(urls: list[str]) -> bool:
+    """True if any test URL still contains an unfilled API-key placeholder."""
+    return any(
+        placeholder.lower() in url.lower()
+        for url in urls
+        for placeholder in _KEY_PLACEHOLDERS
+    )
+
+
 def probe_source(root: ET.Element, filepath: Path) -> ProbeResult:
     """Probe a single map source with both user agents.
 
     Tries multiple zoom-level URLs; first successful probe wins. Multi-layer
     sources are probed per layer and inherit their worst layer's status.
+    Sources whose URL still carries an unfilled API-key placeholder are
+    SKIPPED (they can't be probed without the user's key).
     """
     map_name = root.findtext("name", "Unknown")
 
+    test_urls = build_test_urls(root)
+    if _needs_api_key(test_urls):
+        return ProbeResult(
+            filepath=filepath,
+            map_name=map_name,
+            status=ProbeStatus.SKIPPED,
+            tak_status_code=None,
+            tak_error="URL needs an API key (placeholder not filled); not probed",
+            generic_status_code=None,
+            generic_error="URL needs an API key (placeholder not filled); not probed",
+            test_url=test_urls[0] if test_urls else "",
+        )
+
     if root.tag == "customMultiLayerMapSource":
         return _probe_multilayer(root, filepath, map_name)
-
-    test_urls = build_test_urls(root)
 
     if not test_urls:
         return ProbeResult(

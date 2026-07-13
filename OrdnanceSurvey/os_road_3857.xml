@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<customMapSource>
+    <name>OS - Road 3857</name>
+    <minZoom>0</minZoom>
+    <maxZoom>16</maxZoom>
+    <tileType>png</tileType>
+    <!--
+        Ordnance Survey OS Maps API (Great Britain only). Requires a free API
+        key: sign up at https://osdatahub.os.uk, create an "OS Maps API"
+        project, and replace API_KEY_HERE below with your key. The free tier
+        covers generous monthly tile usage. Web Mercator (EPSG:3857) cache;
+        the Road style tops out at zoom 16.
+    -->
+    <url>https://api.os.uk/maps/raster/v1/zxy/Road_3857/{$z}/{$x}/{$y}.png?key=API_KEY_HERE</url>
+    <backgroundColor>#000000</backgroundColor>
+</customMapSource>

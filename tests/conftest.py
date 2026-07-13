@@ -460,3 +460,134 @@ MULTILAYER_NO_LAYERS_XML = """\
     <layers></layers>
 </customMultiLayerMapSource>
 """
+
+# Valid layers but no <layersAlpha> — should be informational, not an error.
+MULTILAYER_NO_ALPHA_XML = """\
+<?xml version="1.0" encoding="UTF-8"?>
+<customMultiLayerMapSource>
+    <name>Multi-Layer No Alpha</name>
+    <layers>
+        <customMapSource>
+            <name>Base</name>
+            <minZoom>1</minZoom>
+            <maxZoom>18</maxZoom>
+            <tileType>jpg</tileType>
+            <url>https://tiles.example.com/base/{$z}/{$y}/{$x}</url>
+        </customMapSource>
+        <customMapSource>
+            <name>Overlay</name>
+            <minZoom>1</minZoom>
+            <maxZoom>14</maxZoom>
+            <tileType>png</tileType>
+            <url>https://tiles.example.com/overlay/{$z}/{$y}/{$x}</url>
+        </customMapSource>
+    </layers>
+</customMultiLayerMapSource>
+"""
+
+# backgroundColor on the multi-layer root with >1 hex digit after '#' — trips
+# the ATAK single-hex-digit parser-bug check, which lives in .info.
+MULTILAYER_ROOT_BACKGROUND_XML = """\
+<?xml version="1.0" encoding="UTF-8"?>
+<customMultiLayerMapSource>
+    <name>Multi-Layer Root Background</name>
+    <backgroundColor>#000000</backgroundColor>
+    <layersAlpha>1.0 0.5</layersAlpha>
+    <layers>
+        <customMapSource>
+            <name>Base</name>
+            <minZoom>1</minZoom>
+            <maxZoom>18</maxZoom>
+            <tileType>jpg</tileType>
+            <url>https://tiles.example.com/base/{$z}/{$y}/{$x}</url>
+        </customMapSource>
+        <customMapSource>
+            <name>Overlay</name>
+            <minZoom>1</minZoom>
+            <maxZoom>14</maxZoom>
+            <tileType>png</tileType>
+            <url>https://tiles.example.com/overlay/{$z}/{$y}/{$x}</url>
+        </customMapSource>
+    </layers>
+</customMultiLayerMapSource>
+"""
+
+MULTILAYER_ALPHA_OUT_OF_RANGE_XML = """\
+<?xml version="1.0" encoding="UTF-8"?>
+<customMultiLayerMapSource>
+    <name>Multi-Layer Alpha Out Of Range</name>
+    <layersAlpha>1.5 0.5</layersAlpha>
+    <layers>
+        <customMapSource>
+            <name>Base</name>
+            <minZoom>1</minZoom>
+            <maxZoom>18</maxZoom>
+            <tileType>jpg</tileType>
+            <url>https://tiles.example.com/base/{$z}/{$y}/{$x}</url>
+        </customMapSource>
+        <customMapSource>
+            <name>Overlay</name>
+            <minZoom>1</minZoom>
+            <maxZoom>14</maxZoom>
+            <tileType>png</tileType>
+            <url>https://tiles.example.com/overlay/{$z}/{$y}/{$x}</url>
+        </customMapSource>
+    </layers>
+</customMultiLayerMapSource>
+"""
+
+# A layer that is itself a customMultiLayerMapSource (the XSD permits nesting).
+# The inner source has a layer missing <maxZoom>, which must surface through
+# two levels of layer-name prefixing.
+MULTILAYER_NESTED_XML = """\
+<?xml version="1.0" encoding="UTF-8"?>
+<customMultiLayerMapSource>
+    <name>Outer</name>
+    <layersAlpha>1.0 0.5</layersAlpha>
+    <layers>
+        <customMapSource>
+            <name>Plain Base</name>
+            <minZoom>1</minZoom>
+            <maxZoom>18</maxZoom>
+            <tileType>jpg</tileType>
+            <url>https://tiles.example.com/base/{$z}/{$y}/{$x}</url>
+        </customMapSource>
+        <customMultiLayerMapSource>
+            <name>Inner</name>
+            <layersAlpha>1.0</layersAlpha>
+            <layers>
+                <customMapSource>
+                    <name>InnerBad</name>
+                    <minZoom>1</minZoom>
+                    <tileType>png</tileType>
+                    <url>https://tiles.example.com/inner/{$z}/{$y}/{$x}</url>
+                </customMapSource>
+            </layers>
+        </customMultiLayerMapSource>
+    </layers>
+</customMultiLayerMapSource>
+"""
+
+MULTILAYER_ALPHA_NON_NUMERIC_XML = """\
+<?xml version="1.0" encoding="UTF-8"?>
+<customMultiLayerMapSource>
+    <name>Multi-Layer Alpha Non Numeric</name>
+    <layersAlpha>opaque 0.5</layersAlpha>
+    <layers>
+        <customMapSource>
+            <name>Base</name>
+            <minZoom>1</minZoom>
+            <maxZoom>18</maxZoom>
+            <tileType>jpg</tileType>
+            <url>https://tiles.example.com/base/{$z}/{$y}/{$x}</url>
+        </customMapSource>
+        <customMapSource>
+            <name>Overlay</name>
+            <minZoom>1</minZoom>
+            <maxZoom>14</maxZoom>
+            <tileType>png</tileType>
+            <url>https://tiles.example.com/overlay/{$z}/{$y}/{$x}</url>
+        </customMapSource>
+    </layers>
+</customMultiLayerMapSource>
+"""

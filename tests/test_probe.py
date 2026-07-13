@@ -1,9 +1,8 @@
 """Tests for mapvalidator.probe module."""
 
+import re
 import xml.etree.ElementTree as ET
 from pathlib import Path
-
-import re
 
 import responses
 from requests.exceptions import ConnectionError, Timeout
@@ -752,3 +751,118 @@ class TestBuildTestUrlsMultiLayer:
         assert urls, "expected test URLs built from nested layers"
         assert any("tiles.example.com/base" in u for u in urls)
         assert any("tiles.example.com/overlay" in u for u in urls)
+
+
+# ---------------------------------------------------------------------------
+# 22. probe_source — multi-layer aggregates to the worst layer's status
+# ---------------------------------------------------------------------------
+
+
+MULTILAYER_PROBE_XML = """
+<customMultiLayerMapSource>
+    <name>Base Plus Overlay</name>
+    <layersAlpha>1.0 0.5</layersAlpha>
+    <layers>
+        <customMapSource>
+            <name>Live Base</name>
+            <minZoom>1</minZoom>
+            <maxZoom>14</maxZoom>
+            <tileType>jpg</tileType>
+            <url>https://base.example.com/{$z}/{$x}/{$y}</url>
+        </customMapSource>
+        <customMapSource>
+            <name>Overlay Data</name>
+            <minZoom>1</minZoom>
+            <maxZoom>14</maxZoom>
+            <tileType>png</tileType>
+            <url>https://overlay.example.com/{$z}/{$x}/{$y}</url>
+        </customMapSource>
+    </layers>
+</customMultiLayerMapSource>
+"""
+
+
+class TestProbeSourceMultiLayerAggregatesWorst:
+    @responses.activate
+    def test_live_base_dead_overlay_reports_dead(self):
+        # An always-up base must not mask a dead overlay: the source is only
+        # as healthy as its worst layer, and the failing layer is named.
+        responses.add(
+            responses.GET,
+            re.compile(r"https://base\.example\.com/.*"),
+            body=b"\xff\xd8\xff",
+            status=200,
+            content_type="image/jpeg",
+        )
+        responses.add(
+            responses.GET,
+            re.compile(r"https://overlay\.example\.com/.*"),
+            status=500,
+            body=b"Error",
+        )
+
+        root = _xml(MULTILAYER_PROBE_XML)
+        result = probe_source(root, Path("BLM/test.xml"))
+
+        assert result.status == ProbeStatus.DEAD
+        assert "Overlay Data" in (result.tak_error or "")
+
+    @responses.activate
+    def test_all_layers_healthy_reports_healthy(self):
+        responses.add(
+            responses.GET,
+            re.compile(r"https://base\.example\.com/.*"),
+            body=b"\xff\xd8\xff",
+            status=200,
+            content_type="image/jpeg",
+        )
+        responses.add(
+            responses.GET,
+            re.compile(r"https://overlay\.example\.com/.*"),
+            body=b"\x89PNG\r\n",
+            status=200,
+            content_type="image/png",
+        )
+
+        root = _xml(MULTILAYER_PROBE_XML)
+        result = probe_source(root, Path("BLM/test.xml"))
+
+        assert result.status == ProbeStatus.HEALTHY
+
+    @responses.activate
+    def test_layer_with_no_url_is_dead_and_named(self):
+        # A layer whose URL can't be built yields no probe targets: it counts
+        # as DEAD and drags the composite down, even with a healthy sibling.
+        responses.add(
+            responses.GET,
+            re.compile(r"https://base\.example\.com/.*"),
+            body=b"\xff\xd8\xff",
+            status=200,
+            content_type="image/jpeg",
+        )
+        xml = """
+        <customMultiLayerMapSource>
+            <name>Base Plus Urlless</name>
+            <layersAlpha>1.0 0.5</layersAlpha>
+            <layers>
+                <customMapSource>
+                    <name>Live Base</name>
+                    <minZoom>1</minZoom>
+                    <maxZoom>14</maxZoom>
+                    <tileType>jpg</tileType>
+                    <url>https://base.example.com/{$z}/{$x}/{$y}</url>
+                </customMapSource>
+                <customMapSource>
+                    <name>No URL</name>
+                    <minZoom>1</minZoom>
+                    <maxZoom>14</maxZoom>
+                    <tileType>png</tileType>
+                </customMapSource>
+            </layers>
+        </customMultiLayerMapSource>
+        """
+        result = probe_source(_xml(xml), Path("BLM/test.xml"))
+
+        assert result.status == ProbeStatus.DEAD
+        assert "No URL" in (result.tak_error or "")
+        assert "No test URLs" in (result.tak_error or "")

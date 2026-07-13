@@ -304,8 +304,18 @@ def _check_multilayer(root: ET.Element, result: ValidationResult) -> None:
         result.errors.append("customMultiLayerMapSource has no <layers>")
         return
 
+    # backgroundColor is valid on the multi-layer root (xs:string in the XSD,
+    # so the schema can't catch the ATAK single-hex-digit parser bug); the
+    # per-layer dispatch below never sees the root, so check it here.
+    _check_background_color(root, result)
+
     alpha_text = root.findtext("layersAlpha")
-    if alpha_text is not None:
+    if alpha_text is None:
+        result.info.append(
+            "<layersAlpha> not specified — ATAK applies its default "
+            "per-layer opacity"
+        )
+    else:
         parts = alpha_text.split()
         if len(parts) != len(layers):
             result.errors.append(
@@ -331,10 +341,16 @@ def _check_multilayer(root: ET.Element, result: ValidationResult) -> None:
             map_name=layer.findtext("name") or f"layer {i}",
             source_type=_source_type_from_tag(layer.tag),
         )
-        _check_single_source(layer, sub)
+        # The XSD allows a customMultiLayerMapSource to nest another one, so
+        # dispatch by tag rather than assuming every layer is a plain source.
+        if layer.tag == "customMultiLayerMapSource":
+            _check_multilayer(layer, sub)
+        else:
+            _check_single_source(layer, sub)
         label = layer.findtext("name") or f"#{i}"
         result.errors.extend(f"layer {label}: {msg}" for msg in sub.errors)
         result.warnings.extend(f"layer {label}: {msg}" for msg in sub.warnings)
+        result.info.extend(f"layer {label}: {msg}" for msg in sub.info)
 
 
 def validate_file(filepath: Path) -> ValidationResult:

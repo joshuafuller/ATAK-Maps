@@ -12,9 +12,8 @@ from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
 
-import urllib3
-
 import requests
+import urllib3
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -266,13 +265,120 @@ def classify(
 # Source-level probing
 # ---------------------------------------------------------------------------
 
+# Worst-first severity ranking used to aggregate multi-layer sources: a
+# composite source is only as healthy as its least-healthy layer.
+_STATUS_SEVERITY = {
+    ProbeStatus.HEALTHY: 0,
+    ProbeStatus.DEGRADED: 1,
+    ProbeStatus.BLOCKED: 2,
+    ProbeStatus.DEAD: 3,
+}
+
+_ProbeTuple = tuple[int | None, str | None, bool, int]
+
+
+def _probe_url_list(test_urls: list[str]) -> tuple[_ProbeTuple, _ProbeTuple, str]:
+    """Probe a list of tile URLs with both user agents; first 200 wins.
+
+    Returns (tak_result, generic_result, url) for the winning URL (or the
+    last one tried if none returned 200).
+    """
+    best_tak: _ProbeTuple = (None, "No URLs probed", False, 0)
+    best_generic: _ProbeTuple = (None, "No URLs probed", False, 0)
+    best_url = test_urls[0]
+
+    for url in test_urls:
+        tak_result = probe_url(url, TAK_USER_AGENT)
+        generic_result = probe_url(url, GENERIC_USER_AGENT)
+
+        best_tak = tak_result
+        best_generic = generic_result
+        best_url = url
+
+        # If either UA got a 200, this URL is decisive — stop here.
+        if tak_result[0] == 200 or generic_result[0] == 200:
+            break
+
+    return best_tak, best_generic, best_url
+
+
+def _probe_multilayer(root: ET.Element, filepath: Path, map_name: str) -> ProbeResult:
+    """Probe every layer of a multi-layer source and report the worst status.
+
+    Each layer is probed independently and classified on its own; the source
+    inherits its least-healthy layer's status. This prevents an always-up base
+    layer (e.g. Esri World Imagery) from masking a dead data overlay — the
+    whole reason the composite source exists. The failing layer is named in
+    the error field so reports point at the layer that actually broke.
+    """
+    layers_el = root.find("layers")
+    layers = list(layers_el) if layers_el is not None else []
+
+    if not layers:
+        return ProbeResult(
+            filepath=filepath,
+            map_name=map_name,
+            status=ProbeStatus.DEAD,
+            tak_status_code=None,
+            tak_error="customMultiLayerMapSource has no <layers> to probe",
+            generic_status_code=None,
+            generic_error="customMultiLayerMapSource has no <layers> to probe",
+            test_url="",
+        )
+
+    worst_severity = -1
+    worst: ProbeResult | None = None
+
+    for i, layer in enumerate(layers, start=1):
+        layer_name = layer.findtext("name") or f"layer {i}"
+        layer_urls = build_test_urls(layer)
+
+        if not layer_urls:
+            status = ProbeStatus.DEAD
+            tak: _ProbeTuple = (None, "No test URLs could be built", False, 0)
+            generic: _ProbeTuple = (None, "No test URLs could be built", False, 0)
+            url = ""
+        else:
+            tak, generic, url = _probe_url_list(layer_urls)
+            status = classify(tak, generic)
+
+        # Strict > keeps the first-encountered layer on ties, so a healthy
+        # source reports its first layer's (clean) diagnostics.
+        if _STATUS_SEVERITY[status] > worst_severity:
+            worst_severity = _STATUS_SEVERITY[status]
+            tak_error = tak[1]
+            generic_error = generic[1]
+            if status is not ProbeStatus.HEALTHY:
+                # Point the report at the layer that actually broke.
+                tak_error = f"layer {layer_name}: {tak_error}"
+                generic_error = f"layer {layer_name}: {generic_error}"
+            worst = ProbeResult(
+                filepath=filepath,
+                map_name=map_name,
+                status=status,
+                tak_status_code=tak[0],
+                tak_error=tak_error,
+                generic_status_code=generic[0],
+                generic_error=generic_error,
+                test_url=url,
+            )
+
+    if worst is None:  # pragma: no cover - layers is non-empty, loop set it
+        raise RuntimeError("multi-layer source had layers but produced no result")
+    return worst
+
 
 def probe_source(root: ET.Element, filepath: Path) -> ProbeResult:
     """Probe a single map source with both user agents.
 
-    Tries multiple zoom-level URLs; first successful probe wins.
+    Tries multiple zoom-level URLs; first successful probe wins. Multi-layer
+    sources are probed per layer and inherit their worst layer's status.
     """
     map_name = root.findtext("name", "Unknown")
+
+    if root.tag == "customMultiLayerMapSource":
+        return _probe_multilayer(root, filepath, map_name)
+
     test_urls = build_test_urls(root)
 
     if not test_urls:
@@ -287,40 +393,7 @@ def probe_source(root: ET.Element, filepath: Path) -> ProbeResult:
             test_url="",
         )
 
-    # Try each URL; first one where at least one UA gets a 200 wins
-    best_tak: tuple[int | None, str | None, bool, int] = (
-        None,
-        "No URLs probed",
-        False,
-        0,
-    )
-    best_generic: tuple[int | None, str | None, bool, int] = (
-        None,
-        "No URLs probed",
-        False,
-        0,
-    )
-    best_url = test_urls[0]
-
-    for url in test_urls:
-        tak_result = probe_url(url, TAK_USER_AGENT)
-        generic_result = probe_url(url, GENERIC_USER_AGENT)
-
-        tak_code = tak_result[0]
-        gen_code = generic_result[0]
-
-        # If either got a 200, use this URL's results
-        if tak_code == 200 or gen_code == 200:
-            best_tak = tak_result
-            best_generic = generic_result
-            best_url = url
-            break
-
-        # Keep last results as fallback
-        best_tak = tak_result
-        best_generic = generic_result
-        best_url = url
-
+    best_tak, best_generic, best_url = _probe_url_list(test_urls)
     status = classify(best_tak, best_generic)
 
     return ProbeResult(

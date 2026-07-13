@@ -31,8 +31,8 @@
         "assets": [
           {
             "path": "dist/atak-maps.zip",
-            "name": "atak-maps-${nextRelease.version}.zip",
-            "label": "atak-maps-${nextRelease.version}.zip"
+            "name": "atak-maps.zip",
+            "label": "atak-maps.zip"
           }
         ],
         "failComment": false,

@@ -31,6 +31,21 @@ The MOBAC format is integral to the functionality of ATAK-Maps. It enables the d
 
 For manual installation, troubleshooting, and offline caching, see the **[Install Guide](docs/install-guide.md)**.
 
+## Add to ATAK (QR)
+
+**Scan to install the whole map set.** On an ATAK 5.1+ device, scan this QR
+(from another screen) — ATAK will download and import every map:
+
+![Add all maps to ATAK](images/add-to-atak.png)
+
+Viewing this on the ATAK device itself? Paste this into the device browser:
+
+`tak://com.atakmap.app/import?url=https%3A%2F%2Fgithub.com%2Fjoshuafuller%2FATAK-Maps%2Freleases%2Flatest%2Fdownload%2Fatak-maps.zip`
+
+> GitHub can't make a `tak://` link tappable in this README. For per-map QR
+> codes and one-tap **Add to ATAK** buttons, visit the
+> **[ATAK-Maps site](https://joshuafuller.github.io/ATAK-Maps/maps/)**.
+
 ## Map Catalog
 
 All available map layers, auto-generated from the XML files in this repository:

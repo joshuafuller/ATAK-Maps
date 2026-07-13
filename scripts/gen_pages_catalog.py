@@ -21,6 +21,7 @@ from mapvalidator.catalog import (  # noqa: E402
     build_manifest,
     build_map_entry,
     iter_map_files,
+    package_import_uri,
     render_maps_page,
 )
 
@@ -28,6 +29,9 @@ DOCS = REPO_ROOT / "docs"
 QR_DIR = DOCS / "qr"
 SOURCES_DIR = DOCS / SOURCES_SUBDIR
 PACKAGE_DIR = DOCS / PACKAGE_SUBDIR
+DESCRIPTIONS_FILE = REPO_ROOT / "descriptions.yml"
+# The Maps page renders at /maps/ (pretty URLs); assets live one level up.
+ALL_MAPS_QR = "../qr/_all-maps.png"
 
 
 def write_qr(data: str, out_path: Path) -> None:
@@ -36,6 +40,15 @@ def write_qr(data: str, out_path: Path) -> None:
 
     out_path.parent.mkdir(parents=True, exist_ok=True)
     qrcode.make(data).save(out_path)
+
+
+def load_descriptions() -> dict:
+    """Load descriptions.yml (slug -> {category, text}); {} if absent."""
+    if not DESCRIPTIONS_FILE.exists():
+        return {}
+    import yaml
+
+    return yaml.safe_load(DESCRIPTIONS_FILE.read_text()) or {}
 
 
 def build_data_package(map_files: list[Path], out_zip: Path) -> None:
@@ -66,7 +79,20 @@ def main() -> None:
         dest.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy(f, dest)
     build_data_package(map_files, PACKAGE_DIR / PACKAGE_FILENAME)
-    (DOCS / "maps.md").write_text(render_maps_page(entries))
+    # QR for the whole-map-pack, shown in the Maps-page hero.
+    write_qr(package_import_uri(), QR_DIR / "_all-maps.png")
+    descriptions = load_descriptions()
+    missing = [e["slug"] for e in entries if not descriptions.get(e["slug"])]
+    if missing:
+        print(f"WARNING: {len(missing)} maps without a description: {missing}")
+    (DOCS / "maps.md").write_text(
+        render_maps_page(
+            entries,
+            descriptions=descriptions,
+            package_uri=package_import_uri(),
+            package_qr=ALL_MAPS_QR,
+        )
+    )
     print(
         f"Generated {len(entries)} map entries + QR codes + hosted sources + "
         "data package into docs/."

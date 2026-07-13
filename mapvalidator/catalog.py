@@ -1,11 +1,23 @@
 """Turn map XML files into catalog entries and the Maps markdown page."""
 
+import html
 import os
 import re
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
 from mapvalidator.qr import build_import_uri
+
+# Display/filter order for the map style categories on the Maps page.
+CATEGORY_ORDER = [
+    "Satellite",
+    "Topographic",
+    "Street",
+    "Nautical",
+    "Cycling",
+    "Overlay",
+    "Land use",
+]
 
 RAW_BASE = "https://raw.githubusercontent.com/joshuafuller/ATAK-Maps/master"
 
@@ -120,33 +132,144 @@ def build_map_entry(filepath: Path, root: Path, raw_base: str = RAW_BASE) -> dic
     }
 
 
-def render_maps_page(entries: list[dict]) -> str:
-    """Render the Maps markdown page grouped by provider."""
-    lines = [
-        "# Maps",
-        "",
-        "Scan a QR code with another device, or tap **Add to ATAK** on this "
-        "device (requires ATAK 5.1+). Confirm the import prompt in ATAK.",
-        "",
-    ]
-    provider = None
-    for e in sorted(entries, key=lambda x: (x["provider"].lower(), x["name"].lower())):
-        if e["provider"] != provider:
-            provider = e["provider"]
-            lines += [f"## {provider}", ""]
-        lines += [
-            f"### {e['name']}",
-            "",
-            f"![QR for {e['name']}](qr/{e['slug']}.png)",
-            "",
-            f"[Add to ATAK]({e['import_uri']}) &nbsp;·&nbsp; "
-            f"[Download XML]({e['raw_url']})",
+_ADD_ICON = (
+    '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">'
+    '<path d="M12 5v14M5 12h14"/></svg>'
+)
+
+
+def _cat_class(category: str) -> str:
+    """CSS modifier for a category, e.g. 'Land use' -> 'land-use'."""
+    return slugify(category) or "other"
+
+
+def _card_html(entry: dict, meta: dict) -> str:
+    """Render one map as a card. ``meta`` is {category, text} or {}."""
+    name = html.escape(entry["name"])
+    category = meta.get("category") or "Other"
+    desc = html.escape(meta.get("text") or "")
+    # data-search powers the on-page filter (name + description + provider).
+    search = html.escape(
+        " ".join((entry["name"], meta.get("text") or "", entry["provider"])).lower(),
+        quote=True,
+    )
+    key_badge = (
+        '<span class="am-card__key" title="Requires a free API key">key required</span>'
+        if entry["needs_key"]
+        else ""
+    )
+    add_href = html.escape(entry["import_uri"], quote=True)
+    src_href = html.escape(entry["raw_url"], quote=True)
+    return (
+        f'<article class="am-card" data-cat="{html.escape(category, quote=True)}" '
+        f'data-search="{search}">'
+        '<div class="am-card__top">'
+        f'<span class="am-badge am-badge--{_cat_class(category)}">'
+        f"{html.escape(category)}</span>"
+        f'<span class="am-type">{html.escape(entry["source_type"])}</span>'
+        "</div>"
+        f'<h3 class="am-card__name">{name}</h3>'
+        f'<p class="am-card__desc">{desc}</p>'
+        '<div class="am-card__actions">'
+        f'<a class="am-btn am-btn--add" href="{add_href}">'
+        f"{_ADD_ICON}<span>Add to ATAK</span></a>"
+        f'<img class="am-card__qr" src="../qr/{entry["slug"]}.png" '
+        f'alt="QR code to add {name} to ATAK" loading="lazy" '
+        'title="Scan from another device">'
+        "</div>"
+        '<div class="am-card__foot">'
+        f'<a href="{src_href}">View source</a>'
+        f"{key_badge}"
+        "</div>"
+        "</article>"
+    )
+
+
+def render_maps_page(
+    entries: list[dict],
+    descriptions: dict | None = None,
+    package_uri: str | None = None,
+    package_qr: str | None = None,
+) -> str:
+    """Render the Maps page: an install hero, a category filter, and a card grid.
+
+    ``descriptions`` maps slug -> {category, text}. ``package_uri`` and
+    ``package_qr`` (when given) render the "install everything" hero for the
+    whole-map-pack data package.
+    """
+    descriptions = descriptions or {}
+    ordered = sorted(entries, key=lambda x: (x["provider"].lower(), x["name"].lower()))
+    total = len(ordered)
+
+    out = ["# Maps", ""]
+
+    # Install-everything hero.
+    if package_uri and package_qr:
+        pkg_href = html.escape(package_uri, quote=True)
+        pkg_qr = html.escape(package_qr, quote=True)
+        out += [
+            '<section class="am-hero">',
+            '  <div class="am-hero__body">',
+            "    <h2>Install every map at once</h2>",
+            f"    <p>Tap the button on your ATAK device, or scan the code from "
+            f"another device. Imports one data package with all {total} maps "
+            f"(ATAK&nbsp;5.1+).</p>",
+            f'    <a class="am-btn am-btn--all" href="{pkg_href}">'
+            f"{_ADD_ICON}<span>Add all {total} maps to ATAK</span></a>",
+            '    <p class="am-hero__note">Kept in ATAK’s Mission Package '
+            "Tool, so you can remove them all later by deleting the package.</p>",
+            "  </div>",
+            f'  <img class="am-hero__qr" src="{pkg_qr}" '
+            'alt="QR code to add all maps to ATAK">',
+            "</section>",
             "",
         ]
-        if e["needs_key"]:
-            lines += [
-                "> Requires a free API key — open the source file for setup "
-                "instructions.",
-                "",
-            ]
-    return "\n".join(lines)
+
+    # How-it-works.
+    out += [
+        '<div class="am-how">',
+        '  <div class="am-how__step"><span>1</span> On your ATAK device, tap '
+        "<b>Add to ATAK</b> and confirm the prompt.</div>",
+        '  <div class="am-how__step"><span>2</span> From another device, scan '
+        "the <b>QR code</b> with ATAK.</div>",
+        "</div>",
+        "",
+    ]
+
+    # Filter bar: search box + category chips (only for categories present).
+    present = [
+        c
+        for c in CATEGORY_ORDER
+        if any(
+            (descriptions.get(e["slug"]) or {}).get("category") == c for e in ordered
+        )
+    ]
+    chips = ['<button class="am-chip is-active" data-cat="all">All</button>']
+    chips += [
+        f'<button class="am-chip" data-cat="{html.escape(c, quote=True)}">'
+        f"{html.escape(c)}</button>"
+        for c in present
+    ]
+    out += [
+        '<div class="am-filter">',
+        '  <input class="am-search" type="search" placeholder="Filter maps…" '
+        'aria-label="Filter maps by name">',
+        '  <div class="am-chips">' + "".join(chips) + "</div>",
+        "</div>",
+        '<p class="am-empty" hidden>No maps match your filter.</p>',
+        "",
+    ]
+
+    # Card grid.
+    missing = [e for e in ordered if not descriptions.get(e["slug"])]
+    cards = [_card_html(e, descriptions.get(e["slug"]) or {}) for e in ordered]
+    out += ['<div class="am-grid">', *cards, "</div>"]
+
+    if missing:
+        out += [
+            "",
+            f"<!-- {len(missing)} maps without a description entry: "
+            + ", ".join(e["slug"] for e in missing)
+            + " -->",
+        ]
+    return "\n".join(out)

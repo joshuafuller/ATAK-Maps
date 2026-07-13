@@ -8,6 +8,9 @@ theme:
   name: material
   logo: images/atak-maps-logo.png
   favicon: images/atak-maps-logo.png
+  font:
+    text: IBM Plex Sans
+    code: IBM Plex Mono
   palette:
     - scheme: default
       primary: blue grey
@@ -35,6 +38,16 @@ nav:
 
 exclude_docs: |
   superpowers/
+
+markdown_extensions:
+  - attr_list
+  - md_in_html
+
+extra_css:
+  - stylesheets/maps.css
+
+extra_javascript:
+  - javascripts/maps-filter.js
 
 plugins:
   - search

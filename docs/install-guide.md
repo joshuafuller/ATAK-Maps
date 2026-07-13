@@ -2,7 +2,7 @@
 
 ## Quick Start
 
-1. Download `atak-maps-<version>.zip` from the [Releases page](https://github.com/joshuafuller/ATAK-Maps/releases).
+1. Download `atak-maps.zip` from the [Releases page](https://github.com/joshuafuller/ATAK-Maps/releases).
 2. Open the ZIP in ATAK using **Import** — ATAK places the map files automatically.
 3. New map sources appear in the map layer selector.
 
@@ -14,7 +14,7 @@ That's it. ATAK's Import feature handles file placement for you.
 
 The easiest way to install maps is through ATAK's built-in Import feature:
 
-1. Download `atak-maps-<version>.zip` from the [Releases page](https://github.com/joshuafuller/ATAK-Maps/releases) onto your device.
+1. Download `atak-maps.zip` from the [Releases page](https://github.com/joshuafuller/ATAK-Maps/releases) onto your device.
 2. In ATAK, tap **Import** (or use your file manager to open the ZIP with ATAK).
 3. ATAK ingests the ZIP and the map sources populate automatically.
 4. Check the map layer selector — new sources should be listed.

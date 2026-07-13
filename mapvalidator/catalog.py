@@ -36,7 +36,9 @@ def iter_map_files(root: Path) -> list[Path]:
     """Return sorted *.xml map files under root, skipping EXCLUDE_DIRS."""
     files: list[Path] = []
     for dirpath, dirnames, filenames in os.walk(root):
-        dirnames[:] = [d for d in dirnames if d not in EXCLUDE_DIRS]
+        dirnames[:] = [
+            d for d in dirnames if d not in EXCLUDE_DIRS and not d.startswith(".")
+        ]
         for fname in filenames:
             if fname.lower().endswith(".xml"):
                 files.append(Path(dirpath) / fname)

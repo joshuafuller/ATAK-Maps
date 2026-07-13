@@ -73,3 +73,52 @@ def test_render_maps_page_structure():
     assert "[Add to ATAK](tak://com.atakmap.app/import?url=ENC)" in md
     assert "[Download XML](https://raw.example/os.xml)" in md
     assert "Requires a free API key" in md
+
+
+def test_iter_map_files_skips_dot_directories(tmp_path):
+    _write(tmp_path, "OrdnanceSurvey/os_road_3857.xml", TMS)
+    _write(tmp_path, ".venv/lib/site-packages/mkdocs/templates/sitemap.xml", TMS)
+    names = [f.name for f in iter_map_files(tmp_path)]
+    assert "os_road_3857.xml" in names
+    assert "sitemap.xml" not in names
+
+
+def test_render_maps_page_no_key_note_when_not_needed():
+    entries = [
+        {
+            "provider": "USGS",
+            "name": "USGS Topo",
+            "source_type": "TMS",
+            "slug": "usgs-topo",
+            "raw_url": "https://raw.example/usgs.xml",
+            "import_uri": "tak://com.atakmap.app/import?url=ENC",
+            "needs_key": False,
+        }
+    ]
+    md = render_maps_page(entries)
+    assert "Requires a free API key" not in md
+
+
+def test_render_maps_page_provider_heading_deduped():
+    entries = [
+        {
+            "provider": "ESRI",
+            "name": "A",
+            "source_type": "TMS",
+            "slug": "esri-a",
+            "raw_url": "https://x/a.xml",
+            "import_uri": "tak://com.atakmap.app/import?url=A",
+            "needs_key": False,
+        },
+        {
+            "provider": "ESRI",
+            "name": "B",
+            "source_type": "TMS",
+            "slug": "esri-b",
+            "raw_url": "https://x/b.xml",
+            "import_uri": "tak://com.atakmap.app/import?url=B",
+            "needs_key": False,
+        },
+    ]
+    md = render_maps_page(entries)
+    assert md.count("## ESRI") == 1

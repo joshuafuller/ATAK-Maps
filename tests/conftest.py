@@ -23,7 +23,7 @@ def real_xml_files(repo_root):
     for dirpath in repo_root.rglob("*.xml"):
         # dirpath is the file path from rglob
         parts = dirpath.relative_to(repo_root).parts
-        if not any(p in EXCLUDE_DIRS for p in parts):
+        if not any(p in EXCLUDE_DIRS or p.startswith(".") for p in parts):
             xml_files.append(dirpath)
     return sorted(xml_files)
 

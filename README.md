@@ -57,6 +57,7 @@ All available map layers, auto-generated from the XML files in this repository:
 | Google | Google - Roadmap Standard | 0–20 | jpg | TMS |
 | Google | Google - Satellite Only | 0–20 | jpg | TMS |
 | Google | Google - Terrain | 0–20 | jpg | TMS |
+| GRG | BC Wildfire Fire Perimeters - Current on DataBC Public Web Map Service | 0–23 | png | WMS |
 | GRG | FEMA NFHL - Flood Hazard Zones (WMS) | 5–19 | PNG | WMS |
 | GRG | GRG - BLM Public Lands Overlay | 1–14 | png | TMS |
 | GRG | GRG - Google Road Only Overlay | 0–20 | jpg | TMS |

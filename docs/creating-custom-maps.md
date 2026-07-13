@@ -53,7 +53,7 @@ instructions and alternative methods.
 3. Use conventional commit format: `feat: add <map name>`.
 4. Open a pull request.
 
-See [CONTRIBUTING.md](../CONTRIBUTING.md) for full contribution guidelines.
+See [CONTRIBUTING.md](https://github.com/joshuafuller/ATAK-Maps/blob/master/CONTRIBUTING.md) for full contribution guidelines.
 
 ## Next Steps
 

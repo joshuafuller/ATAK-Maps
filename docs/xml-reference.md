@@ -170,7 +170,7 @@ Alternatively, use XML entities (`&amp;` for `&`).
 
 ### Full annotated example
 
-From [`basemapDE/basemap.de Raster Farbe.xml`](https://github.com/joshuafuller/ATAK-Maps/blob/master/basemapDE/basemap.de%20Raster%20Farbe.xml):
+From [`basemapDE/basemapde_raster_farbe.xml`](https://github.com/joshuafuller/ATAK-Maps/blob/master/basemapDE/basemapde_raster_farbe.xml):
 
 ```xml
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>

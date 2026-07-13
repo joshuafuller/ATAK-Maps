@@ -9,6 +9,16 @@ from mapvalidator.qr import build_import_uri
 
 RAW_BASE = "https://raw.githubusercontent.com/joshuafuller/ATAK-Maps/master"
 
+# The tak:// import target must be served with an XML content type. raw
+# githubusercontent serves .xml as text/plain, which makes ATAK's
+# ImportFileDownloader append a ".txt" extension (Content-Type -> extension),
+# so no map-source resolver claims the file and the import silently no-ops.
+# GitHub Pages serves .xml as application/xml, so the site hosts a copy of
+# every source under /sources/<path> and the import points there instead.
+PAGES_BASE = "https://joshuafuller.github.io/ATAK-Maps"
+# Directory (relative to the MkDocs docs dir) the generator copies sources into.
+SOURCES_SUBDIR = "sources"
+
 EXCLUDE_DIRS = {
     ".github",
     ".git",
@@ -54,6 +64,10 @@ def build_map_entry(filepath: Path, root: Path, raw_base: str = RAW_BASE) -> dic
     source_type = SOURCE_TYPE_MAP.get(root_el.tag, root_el.tag)
     rel = filepath.relative_to(root).as_posix()
     raw_url = f"{raw_base}/{rel}"
+    # The import must fetch the XML with an application/xml content type; the
+    # Pages-hosted copy provides that (see PAGES_BASE note above). raw_url is
+    # kept only for the human-facing "view source" link.
+    import_url = f"{PAGES_BASE}/{SOURCES_SUBDIR}/{rel}"
     urls = " ".join((u.text or "") for u in root_el.iter("url"))
     return {
         "provider": provider,
@@ -61,7 +75,8 @@ def build_map_entry(filepath: Path, root: Path, raw_base: str = RAW_BASE) -> dic
         "source_type": source_type,
         "slug": slugify(f"{provider}-{filepath.stem}"),
         "raw_url": raw_url,
-        "import_uri": build_import_uri(raw_url),
+        "import_url": import_url,
+        "import_uri": build_import_uri(import_url),
         "needs_key": "API_KEY_HERE" in urls,
     }
 

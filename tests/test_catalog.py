@@ -51,6 +51,17 @@ def test_build_map_entry_fields(tmp_path):
     assert e["raw_url"] == (
         "https://raw.example/repo/master/OrdnanceSurvey/os_road_3857.xml"
     )
+    # The import must target the Pages-hosted copy (served as application/xml),
+    # NOT raw githubusercontent (text/plain) — otherwise ATAK appends .txt and
+    # silently drops the map. See mapvalidator.catalog.PAGES_BASE.
+    assert e["import_url"] == (
+        "https://joshuafuller.github.io/ATAK-Maps/sources/"
+        "OrdnanceSurvey/os_road_3857.xml"
+    )
+    from urllib.parse import quote
+
+    assert quote(e["import_url"], safe="") in e["import_uri"]
+    assert "raw.githubusercontent" not in e["import_uri"]
     assert e["import_uri"].startswith("tak://com.atakmap.app/import?url=")
     assert e["needs_key"] is True
 

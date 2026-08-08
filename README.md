@@ -146,6 +146,10 @@ ATAK-Maps is distributed under the [MIT License](LICENSE).
 ## Stargazers over time
 
 <!-- star-history:start -->
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/star-history/star-history-dark.svg">
+  <img alt="Star history" src="docs/images/star-history/star-history-light.svg">
+</picture>
 <!-- star-history:end -->
 
 

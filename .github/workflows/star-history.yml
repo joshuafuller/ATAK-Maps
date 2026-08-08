@@ -1,0 +1,40 @@
+name: Star History
+
+# Renders the stargazers-over-time chart inside CI and commits the SVGs.
+# GitHub restricted the public stargazers endpoint on 2026-06-30, so hosted
+# services (starchart.cc, api.star-history.com) can no longer build this chart
+# for us. A workflow running in this repo still has stargazer access via the
+# default GITHUB_TOKEN, so we generate the chart here and embed a static file.
+
+on:
+  schedule:
+    - cron: "0 5 * * *" # daily, off-peak UTC
+  watch:
+    types: [started] # refresh right after a new star
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: star-history
+  cancel-in-progress: true # collapse a burst of stars into one run
+
+jobs:
+  star-history:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # Pinned to the v1.0.4 commit: this action runs with contents: write.
+      - uses: narayann7/star-history-action@c2061675dacbf6f35d116e556015b8905843387f # v1.0.4
+        with:
+          repos: ${{ github.repository }}
+          output-dir: docs/images/star-history
+          # The default GITHUB_TOKEN should have stargazer access to this repo.
+          # If a run fails with 403/404 on the stargazers endpoint, add a
+          # fine-grained PAT (Metadata: read) as secret STARS_TOKEN, uncomment:
+          # token: ${{ secrets.STARS_TOKEN }}
+          # commit-message defaults to "chore: update star history [skip ci]",
+          # which keeps semantic-release and the other workflows out of the loop.

@@ -11,7 +11,7 @@ overlay map sources — scan a QR, tap **Add to ATAK**, or side-load. No manual
 file wrangling. ATAK&nbsp;5.1+.
 
 [![Latest Release](https://img.shields.io/github/v/release/joshuafuller/ATAK-Maps?style=flat)](https://github.com/joshuafuller/ATAK-Maps/releases/latest) ![Release Date](https://img.shields.io/github/release-date/joshuafuller/ATAK-Maps?style=flat) [![Downloads](https://img.shields.io/github/downloads/joshuafuller/ATAK-Maps/total?style=flat)](https://github.com/joshuafuller/ATAK-Maps/releases/latest) [![XML Validation](https://img.shields.io/github/actions/workflow/status/joshuafuller/ATAK-Maps/validate-maps.yml?label=XML%20validation&style=flat)](https://github.com/joshuafuller/ATAK-Maps/actions/workflows/validate-maps.yml)
-[![Stars](https://img.shields.io/github/stars/joshuafuller/ATAK-Maps?style=flat)](https://github.com/joshuafuller/ATAK-Maps/stargazers) [![License](https://img.shields.io/github/license/joshuafuller/ATAK-Maps?style=flat)](LICENSE) [![Discord](https://img.shields.io/discord/698067185515495436?style=flat)](https://discord.gg/dQUYADMW87) [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/joshuafuller/ATAK-Maps)
+[![Stars](https://img.shields.io/github/stars/joshuafuller/ATAK-Maps?style=flat)](https://github.com/joshuafuller/ATAK-Maps) [![License](https://img.shields.io/github/license/joshuafuller/ATAK-Maps?style=flat)](LICENSE) [![Discord](https://img.shields.io/discord/698067185515495436?style=flat)](https://discord.gg/dQUYADMW87) [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/joshuafuller/ATAK-Maps)
 
 ### [Browse &amp; install from the catalog site&nbsp;&rarr;](https://joshuafuller.github.io/ATAK-Maps/)
 
@@ -144,6 +144,8 @@ For more details, including instructions for forks, see [docs/release-guide.md](
 ATAK-Maps is distributed under the [MIT License](LICENSE).
 
 ## Stargazers over time
-[![Stargazers over time](https://starchart.cc/joshuafuller/ATAK-Maps.svg?variant=adaptive)](https://starchart.cc/joshuafuller/ATAK-Maps)
+
+<!-- star-history:start -->
+<!-- star-history:end -->
 
 

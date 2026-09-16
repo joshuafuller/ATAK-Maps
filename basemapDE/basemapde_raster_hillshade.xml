@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!-- Source: https://gdz.bkg.bund.de/index.php/default/webdienste/basemap-webdienste/gdz-basemapde-vektor-gdz-basemapde-vektor.html -->
+<customWmsMapSource>
+    <name>basemap.de WMTS, Hillshade</name>
+    <minZoom>0</minZoom>
+    <maxZoom>19</maxZoom>
+    <tileType>png</tileType>
+    <tileUpdate>IfNoneMatch</tileUpdate>
+    <url>https://sgx.geodatenzentrum.de/wmts_basemapde_schummerung/tile/1.0.0/de_basemapde_web_raster_hillshade/default/GLOBAL_WEBMERCATOR/{$z}/{$y}/{$x}.png</url>
+    <backgroundColor>#FFFFFF</backgroundColor> <!-- Optional: Default is black, can be #FFFFFF for white or #00000000 for transparent black if issues with PNG alpha -->
+</customWmsMapSource>

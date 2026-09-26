@@ -1,0 +1,24 @@
+name: Docs and Dependency CI
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/docs-ci.yml"
+      - "docs/**"
+      - "mkdocs.yml"
+      - "pyproject.toml"
+      - "uv.lock"
+      - "scripts/gen_pages_catalog.py"
+
+jobs:
+  test-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v4
+      - name: Test validator
+        run: uv run --extra dev pytest --cov=mapvalidator --cov-fail-under=80
+      - name: Generate catalog pages
+        run: uv run --extra docs python scripts/gen_pages_catalog.py
+      - name: Build documentation
+        run: uv run --extra docs mkdocs build --strict

@@ -3,6 +3,7 @@ name: Docs and Dependency CI
 on:
   pull_request:
     paths:
+      - ".github/workflows/docs-ci.yml"
       - "docs/**"
       - "mkdocs.yml"
       - "pyproject.toml"

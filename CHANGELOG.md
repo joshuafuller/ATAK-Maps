@@ -1,3 +1,20 @@
+# [1.9.0](https://github.com/joshuafuller/ATAK-Maps/compare/v1.8.0...v1.9.0) (2026-10-13)
+
+
+### Bug Fixes
+
+* import per-map XML from GitHub Pages (application/xml), not raw ([#85](https://github.com/joshuafuller/ATAK-Maps/issues/85)) ([2a0c4af](https://github.com/joshuafuller/ATAK-Maps/commit/2a0c4afdc16fc43c007b590eae9ed9fab6452dc2))
+* **security:** update docs dependency and reporting policy ([#95](https://github.com/joshuafuller/ATAK-Maps/issues/95)) ([d610afd](https://github.com/joshuafuller/ATAK-Maps/commit/d610afd941539f5a2bb4deafa0518367658192b6))
+* **ui:** tap-to-enlarge QR lightbox; bigger scannable README QR ([#89](https://github.com/joshuafuller/ATAK-Maps/issues/89)) ([93c6cf2](https://github.com/joshuafuller/ATAK-Maps/commit/93c6cf2a45609b2e275e07270113277faa1d591d))
+* update OpenSeaMap endpoints and document map tips ([df4ff0f](https://github.com/joshuafuller/ATAK-Maps/commit/df4ff0f2120ca48ca046c8983d4e60b517cbfafe))
+* Updated basemapDE to use a WMTS service ([#93](https://github.com/joshuafuller/ATAK-Maps/issues/93)) ([5e5cca0](https://github.com/joshuafuller/ATAK-Maps/commit/5e5cca0e4a84e9da8d2c4f64865df8e73d1b0483))
+
+
+### Features
+
+* bundle all maps as an importable ATAK data package ([#86](https://github.com/joshuafuller/ATAK-Maps/issues/86)) ([c71a2ff](https://github.com/joshuafuller/ATAK-Maps/commit/c71a2ff97bc77a7274457c99a8195632a9f8cfa2))
+* redesign the Maps catalog, landing page, and README ([#88](https://github.com/joshuafuller/ATAK-Maps/issues/88)) ([83f56ee](https://github.com/joshuafuller/ATAK-Maps/commit/83f56eeb8d65c03f33a1094c726e584f7d7fdcab))
+
 # [1.8.0](https://github.com/joshuafuller/ATAK-Maps/compare/v1.7.1...v1.8.0) (2026-07-13)
 
 

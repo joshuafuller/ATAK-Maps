@@ -45,6 +45,7 @@
 
 - **[Browse every map](maps/)** — filter by style, scan or tap to install.
 - **[Installation guide](install-guide.md)** — manual install and troubleshooting.
+- **[Map Tips](install-guide.md#map-tips)** — GRG overlays, imagery scaling and OpenSeaMap.
 - **[Create your own](creating-custom-maps.md)** — the MOBAC XML format, explained.
 
 Prefer a manual install? [Download the raw bundle](https://github.com/joshuafuller/ATAK-Maps/releases/latest/download/atak-maps.zip) and side-load it.

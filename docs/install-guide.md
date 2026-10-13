@@ -19,7 +19,7 @@ The easiest way to install maps is through ATAK's built-in Import feature:
 3. ATAK ingests the ZIP and the map sources populate automatically.
 4. Check the map layer selector — new sources should be listed.
 
-No manual file copying required. ATAK handles sorting base maps and overlays into the correct locations.
+For transparent overlays, check their placement using the [Map Tips](#map-tips) below.
 
 ## What's in the Download
 
@@ -28,7 +28,7 @@ The release ZIP contains all available XML map source files, organized by provid
 - **Providers included:** Bing, Google, ESRI, USGS, OpenTopo, and others
 - **Two types of files:**
   - **Base maps** — satellite imagery, street maps, topographic maps
-  - **Overlays** — transparent layers (flood zones, trails, reference grids) with filenames starting with `grg_`
+  - **Overlays** — transparent layers (flood zones, trails, seamarks, reference grids); most filenames start with `grg_`
 
 ## Manual Installation (Alternative)
 
@@ -38,7 +38,7 @@ If you prefer to place files manually or want to install only specific maps:
 
 ### Base Maps
 
-Copy `.xml` files (anything **not** prefixed `grg_`) to:
+Copy base-map `.xml` files to:
 
 ```
 <storage>/atak/imagery/mobile/mapsources/
@@ -48,13 +48,13 @@ Copy `.xml` files (anything **not** prefixed `grg_`) to:
 
 ### Overlays
 
-Copy files starting with `grg_` (found in the `GRG/` folder) to:
+Copy overlay XML files (the `grg_` files in `GRG/`, or OpenSeaMap seamarks) to:
 
 ```
 <storage>/atak/grg/
 ```
 
-These appear as overlay layers in ATAK, not base maps.
+These appear as overlay layers in ATAK, not base maps. The `grg_` prefix is a naming convention; the destination directory determines their use as overlays.
 
 ### Verify
 
@@ -72,6 +72,37 @@ You don't have to install the entire collection:
 1. Browse the repository folders on [GitHub](https://github.com/joshuafuller/ATAK-Maps).
 2. Download just the `.xml` files you want.
 3. Either import them via ATAK, or manually place them in the directories above.
+
+## Map Tips
+
+### Base Maps and GRG Overlays
+
+Place base-map XML files in `<storage>/atak/imagery/mobile/mapsources/` and
+transparent overlay XML files in `<storage>/atak/grg/`. Select your base map,
+then use **Overlay Manager** to turn individual GRG overlays on or off.
+If an overlay appears only as a base-map choice after import, move its XML to
+`atak/grg/` and restart ATAK.
+
+### Adjusting Imagery Scaling
+
+If symbols or labels on a raster map or GRG overlay appear too small, adjust
+**Overlay Manager → Map Controls → Map Imagery Scaling**. This changes imagery
+scaling for the base map as well as raster overlays; it is not a separate
+seamark-symbol size control. Available controls can vary by ATAK version.
+
+### Using OpenSeaMap
+
+OpenSeaMap has two separate XML sources:
+
+| Source | Install location | Purpose |
+|--------|------------------|---------|
+| `openseamap_base_chart.xml` | `<storage>/atak/imagery/mobile/mapsources/` | Base chart |
+| `openseamap_seamarks.xml` | `<storage>/atak/grg/` | Transparent seamarks overlay |
+
+Select **OpenSeaMap – Base Chart**, then enable **OpenSeaMap – Seamarks** in
+Overlay Manager. You can toggle seamarks independently or display them over
+another base map. For small symbols, use the imagery-scaling control described
+above.
 
 ## Offline Caching
 
@@ -104,7 +135,7 @@ Once cached, those tiles are available with no internet connection.
 | File type | Correct directory | Common mistake |
 |-----------|-------------------|----------------|
 | Base maps (`.xml`) | `atak/imagery/mobile/mapsources/` | `atak/imagery/` (parent dir — won't be scanned) |
-| Overlays (`grg_*.xml`) | `atak/grg/` | `atak/imagery/mobile/mapsources/` |
+| Overlay XMLs (including seamarks) | `atak/grg/` | `atak/imagery/mobile/mapsources/` |
 
 ### Accepted file extensions
 

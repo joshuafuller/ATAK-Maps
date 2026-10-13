@@ -109,7 +109,7 @@ openseamap-openseamap-base-chart:
   text: "OpenSeaMap base chart — OpenStreetMap land with marine styling."
 openseamap-openseamap-seamarks:
   category: Nautical
-  text: "OpenSeaMap seamarks — buoys, lights and depths as a transparent overlay, global."
+  text: "OpenSeaMap seamarks — transparent nautical overlay, global. Place the XML in atak/grg/ to toggle it over a base map; see Map Tips."
 opentopo-opentopo-opentopomap:
   category: Topographic
   text: "OpenTopoMap — topographic style over OSM with contours and hillshade, global."

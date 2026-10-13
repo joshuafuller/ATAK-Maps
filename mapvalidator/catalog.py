@@ -179,6 +179,7 @@ def _card_html(entry: dict, meta: dict) -> str:
         "</div>"
         '<div class="am-card__foot">'
         f'<a href="{src_href}">View source</a>'
+        '<a href="../install-guide/#map-tips">Map Tips</a>'
         f"{key_badge}"
         "</div>"
         "</article>"

@@ -66,8 +66,10 @@ All available map layers, auto-generated from the XML files in this repository:
 
 | Provider | Map Name | Zoom (min–max) | Tile Type | Source |
 |----------|----------|----------------|-----------|--------|
-| basemapDE | basemap.de Raster, Farbe | 0–19 | PNG | WMS |
-| basemapDE | basemap.de Raster, grau | 0–19 | PNG | WMS |
+| basemapDE | basemap.de WMTS, ColorDEM | 0–19 | png | TMS |
+| basemapDE | basemap.de WMTS, Farbe | 0–19 | png | TMS |
+| basemapDE | basemap.de WMTS, Grau | 0–19 | png | TMS |
+| basemapDE | basemap.de WMTS, Hillshade | 0–19 | png | TMS |
 | Bing | Bing - Hybrid | 0–20 | png | TMS |
 | Bing | Bing - Maps | 0–20 | png | TMS |
 | Bing | Bing - Satellite | 0–20 | jpg | TMS |

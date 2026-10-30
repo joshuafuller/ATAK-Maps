@@ -66,51 +66,50 @@ All available map layers, auto-generated from the XML files in this repository:
 
 | Provider | Map Name | Zoom (min–max) | Tile Type | Source |
 |----------|----------|----------------|-----------|--------|
-| basemapDE | basemap.de WMTS, ColorDEM | 0–19 | png | TMS |
-| basemapDE | basemap.de WMTS, Farbe | 0–19 | png | TMS |
-| basemapDE | basemap.de WMTS, Grau | 0–19 | png | TMS |
-| basemapDE | basemap.de WMTS, Hillshade | 0–19 | png | TMS |
-| Bing | Bing - Hybrid | 0–20 | png | TMS |
-| Bing | Bing - Maps | 0–20 | png | TMS |
-| Bing | Bing - Satellite | 0–20 | jpg | TMS |
-| BLM | BLM - Land Ownership (SMA) | 1–14 | jpg | TMS |
-| BLM | BLM - Satellite + Land Ownership | —–— | — | Multi-Layer |
-| cycleosm | CycleOSM - OSM Cycle | 0–21 | png | TMS |
-| ESRI | Esri - Clarity | 1–20 | jpg | TMS |
-| ESRI | Esri - Nat Geo World | 1–20 | jpg | TMS |
-| ESRI | Esri - USA Topo Maps | 0–15 | png | TMS |
-| ESRI | Esri - World Topo | 1–20 | jpg | TMS |
-| Google | Google - Hybrid | 0–20 | jpg | TMS |
-| Google | Google - Hybrid No POI | 0–20 | jpg | TMS |
-| Google | Google - Relief | 0–20 | jpg | TMS |
-| Google | Google - Road | 0–20 | png | TMS |
-| Google | Google - Road Alt | 0–20 | png | TMS |
-| Google | Google - Road No POI | 0–20 | png | TMS |
-| Google | Google - Satellite | 0–20 | jpg | TMS |
-| Google | Google - Terrain | 0–20 | jpg | TMS |
-| GRG | BC Wildfire - Fire Perimeters (Current) | 0–22 | png | WMS |
-| GRG | FEMA NFHL - Flood Hazard Zones (WMS) | 5–19 | PNG | WMS |
-| GRG | GRG - BLM Public Lands Overlay | 1–14 | png | TMS |
-| GRG | GRG - Google Bike | 0–20 | png | TMS |
-| GRG | GRG - Google Roads | 0–20 | png | TMS |
-| GRG | GRG - Google Transit | 0–20 | png | TMS |
-| GRG | GRG - WaymarkedTrails Cycle Routes Overlay | 0–18 | png | TMS |
-| michelin | Michelin - OSM Michelin | 5–19 | — | TMS |
-| mtbmapcz | MTBMap.cz - MTB Map Europe | 0–21 | png | TMS |
-| NAIP | NAIP – USDA CONUS Prime | 0–17 | jpg | TMS |
-| NaturalResourcesCanada | Canada - Toporama | 0–23 | jpg | WMS |
-| NaturalResourcesCanada | Canada Base Map – Transportation | 0–23 | jpg | WMS |
-| openseamap | OpenSeaMap – Base Chart | 0–18 | png | TMS |
-| openseamap | OpenSeaMap – Seamarks | 0–18 | png | TMS |
-| opentopo | OpenTopo - Opentopomap | 1–17 | png | TMS |
-| OrdnanceSurvey | OS - Light 3857 | 0–16 | png | TMS |
-| OrdnanceSurvey | OS - Outdoor 3857 | 0–16 | png | TMS |
-| OrdnanceSurvey | OS - Road 3857 | 0–16 | png | TMS |
-| Poland | PL Ortofoto Std (WMTS EPSG3857) | 0–20 | JPG | TMS |
-| usgs | USGS - Usgsbasemap | 0–15 | png | TMS |
-| usgs | USGS - Usgsimageryonly | 0–15 | png | TMS |
-| usgs | USGS - Usgsimagerytopo | 0–15 | png | TMS |
-| usgs | USGS - Usgsshadedrelief | 0–15 | png | TMS |
+| bing | Bing Hybrid | 0–20 | jpg | TMS |
+| bing | Bing Road | 0–20 | png | TMS |
+| bing | Bing Satellite | 0–20 | jpg | TMS |
+| blm | BLM Land Ownership | 1–14 | jpg | TMS |
+| blm | BLM Sat + Ownership | —–— | — | Multi-Layer |
+| ca-nrcan | CA Base Map | 0–19 | jpg | WMS |
+| ca-nrcan | CA Toporama | 0–18 | jpg | WMS |
+| cyclosm | CyclOSM | 0–20 | png | TMS |
+| de-basemap | DE Basemap Color | 0–19 | png | TMS |
+| de-basemap | DE Basemap Elevation | 0–12 | png | TMS |
+| de-basemap | DE Basemap Gray | 0–19 | png | TMS |
+| de-basemap | DE Basemap Hillshade | 0–19 | png | TMS |
+| esri | Esri Clarity | 1–19 | jpg | TMS |
+| esri | Esri NatGeo | 1–16 | jpg | TMS |
+| esri | Esri Topo | 1–19 | jpg | TMS |
+| esri | Esri USA Topo | 0–15 | jpg | TMS |
+| google | Google Hybrid | 0–20 | jpg | TMS |
+| google | Google Hybrid No POI | 0–20 | jpg | TMS |
+| google | Google Relief | 0–20 | jpg | TMS |
+| google | Google Road | 0–20 | png | TMS |
+| google | Google Road Alt | 0–20 | png | TMS |
+| google | Google Road No POI | 0–20 | png | TMS |
+| google | Google Satellite | 0–20 | jpg | TMS |
+| google | Google Terrain | 0–20 | jpg | TMS |
+| GRG | + BLM Public Lands | 1–14 | png | TMS |
+| GRG | + CA BC Wildfire | 0–22 | png | WMS |
+| GRG | + FEMA Flood | 5–19 | PNG | WMS |
+| GRG | + Google Bike | 0–20 | png | TMS |
+| GRG | + Google Roads | 0–20 | png | TMS |
+| GRG | + Google Transit | 0–20 | png | TMS |
+| GRG | + OpenSeaMap | 0–18 | png | TMS |
+| GRG | + Waymarked Cycling | 0–18 | png | TMS |
+| mtbmap | MTBMap Europe | 0–18 | png | TMS |
+| naip | NAIP Imagery | 0–17 | jpg | TMS |
+| openseamap | OpenSeaMap Base | 0–18 | png | TMS |
+| opentopo | OpenTopoMap | 1–17 | png | TMS |
+| pl-geoportal | PL Ortho | 0–19 | jpg | TMS |
+| uk-os | UK OS Light | 0–16 | png | TMS |
+| uk-os | UK OS Outdoor | 0–16 | png | TMS |
+| uk-os | UK OS Road | 0–16 | png | TMS |
+| usgs | USGS Imagery | 0–16 | jpg | TMS |
+| usgs | USGS Imagery Topo | 0–16 | jpg | TMS |
+| usgs | USGS Relief | 0–16 | jpg | TMS |
+| usgs | USGS Topo | 0–16 | jpg | TMS |
 
 <!-- MAP_CATALOG_END -->
 

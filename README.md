@@ -81,16 +81,19 @@ All available map layers, auto-generated from the XML files in this repository:
 | ESRI | Esri - USA Topo Maps | 0–15 | png | TMS |
 | ESRI | Esri - World Topo | 1–20 | jpg | TMS |
 | Google | Google - Hybrid | 0–20 | jpg | TMS |
-| Google | Google - Roadmap Alt | 0–20 | jpg | TMS |
-| Google | Google - Roadmap No Poi | 0–20 | jpg | TMS |
-| Google | Google - Roadmap Standard | 0–20 | jpg | TMS |
-| Google | Google - Satellite Only | 0–20 | jpg | TMS |
+| Google | Google - Hybrid No POI | 0–20 | jpg | TMS |
+| Google | Google - Relief | 0–20 | jpg | TMS |
+| Google | Google - Road | 0–20 | png | TMS |
+| Google | Google - Road Alt | 0–20 | png | TMS |
+| Google | Google - Road No POI | 0–20 | png | TMS |
+| Google | Google - Satellite | 0–20 | jpg | TMS |
 | Google | Google - Terrain | 0–20 | jpg | TMS |
 | GRG | BC Wildfire - Fire Perimeters (Current) | 0–22 | png | WMS |
 | GRG | FEMA NFHL - Flood Hazard Zones (WMS) | 5–19 | PNG | WMS |
 | GRG | GRG - BLM Public Lands Overlay | 1–14 | png | TMS |
-| GRG | GRG - Google Road Only Overlay | 0–20 | jpg | TMS |
-| GRG | GRG - Google Terrain Shading Overlay | 0–20 | jpg | TMS |
+| GRG | GRG - Google Bike | 0–20 | png | TMS |
+| GRG | GRG - Google Roads | 0–20 | png | TMS |
+| GRG | GRG - Google Transit | 0–20 | png | TMS |
 | GRG | GRG - WaymarkedTrails Cycle Routes Overlay | 0–18 | png | TMS |
 | michelin | Michelin - OSM Michelin | 5–19 | — | TMS |
 | mtbmapcz | MTBMap.cz - MTB Map Europe | 0–21 | png | TMS |

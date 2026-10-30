@@ -41,28 +41,37 @@ grg-grg-bc-wildfire-perimeters-current:
 grg-grg-blm-public-lands-overlay:
   category: Overlay
   text: "BLM public-lands ownership as a transparent overlay — colour = public land, clear = private."
-grg-grg-google-road-only-overlay:
+grg-grg-google-bike:
+  category: Cycling
+  text: "Google bike lanes, trails and bike-friendly roads as a transparent overlay — global."
+grg-grg-google-roads:
   category: Overlay
   text: "Google roads and labels only, transparent — drop over any imagery basemap."
-grg-grg-google-terrain-shading-overlay:
+grg-grg-google-transit:
   category: Overlay
-  text: "Google terrain hillshade as a transparent overlay."
+  text: "Google public transit lines as a transparent overlay — global."
 grg-grg-waymarkedtrails-cycle-routes-overlay:
   category: Cycling
   text: "Signed cycle routes (WaymarkedTrails) as a transparent overlay — best coverage in Europe."
 google-google-hybrid:
   category: Satellite
   text: "Google satellite imagery with roads and labels — global."
-google-google-roadmap-alt:
-  category: Street
-  text: "Google road map, alternate styling — global."
-google-google-roadmap-no-poi:
-  category: Street
-  text: "Google road map with points-of-interest removed for cleaner streets — global."
-google-google-roadmap-standard:
+google-google-hybrid-no-poi:
+  category: Satellite
+  text: "Google satellite imagery with roads and labels, points-of-interest removed — global."
+google-google-relief:
+  category: Topographic
+  text: "Google shaded relief only, no roads or labels — global."
+google-google-road:
   category: Street
   text: "Standard Google road/street map — global."
-google-google-satellite-only:
+google-google-road-alt:
+  category: Street
+  text: "Google road map, alternate styling — global."
+google-google-road-no-poi:
+  category: Street
+  text: "Google road map with points-of-interest removed for cleaner streets — global."
+google-google-satellite:
   category: Satellite
   text: "Google satellite/aerial imagery, no labels — global."
 google-google-terrain:

@@ -35,7 +35,7 @@ Before submitting a pull request, use the helper scripts in `scripts/` to catch 
 
 * **`./scripts/test-map.sh <file>`** — Validates and probes a single map file. Use this when you're adding or editing one map:
   ```bash
-  ./scripts/test-map.sh Google/google_hybrid.xml
+  ./scripts/test-map.sh google/google_hybrid.xml
   ```
 
 * **`./scripts/probe.sh`** — Validates all maps and probes every tile server for liveness. This makes network requests, so it takes longer. Useful for a final check before opening your PR.

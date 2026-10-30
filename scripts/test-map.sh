@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Test a single XML map file — validates and probes the tile server.
 # Usage:
-#   ./scripts/test-map.sh Google/google_hybrid.xml
+#   ./scripts/test-map.sh google/google_hybrid.xml
 #   ./scripts/test-map.sh path/to/my_new_map.xml
 set -euo pipefail
 
@@ -11,8 +11,8 @@ if [ $# -eq 0 ]; then
     echo "Validates XML structure and probes the tile server for each file."
     echo ""
     echo "Examples:"
-    echo "  $0 Google/google_hybrid.xml"
-    echo "  $0 ESRI/esri_clarity.xml Bing/Bing_Maps.xml"
+    echo "  $0 google/google_hybrid.xml"
+    echo "  $0 esri/esri_clarity.xml bing/bing_road.xml"
     exit 1
 fi
 

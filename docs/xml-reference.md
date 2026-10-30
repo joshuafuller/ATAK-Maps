@@ -44,7 +44,7 @@ addressed by zoom/x/y or quadkey.
 
 ### Full annotated example
 
-From [`opentopo/opentopo_opentopomap.xml`](https://github.com/joshuafuller/ATAK-Maps/blob/master/opentopo/opentopo_opentopomap.xml):
+From [`opentopo/opentopomap.xml`](https://github.com/joshuafuller/ATAK-Maps/blob/master/opentopo/opentopomap.xml):
 
 ```xml
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -85,7 +85,7 @@ From [`opentopo/opentopo_opentopomap.xml`](https://github.com/joshuafuller/ATAK-
 
 ### Quadkey example
 
-From [`Bing/Bing_Maps.xml`](https://github.com/joshuafuller/ATAK-Maps/blob/master/Bing/Bing_Maps.xml):
+From [`bing/bing_road.xml`](https://github.com/joshuafuller/ATAK-Maps/blob/master/bing/bing_road.xml):
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -170,7 +170,7 @@ Alternatively, use XML entities (`&amp;` for `&`).
 
 ### Full annotated example
 
-From [`basemapDE/basemapde_raster_farbe.xml`](https://github.com/joshuafuller/ATAK-Maps/blob/master/basemapDE/basemapde_raster_farbe.xml):
+From [`de-basemap/de_basemap_color.xml`](https://github.com/joshuafuller/ATAK-Maps/blob/master/de-basemap/de_basemap_color.xml):
 
 ```xml
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -190,7 +190,7 @@ From [`basemapDE/basemapde_raster_farbe.xml`](https://github.com/joshuafuller/AT
 
 ### WMS example with additional parameters
 
-From [`GRG/grg_FEMA_NFHL_Flood_Hazard_Zones.xml`](https://github.com/joshuafuller/ATAK-Maps/blob/master/GRG/grg_FEMA_NFHL_Flood_Hazard_Zones.xml):
+From [`GRG/grg_fema_flood.xml`](https://github.com/joshuafuller/ATAK-Maps/blob/master/GRG/grg_fema_flood.xml):
 
 ```xml
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -345,7 +345,7 @@ commas without spaces are treated as a single server part.
 **Space-separated subdomains** (correct usage):
 
 ```xml
-<!-- From opentopo_opentopomap.xml -->
+<!-- From opentopomap.xml -->
 <serverParts>a b c</serverParts>
 <url>https://{$serverpart}.tile.opentopomap.org/{$z}/{$x}/{$y}.png</url>
 ```
@@ -355,7 +355,7 @@ Cycles through: `a`, `b`, `c`
 **Space-separated numbers**:
 
 ```xml
-<!-- From michelin_osm_michelin.xml -->
+<!-- Example (ViaMichelin, a source since removed) -->
 <serverParts>1 2 3 4</serverParts>
 <url>https://map{$serverpart}.viamichelin.com/...</url>
 ```
@@ -365,7 +365,7 @@ Cycles through: `1`, `2`, `3`, `4`
 **Comma-separated -- treated as a single value**:
 
 ```xml
-<!-- From openseamap_base_chart.xml -->
+<!-- From openseamap_base.xml -->
 <serverParts>t1,t2,t3</serverParts>
 ```
 
@@ -489,7 +489,7 @@ Source: `MobacMapSourceFactory.java` line 380-381:
 Only `coordinatesystem` (all lowercase) is recognized by the parser.  The
 camelCase variant `coordinateSystem` is silently ignored.  Some files in
 this repository use the wrong casing (e.g.,
-[`openseamap/openseamap_base_chart.xml`](https://github.com/joshuafuller/ATAK-Maps/blob/master/openseamap/openseamap_base_chart.xml)),
+[`openseamap/openseamap_base.xml`](https://github.com/joshuafuller/ATAK-Maps/blob/master/openseamap/openseamap_base.xml)),
 which means their coordinate system setting has no effect and the default
 SRID applies instead.
 

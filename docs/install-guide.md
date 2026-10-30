@@ -28,7 +28,7 @@ The release ZIP contains all available XML map source files, organized by provid
 - **Providers included:** Bing, Google, ESRI, USGS, OpenTopo, and others
 - **Two types of files:**
   - **Base maps** — satellite imagery, street maps, topographic maps
-  - **Overlays** — transparent layers (flood zones, trails, seamarks, reference grids); most filenames start with `grg_`
+  - **Overlays** — transparent layers (flood zones, trails, seamarks, reference grids); filenames start with `grg_` and names start with `+`
 
 ## Manual Installation (Alternative)
 
@@ -48,7 +48,7 @@ Copy base-map `.xml` files to:
 
 ### Overlays
 
-Copy overlay XML files (the `grg_` files in `GRG/`, or OpenSeaMap seamarks) to:
+Copy overlay XML files (the `grg_` files in `GRG/`) to:
 
 ```
 <storage>/atak/grg/
@@ -96,10 +96,10 @@ OpenSeaMap has two separate XML sources:
 
 | Source | Install location | Purpose |
 |--------|------------------|---------|
-| `openseamap_base_chart.xml` | `<storage>/atak/imagery/mobile/mapsources/` | Base chart |
-| `openseamap_seamarks.xml` | `<storage>/atak/grg/` | Transparent seamarks overlay |
+| `openseamap/openseamap_base.xml` | `<storage>/atak/imagery/mobile/mapsources/` | Base map |
+| `GRG/grg_openseamap.xml` | `<storage>/atak/grg/` | Transparent seamarks overlay |
 
-Select **OpenSeaMap – Base Chart**, then enable **OpenSeaMap – Seamarks** in
+Select **OpenSeaMap Base** (or any base map), then enable **+ OpenSeaMap** in
 Overlay Manager. You can toggle seamarks independently or display them over
 another base map. For small symbols, use the imagery-scaling control described
 above.

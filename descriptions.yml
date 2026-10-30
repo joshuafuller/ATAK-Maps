@@ -5,16 +5,16 @@
 #   text:     one-line description shown under the map
 # A missing slug just omits the card detail (the generator warns about it).
 
-blm-blm-land-ownership-sma:
+blm-blm-land-ownership:
   category: Land use
   text: "Federal & state land ownership shaded by managing agency (BLM, USFS, NPS, BIA, state, private) — opaque basemap, United States."
-blm-blm-satellite-land-ownership:
+blm-blm-satellite-ownership:
   category: Land use
   text: "Esri satellite imagery with BLM land-ownership colours blended on top at 50% — United States."
 bing-bing-hybrid:
   category: Satellite
   text: "Bing satellite imagery with roads and labels overlaid — global."
-bing-bing-maps:
+bing-bing-road:
   category: Street
   text: "Bing road/street map — global."
 bing-bing-satellite:
@@ -23,22 +23,22 @@ bing-bing-satellite:
 esri-esri-clarity:
   category: Satellite
   text: "Esri World Imagery (Clarity) — high-resolution satellite/aerial, global."
-esri-esri-nat-geo-world:
+esri-esri-natgeo:
   category: Street
   text: "National Geographic-styled reference map — terrain, roads and boundaries, global."
-esri-esri-usa-topo-maps:
+esri-esri-usa-topo:
   category: Topographic
   text: "Esri USA Topo — classic USGS-style topographic quads, United States."
-esri-esri-world-topo:
+esri-esri-topo:
   category: Topographic
   text: "Esri World Topographic — roads, terrain, boundaries and labels, global."
-grg-grg-fema-nfhl-flood-hazard-zones:
+grg-grg-fema-flood:
   category: Overlay
   text: "FEMA National Flood Hazard Layer — flood-zone overlay, transparent, United States."
-grg-grg-bc-wildfire-perimeters-current:
+grg-grg-ca-bc-wildfire:
   category: Overlay
   text: "Current British Columbia wildfire perimeters (DataBC) — transparent overlay."
-grg-grg-blm-public-lands-overlay:
+grg-grg-blm-public-lands:
   category: Overlay
   text: "BLM public-lands ownership as a transparent overlay — colour = public land, clear = private."
 grg-grg-google-bike:
@@ -50,7 +50,7 @@ grg-grg-google-roads:
 grg-grg-google-transit:
   category: Overlay
   text: "Google public transit lines as a transparent overlay — global."
-grg-grg-waymarkedtrails-cycle-routes-overlay:
+grg-grg-waymarked-cycling:
   category: Cycling
   text: "Signed cycle routes (WaymarkedTrails) as a transparent overlay — best coverage in Europe."
 google-google-hybrid:
@@ -77,60 +77,57 @@ google-google-satellite:
 google-google-terrain:
   category: Topographic
   text: "Google terrain map — shaded relief with roads, global."
-naip-naip-usda-conusprime:
+naip-naip-imagery:
   category: Satellite
   text: "USDA NAIP — high-resolution leaf-on aerial orthophotos, continental United States."
-naturalresourcescanada-naturalresourcescanada-cbmt:
+ca-nrcan-ca-base-map:
   category: Street
   text: "Canada Base Map – Transportation (NRCan) — roads and reference, Canada."
-naturalresourcescanada-naturalresourcescanada-toporama:
+ca-nrcan-ca-toporama:
   category: Topographic
   text: "Toporama (NRCan) — official Canadian topographic map."
-ordnancesurvey-os-light-3857:
+uk-os-uk-os-light:
   category: Street
   text: "Ordnance Survey Light — minimal low-contrast basemap of Great Britain. Free OS API key required."
-ordnancesurvey-os-outdoor-3857:
+uk-os-uk-os-outdoor:
   category: Topographic
   text: "Ordnance Survey Outdoor — footpaths, contours and leisure detail, Great Britain. Free OS API key required."
-ordnancesurvey-os-road-3857:
+uk-os-uk-os-road:
   category: Street
   text: "Ordnance Survey Road — road/street map of Great Britain. Free OS API key required."
-poland-pl-geoportal-ortofoto-standard-epsg3857:
+pl-geoportal-pl-ortho:
   category: Satellite
   text: "Polish Geoportal orthophoto — high-resolution aerial imagery, Poland."
-basemapde-basemapde-raster-farbe:
+de-basemap-de-basemap-color:
   category: Street
   text: "basemap.de raster (colour) — official German government topographic basemap."
-basemapde-basemapde-raster-grau:
+de-basemap-de-basemap-gray:
   category: Street
   text: "basemap.de raster (grayscale) — muted German government basemap, good under overlays."
-cycleosm-cycleosm-osm-cycle:
+cyclosm-cyclosm:
   category: Cycling
   text: "CyclOSM — cycling-oriented OpenStreetMap style highlighting bike infrastructure, global."
-michelin-michelin-osm-michelin:
-  category: Street
-  text: "Michelin-styled OpenStreetMap road map — global."
-mtbmapcz-mtbmapcz-mtb-map-europe:
+mtbmap-mtbmap-europe:
   category: Cycling
   text: "MTBMap.cz — mountain-bike map with singletrack and trail difficulty, Europe."
-openseamap-openseamap-base-chart:
+openseamap-openseamap-base:
   category: Nautical
   text: "OpenSeaMap base chart — OpenStreetMap land with marine styling."
-openseamap-openseamap-seamarks:
+grg-grg-openseamap:
   category: Nautical
   text: "OpenSeaMap seamarks — transparent nautical overlay, global. Place the XML in atak/grg/ to toggle it over a base map; see Map Tips."
-opentopo-opentopo-opentopomap:
+opentopo-opentopomap:
   category: Topographic
   text: "OpenTopoMap — topographic style over OSM with contours and hillshade, global."
-usgs-usgs-usgsbasemap:
+usgs-usgs-topo:
   category: Topographic
   text: "USGS The National Map topographic basemap — United States."
-usgs-usgs-usgsimageryonly:
+usgs-usgs-imagery:
   category: Satellite
   text: "USGS aerial imagery only, no labels — United States."
-usgs-usgs-usgsimagerytopo:
+usgs-usgs-imagery-topo:
   category: Satellite
   text: "USGS aerial imagery with topographic labels and features blended — United States."
-usgs-usgs-usgsshadedrelief:
+usgs-usgs-relief:
   category: Topographic
   text: "USGS shaded relief — terrain hillshade, United States."

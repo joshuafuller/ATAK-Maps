@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<customMapSource>
+    <!-- Place in <storage>/atak/grg/ to toggle seamarks over a base map. -->
+    <name>+ OpenSeaMap</name>
+    <minZoom>0</minZoom>
+    <maxZoom>18</maxZoom>
+    <tileType>png</tileType>
+    <url>https://tiles.openseamap.org/seamark/{$z}/{$x}/{$y}.png</url>
+    <coordinatesystem>EPSG:3857</coordinatesystem>
+    <backgroundColor>#000000</backgroundColor>
+    <ignoreErrors>false</ignoreErrors>
+</customMapSource>

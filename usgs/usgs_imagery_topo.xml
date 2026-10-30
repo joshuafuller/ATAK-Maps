@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<customMapSource>
+    <name>USGS Imagery Topo</name>
+    <minZoom>0</minZoom>
+    <maxZoom>16</maxZoom>
+    <tileType>jpg</tileType>
+    <tileUpdate>None</tileUpdate>
+    <url>https://basemap.nationalmap.gov/ArcGIS/rest/services/USGSImageryTopo/MapServer/tile/{$z}/{$y}/{$x}</url>
+    <backgroundColor>#000000</backgroundColor>
+</customMapSource>

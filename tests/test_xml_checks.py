@@ -468,9 +468,9 @@ class TestEdgeCases:
 
 class TestBingSatellite:
     def test_bing_satellite_no_placeholder_error(self, repo_root):
-        bing_sat = repo_root / "Bing" / "Bing_Satellite.xml"
+        bing_sat = repo_root / "bing" / "bing_satellite.xml"
         if not bing_sat.exists():
-            pytest.skip("Bing_Satellite.xml not in repo")
+            pytest.skip("bing_satellite.xml not in repo")
         result = validate_file(bing_sat)
         assert not _has_message(result.errors, "placeholder")
         assert result.source_type == "TMS"
@@ -486,59 +486,59 @@ class TestKnownCorpusIssues:
 
     def test_openseamap_no_camelcase_after_fix(self, repo_root):
         """openseamap files were fixed to use lowercase coordinatesystem — no warning."""
-        seamarks = repo_root / "openseamap" / "openseamap_seamarks.xml"
+        seamarks = repo_root / "GRG" / "grg_openseamap.xml"
         if not seamarks.exists():
-            pytest.skip("openseamap_seamarks.xml not in repo")
+            pytest.skip("grg_openseamap.xml not in repo")
         result = validate_file(seamarks)
         assert not _has_message(result.warnings, "coordinateSystem")
         assert not _has_message(result.warnings, "camelCase")
 
     def test_openseamap_no_comma_serverparts_after_fix(self, repo_root):
         """openseamap files were fixed to use space-separated serverParts — no warning."""
-        seamarks = repo_root / "openseamap" / "openseamap_seamarks.xml"
+        seamarks = repo_root / "GRG" / "grg_openseamap.xml"
         if not seamarks.exists():
-            pytest.skip("openseamap_seamarks.xml not in repo")
+            pytest.skip("grg_openseamap.xml not in repo")
         result = validate_file(seamarks)
         assert not _has_message(result.warnings, "comma")
 
     def test_google_hybrid_https_after_fix(self, repo_root):
         """Google hybrid was fixed to HTTPS — no warning."""
-        hybrid = repo_root / "Google" / "google_hybrid.xml"
+        hybrid = repo_root / "google" / "google_hybrid.xml"
         if not hybrid.exists():
             pytest.skip("google_hybrid.xml not in repo")
         result = validate_file(hybrid)
         assert not _has_message(result.warnings, "http")
 
-    def test_mtbmapcz_still_http(self, repo_root):
-        """mtbmapcz stays HTTP (server doesn't support HTTPS) — should still warn."""
-        mtb = repo_root / "mtbmapcz" / "mtbmapcz_mtb_map_europe.xml"
+    def test_mtbmap_https_after_fix(self, repo_root):
+        """mtbmap.cz now serves HTTPS — no http warning."""
+        mtb = repo_root / "mtbmap" / "mtbmap_europe.xml"
         if not mtb.exists():
-            pytest.skip("mtbmapcz_mtb_map_europe.xml not in repo")
+            pytest.skip("mtbmap_europe.xml not in repo")
         result = validate_file(mtb)
-        assert _has_message(result.warnings, "http")
+        assert not _has_message(result.warnings, "http")
 
-    def test_canada_cbmt_maxzoom_23_warns(self, repo_root):
-        """Canadian map with maxZoom=23 — should WARN (not ERROR)."""
-        cbmt = repo_root / "NaturalResourcesCanada" / "naturalresourcescanada_cbmt.xml"
+    def test_canada_cbmt_maxzoom_after_fix(self, repo_root):
+        """CBMT maxZoom lowered to the server's real limit (19) — no maxZoom warning."""
+        cbmt = repo_root / "ca-nrcan" / "ca_base_map.xml"
         if not cbmt.exists():
-            pytest.skip("naturalresourcescanada_cbmt.xml not in repo")
+            pytest.skip("ca_base_map.xml not in repo")
         result = validate_file(cbmt)
-        assert _has_message(result.warnings, "maxZoom")
+        assert not _has_message(result.warnings, "maxZoom")
         assert not _has_message(result.errors, "maxZoom")
 
     def test_bing_satellite_bgcolor_info(self, repo_root):
         """Bing Satellite has backgroundColor #000000 (6 hex digits) — must INFO."""
-        bing = repo_root / "Bing" / "Bing_Satellite.xml"
+        bing = repo_root / "bing" / "bing_satellite.xml"
         if not bing.exists():
-            pytest.skip("Bing_Satellite.xml not in repo")
+            pytest.skip("bing_satellite.xml not in repo")
         result = validate_file(bing)
         assert _has_message(result.info, "backgroundColor")
 
     def test_real_tile_update_none_warns(self, repo_root):
         """Real files with <tileUpdate>None</tileUpdate> should produce a warning."""
-        bing = repo_root / "Bing" / "Bing_Satellite.xml"
+        bing = repo_root / "bing" / "bing_satellite.xml"
         if not bing.exists():
-            pytest.skip("Bing_Satellite.xml not in repo")
+            pytest.skip("bing_satellite.xml not in repo")
         result = validate_file(bing)
         assert _has_message(result.warnings, "tileUpdate")
 

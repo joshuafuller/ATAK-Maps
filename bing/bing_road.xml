@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<customMapSource>
+	<name>Bing Road</name>
+	<minZoom>0</minZoom>
+	<maxZoom>20</maxZoom>
+	<tileType>png</tileType>
+	<tileUpdate>None</tileUpdate>
+	<url>https://ecn.t{$serverpart}.tiles.virtualearth.net/tiles/r{$q}?g=761&amp;mkt=en-us</url>
+	<serverParts>0 1 2 3</serverParts>
+	<backgroundColor>#000000</backgroundColor>
+</customMapSource>

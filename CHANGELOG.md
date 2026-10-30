@@ -1,3 +1,10 @@
+# [1.10.0](https://github.com/joshuafuller/ATAK-Maps/compare/v1.9.0...v1.10.0) (2026-10-30)
+
+
+### Features
+
+* **google:** add hybrid no-POI, bike and transit layers; short clear names ([#97](https://github.com/joshuafuller/ATAK-Maps/issues/97)) ([843d54b](https://github.com/joshuafuller/ATAK-Maps/commit/843d54bfb5c51ebf79e8e820c2df97d08e459ba8))
+
 # [1.9.0](https://github.com/joshuafuller/ATAK-Maps/compare/v1.8.0...v1.9.0) (2026-10-13)
 
 

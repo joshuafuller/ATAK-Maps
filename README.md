@@ -66,18 +66,18 @@ All available map layers, auto-generated from the XML files in this repository:
 
 | Provider | Map Name | Zoom (min–max) | Tile Type | Source |
 |----------|----------|----------------|-----------|--------|
-| bing | Bing Hybrid | 0–20 | jpg | TMS |
-| bing | Bing Road | 0–20 | png | TMS |
-| bing | Bing Satellite | 0–20 | jpg | TMS |
+| bing | Bing Hybrid | 1–20 | jpg | TMS |
+| bing | Bing Road | 1–20 | png | TMS |
+| bing | Bing Satellite | 1–20 | jpg | TMS |
 | blm | BLM Land Ownership | 1–14 | jpg | TMS |
 | blm | BLM Sat + Ownership | —–— | — | Multi-Layer |
-| ca-nrcan | CA Base Map | 0–19 | jpg | WMS |
-| ca-nrcan | CA Toporama | 0–18 | jpg | WMS |
+| ca-nrcan | CA Base Map | 1–19 | jpg | WMS |
+| ca-nrcan | CA Toporama | 1–18 | jpg | WMS |
 | cyclosm | CyclOSM | 0–20 | png | TMS |
-| de-basemap | DE Basemap Color | 0–19 | png | TMS |
-| de-basemap | DE Basemap Elevation | 0–12 | png | TMS |
-| de-basemap | DE Basemap Gray | 0–19 | png | TMS |
-| de-basemap | DE Basemap Hillshade | 0–19 | png | TMS |
+| de-basemap | DE Basemap Color | 2–19 | png | TMS |
+| de-basemap | DE Basemap Elevation | 2–12 | png | TMS |
+| de-basemap | DE Basemap Gray | 2–19 | png | TMS |
+| de-basemap | DE Basemap Hillshade | 2–19 | png | TMS |
 | esri | Esri Clarity | 1–19 | jpg | TMS |
 | esri | Esri NatGeo | 1–16 | jpg | TMS |
 | esri | Esri Topo | 1–19 | jpg | TMS |
@@ -102,12 +102,12 @@ All available map layers, auto-generated from the XML files in this repository:
 | naip | NAIP Imagery | 0–17 | jpg | TMS |
 | openseamap | OpenSeaMap Base | 0–18 | png | TMS |
 | opentopo | OpenTopoMap | 1–17 | png | TMS |
-| pl-geoportal | PL Ortho | 0–19 | jpg | TMS |
+| pl-geoportal | PL Ortho | 3–19 | jpg | TMS |
 | uk-os | UK OS Light | 0–16 | png | TMS |
 | uk-os | UK OS Outdoor | 0–16 | png | TMS |
 | uk-os | UK OS Road | 0–16 | png | TMS |
 | usgs | USGS Imagery | 0–16 | jpg | TMS |
-| usgs | USGS Imagery Topo | 0–16 | jpg | TMS |
+| usgs | USGS Imagery Topo | 1–16 | jpg | TMS |
 | usgs | USGS Relief | 0–16 | jpg | TMS |
 | usgs | USGS Topo | 0–16 | jpg | TMS |
 

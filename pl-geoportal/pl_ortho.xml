@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <customMapSource>
     <name>PL Ortho</name> 
-    <minZoom>0</minZoom>
+    <minZoom>3</minZoom>
     <maxZoom>19</maxZoom>
     <tileType>jpg</tileType>
     <tileUpdate>None</tileUpdate>

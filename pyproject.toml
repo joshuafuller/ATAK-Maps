@@ -2,7 +2,7 @@
 name = "atak-maps-validator"
 version = "0.1.0"
 requires-python = ">=3.10"
-dependencies = ["requests"]
+dependencies = ["requests", "pillow", "pyyaml"]
 
 [project.optional-dependencies]
 dev = ["pytest", "pytest-cov", "responses"]

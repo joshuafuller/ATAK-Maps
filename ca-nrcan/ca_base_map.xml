@@ -2,7 +2,7 @@
 <customWmsMapSource>
     <name>CA Base Map</name>
     <version>1.1.1</version>
-    <minZoom>0</minZoom>
+    <minZoom>1</minZoom>
     <maxZoom>19</maxZoom>
     <tileType>jpg</tileType>
     <url>https://maps.geogratis.gc.ca/wms/CBMT?</url>

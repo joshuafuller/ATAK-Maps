@@ -7,6 +7,8 @@ name = "atak-maps-validator"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
+    { name = "pillow" },
+    { name = "pyyaml" },
     { name = "requests" },
 ]
 
@@ -24,8 +26,10 @@ docs = [
 [package.metadata]
 requires-dist = [
     { name = "mkdocs-material", marker = "extra == 'docs'" },
+    { name = "pillow" },
     { name = "pytest", marker = "extra == 'dev'" },
     { name = "pytest-cov", marker = "extra == 'dev'" },
+    { name = "pyyaml" },
     { name = "qrcode", extras = ["pil"], marker = "extra == 'docs'" },
     { name = "requests" },
     { name = "responses", marker = "extra == 'dev'" },

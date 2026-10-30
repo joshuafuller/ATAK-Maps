@@ -3,12 +3,17 @@
 #   category: one of Satellite | Topographic | Street | Nautical |
 #             Cycling | Overlay | Land use   (used for grouping/filter)
 #   text:     one-line description shown under the map
+#   test_point: [lat, lon] where the map has data; the ATAK harness
+#             (python -m mapvalidator --harness) tests tiles there.
+#             Required for regional maps; default is New York.
 # A missing slug just omits the card detail (the generator warns about it).
 
 blm-blm-land-ownership:
+  test_point: [38.5733, -109.5498]
   category: Land use
   text: "Federal & state land ownership shaded by managing agency (BLM, USFS, NPS, BIA, state, private) — opaque basemap, United States."
 blm-blm-satellite-ownership:
+  test_point: [38.5733, -109.5498]
   category: Land use
   text: "Esri satellite imagery with BLM land-ownership colours blended on top at 50% — United States."
 bing-bing-hybrid:
@@ -36,9 +41,11 @@ grg-grg-fema-flood:
   category: Overlay
   text: "FEMA National Flood Hazard Layer — flood-zone overlay, transparent, United States."
 grg-grg-ca-bc-wildfire:
+  test_point: [50.6745, -120.3273]
   category: Overlay
   text: "Current British Columbia wildfire perimeters (DataBC) — transparent overlay."
 grg-grg-blm-public-lands:
+  test_point: [38.5733, -109.5498]
   category: Overlay
   text: "BLM public-lands ownership as a transparent overlay — colour = public land, clear = private."
 grg-grg-google-bike:
@@ -81,39 +88,57 @@ naip-naip-imagery:
   category: Satellite
   text: "USDA NAIP — high-resolution leaf-on aerial orthophotos, continental United States."
 ca-nrcan-ca-base-map:
+  test_point: [45.4215, -75.6972]
   category: Street
   text: "Canada Base Map – Transportation (NRCan) — roads and reference, Canada."
 ca-nrcan-ca-toporama:
+  test_point: [45.4215, -75.6972]
   category: Topographic
   text: "Toporama (NRCan) — official Canadian topographic map."
 uk-os-uk-os-light:
+  test_point: [51.5072, -0.1276]
   category: Street
   text: "Ordnance Survey Light — minimal low-contrast basemap of Great Britain. Free OS API key required."
 uk-os-uk-os-outdoor:
+  test_point: [51.5072, -0.1276]
   category: Topographic
   text: "Ordnance Survey Outdoor — footpaths, contours and leisure detail, Great Britain. Free OS API key required."
 uk-os-uk-os-road:
+  test_point: [51.5072, -0.1276]
   category: Street
   text: "Ordnance Survey Road — road/street map of Great Britain. Free OS API key required."
 pl-geoportal-pl-ortho:
+  test_point: [52.2297, 21.0122]
   category: Satellite
   text: "Polish Geoportal orthophoto — high-resolution aerial imagery, Poland."
 de-basemap-de-basemap-color:
+  test_point: [52.5163, 13.3777]
   category: Street
   text: "basemap.de raster (colour) — official German government topographic basemap."
+de-basemap-de-basemap-elevation:
+  category: Topographic
+  text: "German colour-coded elevation (BKG basemap.de ColorDEM) — Germany, data to z12."
+  test_point: [52.5163, 13.3777]
 de-basemap-de-basemap-gray:
+  test_point: [52.5163, 13.3777]
   category: Street
   text: "basemap.de raster (grayscale) — muted German government basemap, good under overlays."
+de-basemap-de-basemap-hillshade:
+  category: Topographic
+  text: "German national hillshade (BKG basemap.de) — shaded relief, Germany."
+  test_point: [52.5163, 13.3777]
 cyclosm-cyclosm:
   category: Cycling
   text: "CyclOSM — cycling-oriented OpenStreetMap style highlighting bike infrastructure, global."
 mtbmap-mtbmap-europe:
+  test_point: [50.0875, 14.4213]
   category: Cycling
   text: "MTBMap.cz — mountain-bike map with singletrack and trail difficulty, Europe."
 openseamap-openseamap-base:
   category: Nautical
   text: "OpenSeaMap base chart — OpenStreetMap land with marine styling."
 grg-grg-openseamap:
+  test_point: [54.3233, 10.1394]
   category: Nautical
   text: "OpenSeaMap seamarks — transparent nautical overlay, global. Place the XML in atak/grg/ to toggle it over a base map; see Map Tips."
 opentopo-opentopomap:

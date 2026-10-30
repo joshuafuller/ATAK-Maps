@@ -12,6 +12,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0       # needed to diff against the PR base
 
       - name: Install uv
         uses: astral-sh/setup-uv@v4
@@ -21,3 +23,18 @@ jobs:
 
       - name: Run deep validation (XML checks only)
         run: uv run python -m mapvalidator
+
+      # Fetch the changed maps' tiles exactly as ATAK does (URL, User-Agent
+      # "TAK") at minZoom, maxZoom and maxZoom + 1, and check the content.
+      - name: ATAK harness (maps changed in this PR)
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          mapfile -t FILES < <(git diff --name-only --diff-filter=AMR "$BASE_SHA" HEAD -- '*.xml' \
+            | grep -vE '^(schema|tests|docs|\.github)/' || true)
+          if [ ${#FILES[@]} -eq 0 ]; then
+            echo "No map files changed."
+            exit 0
+          fi
+          uv run python -m mapvalidator --harness . --only "${FILES[@]}"

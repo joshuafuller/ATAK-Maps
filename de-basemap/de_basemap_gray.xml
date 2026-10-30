@@ -2,7 +2,7 @@
 <!-- Source: https://gdz.bkg.bund.de/index.php/default/wmts-basemapde-webraster-wmts-basemapde-webraster.html -->
 <customMapSource>
     <name>DE Basemap Gray</name>
-    <minZoom>0</minZoom>
+    <minZoom>2</minZoom>
     <maxZoom>19</maxZoom>
     <tileType>png</tileType>
     <url>https://sgx.geodatenzentrum.de/wmts_basemapde/tile/1.0.0/de_basemapde_web_raster_grau/default/GLOBAL_WEBMERCATOR/{$z}/{$y}/{$x}.png</url>

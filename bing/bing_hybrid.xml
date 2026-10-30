@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <customMapSource>
     <name>Bing Hybrid</name>
-    <minZoom>0</minZoom>
+    <minZoom>1</minZoom>
     <maxZoom>20</maxZoom>
     <tileType>jpg</tileType>
     <url>https://ecn.t2.tiles.virtualearth.net/tiles/h{$q}?g=761&amp;mkt=en-us</url>

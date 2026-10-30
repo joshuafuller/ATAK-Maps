@@ -40,7 +40,7 @@ If you prefer to place files manually or want to install only specific maps:
 
 Copy base-map `.xml` files to:
 
-```
+```text
 <storage>/atak/imagery/mobile/mapsources/
 ```
 
@@ -50,7 +50,7 @@ Copy base-map `.xml` files to:
 
 Copy overlay XML files (the `grg_` files in `GRG/`) to:
 
-```
+```text
 <storage>/atak/grg/
 ```
 

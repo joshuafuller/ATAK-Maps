@@ -41,11 +41,11 @@ Schema at `schema/mobac-maps.xsd` validates all three types. Derived from ATAK's
 
 - **One XML file per map layer** — no multi-source bundles
 - **Directory = source name** — lowercase; non-US national agencies use `<country>-<agency>` (e.g. `de-basemap/`, `uk-os/`, `ca-nrcan/`)
-- **File names**: lowercase `<source>_<layer>.xml`; overlays live in `GRG/` as `grg_<source>_<layer>.xml`
+- **Filenames**: lowercase `<source>_<layer>.xml`; overlays live in `GRG/` as `grg_<source>_<layer>.xml`
 - **Display `<name>`** — keep it short (about 20 characters; ATAK's layer list is narrow and sorts A–Z by name):
   - `<Source> <Layer>`, no ` - ` separator, no format/projection words (WMTS, 3857, EPSG): `Google Road`, `Esri Topo`, `USGS Imagery`
   - Non-US national maps start with the ISO country code: `DE Basemap Color`, `UK OS Road`, `CA Toporama`
-  - Overlays start with `+ `: `+ Google Roads`, `+ FEMA Flood` (one-tap install puts overlays in the base map list, so the name must say it)
+  - Overlays start with `+` and a space: `+ Google Roads`, `+ FEMA Flood` (one-tap install puts overlays in the base map list, so the name must say it)
   - ATAK names the offline cache `<name>.sqlite`, so renaming a map starts it with an empty cache — avoid renames
 - **Overlays** must be transparent PNG; opaque layers are base maps even if they look like "shading"
 - **Commits**: use [Conventional Commits](https://www.conventionalcommits.org/) (`feat:`, `fix:`, `docs:`, etc.) — semantic-release parses these for versioning

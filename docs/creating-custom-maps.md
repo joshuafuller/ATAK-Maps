@@ -53,7 +53,7 @@ instructions and alternative methods.
    `grg_<source>_<layer>.xml`.
 3. Keep `<name>` short (about 20 characters), as `<Source> <Layer>`:
    `Google Road`, `USGS Topo`. Start non-US national maps with the country
-   code (`DE Basemap Color`) and overlays with `+ ` (`+ FEMA Flood`).
+   code (`DE Basemap Color`) and overlays with `+` and a space (`+ FEMA Flood`).
 4. Use conventional commit format: `feat: add <map name>`.
 5. Open a pull request.
 

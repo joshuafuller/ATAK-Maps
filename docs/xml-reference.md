@@ -73,13 +73,13 @@ From [`opentopo/opentopomap.xml`](https://github.com/joshuafuller/ATAK-Maps/blob
 - **`tileType`** -- Informational tile format.  The parser stores it as-is;
   it does not affect request behavior for `customMapSource`.
 - **`tileUpdate`** -- See [Cache Control](#cache-control).  `IfNoneMatch` is a
-  string value that does not match the `\d+` regex, so refreshInterval stays
+  string value that does not match the `\d+` regular expression, so refreshInterval stays
   at `0`.  It is only meaningful to downstream cache logic.
 - **`serverParts`** -- See [Server Load Balancing](#server-load-balancing-serverparts).
 - **`invertYCoordinate`** -- Must be the exact string `true` to enable
   (case-sensitive).  Flips the Y tile coordinate: `y = (2^zoom - 1) - y`.
   Needed for some TMS servers where row 0 is at the bottom.
-- **`backgroundColor`** -- Hex color string.  The parser regex `#[0-9A-Fa-f]`
+- **`backgroundColor`** -- Hex color string.  The parser regular expression `#[0-9A-Fa-f]`
   is checked but the actual parsing expects at least 6 hex digits after `#` for
   a meaningful value.  In practice, always use `#000000` or `#FFFFFF`.
 
@@ -110,7 +110,7 @@ The `{$q}` placeholder produces a Bing-style quadkey string.  See
 Used for OGC WMS endpoints.  ATAK constructs the full `GetMap` query string
 automatically -- you provide only the base URL and layer configuration.
 
-### Element reference
+### Element reference (WMS)
 
 | Element | Type | Required | Default | Description |
 |---|---|---|---|---|
@@ -168,7 +168,7 @@ characters.  Wrap them in `<![CDATA[...]]>` to avoid escaping issues:
 
 Alternatively, use XML entities (`&amp;` for `&`).
 
-### Full annotated example
+### Full annotated example (WMS)
 
 From [`de-basemap/de_basemap_color.xml`](https://github.com/joshuafuller/ATAK-Maps/blob/master/de-basemap/de_basemap_color.xml):
 
@@ -228,7 +228,7 @@ Always use `PNG` or `JPG`.
 Composites multiple map sources into a single tile by drawing them on an
 Android `Canvas` and outputting the result as PNG.
 
-### Element reference
+### Element reference (multi-layer)
 
 | Element | Type | Required | Default | Description |
 |---|---|---|---|---|
@@ -260,7 +260,7 @@ layers outside their own zoom range are simply skipped.
   number of child layers.  A mismatch throws `RuntimeException`.
 - At least one child layer must be present in `layers`.
 
-### Full annotated example
+### Full annotated example (multi-layer)
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -337,7 +337,7 @@ The `serverParts` element distributes tile requests across multiple server
 hostnames.  Values are substituted into the `{$serverpart}` placeholder in
 round-robin order (synchronized across threads).
 
-**The parser splits on whitespace only** (`\\s+` regex).  Values separated by
+**The parser splits on whitespace only** (`\\s+` regular expression).  Values separated by
 commas without spaces are treated as a single server part.
 
 ### Examples from this repository
@@ -396,8 +396,8 @@ map source.
 | `EPSG:4326` | WGS 84 | Default for `customWmsMapSource`.  Geographic lat/lon coordinates. |
 | `EPSG:900913` | Web Mercator (legacy) | Alias for 3857.  ATAK translates this internally via `WebMercatorProjection`. |
 
-**Format:** Must match the regex `EPSG:\d+` exactly.  Values like `epsg:3857`
-or `EPSG:3857 ` (trailing space) will be silently ignored, leaving the default
+**Format:** Must match the regular expression `EPSG:\d+` exactly.  Values like `epsg:3857`
+or `EPSG:3857` with a trailing space will be silently ignored, leaving the default
 in effect.
 
 ### Element name casing
@@ -415,7 +415,7 @@ silently ignored, leaving the default SRID in effect.
 
 The `tileUpdate` element controls how aggressively ATAK refreshes cached tiles.
 
-The parser applies the regex `\d+` -- only purely numeric strings are
+The parser applies the regular expression `\d+` -- only purely numeric strings are
 recognized.  Non-numeric values are silently ignored.
 
 | Value | Meaning |
@@ -495,15 +495,15 @@ SRID applies instead.
 
 ### `tileUpdate` accepts both string values and integers -- but only integers have effect
 
-The parser regex `\d+` only matches purely numeric strings.  String values
+The parser regular expression `\d+` only matches purely numeric strings.  String values
 like `None` and `IfNoneMatch` are silently discarded, resulting in the default
 `refreshInterval = 0`.
 
-### backgroundColor regex is too restrictive
+### backgroundColor regular expression is too restrictive
 
-The parser regex `#[0-9A-Fa-f]` matches only `#` followed by a **single** hex
+The parser regular expression `#[0-9A-Fa-f]` matches only `#` followed by a **single** hex
 digit.  A standard 6-digit color like `#000000` has 6 hex digits after `#`,
-which does not match this single-character regex.  This means
+which does not match this single-character regular expression.  This means
 `backgroundColor` is effectively **never parsed** from XML in practice --
 the value always falls through to the default `0` (transparent black).
 

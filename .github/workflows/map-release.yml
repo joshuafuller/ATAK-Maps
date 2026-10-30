@@ -2,13 +2,21 @@
 # (or when you run the workflow manually).
 #
 # Flow:
-#   1. Sanity-check: latest git tag must be on this branch
-#   2. Zips every *.xml map into dist/atak-maps.zip
-#   3. semantic-release
+#   1. Wait for "Update Map Catalog" to finish, then sync to master tip
+#   2. Sanity-check: latest git tag must be on this branch
+#   3. Zips every *.xml map into dist/atak-maps.zip
+#   4. semantic-release
 #        • calculates the next SemVer
 #        • tags the commit
 #        • creates / updates the GitHub Release
 #        • uploads the ZIP as an asset
+#   5. If semantic-release skipped because master moved during the run,
+#      sync and try once more; if it still cannot release, fail the job.
+#
+# Why: semantic-release exits 0 without releasing when the local branch is
+# behind the remote ("The local branch master is behind the remote one").
+# The catalog workflow pushes a README commit on the same trigger, so this
+# race silently skipped releases (e.g. #93 on 2026-09-26, #97 on 2026-10-30).
 #
 # NOTE: The companion .releaserc.json must include @semantic-release/github
 #       with the matching asset block.
@@ -21,6 +29,11 @@ on:
     paths: "**/*.xml"
   workflow_dispatch:
 
+# Never run two releases at once; a queued run picks up the latest master.
+concurrency:
+  group: map-release
+  cancel-in-progress: false
+
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -28,6 +41,7 @@ jobs:
     permissions:
       contents: write
       issues:   write
+      actions:  read       # to see whether the catalog workflow is still running
 
     steps:
       - uses: actions/checkout@v4
@@ -35,6 +49,24 @@ jobs:
           ref: master          # Always use latest master tip, not the triggering SHA.
           fetch-depth: 0       # @semantic-release/git may have pushed a chore(release)
           fetch-tags: true     # commit since the push that triggered this run.
+
+      # The catalog workflow runs on the same push and commits README.md to
+      # master. Let it land first so semantic-release starts on the real tip.
+      - name: Wait for catalog update, then sync to master
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          for i in $(seq 1 40); do
+            ACTIVE=$(gh run list --repo "$GITHUB_REPOSITORY" --workflow generate-catalog.yml \
+              --branch master --limit 5 --json status \
+              -q '[.[] | select(.status != "completed")] | length')
+            [ "$ACTIVE" = "0" ] && break
+            echo "Catalog workflow still running ($ACTIVE active) — waiting 15s ($i/40)"
+            sleep 15
+          done
+          git fetch --tags origin master
+          git reset --hard origin/master
+          echo "Releasing from $(git rev-parse --short HEAD)"
 
       # Defense-in-depth: abort if the latest tag isn't reachable from HEAD.
       # This catches history rewrites that orphan tags (e.g. filter-branch).
@@ -59,6 +91,42 @@ jobs:
           git ls-files -z '*.xml' | xargs -0 zip dist/atak-maps.zip
 
       - name: semantic-release
+        id: release1
         uses: cycjimmy/semantic-release-action@v4
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # semantic-release silently skips when master moved during the run.
+      # Detect that, sync, and rebuild the ZIP for one more attempt.
+      - name: Check for skipped release
+        id: check
+        if: steps.release1.outputs.new_release_published != 'true'
+        run: |
+          git fetch --tags origin master
+          if [ "$(git rev-parse HEAD)" = "$(git rev-parse origin/master)" ]; then
+            echo "Up to date with master — no releasable changes."
+            echo "behind=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "::warning::master moved during the release; retrying from $(git rev-parse --short origin/master)"
+          echo "behind=true" >> "$GITHUB_OUTPUT"
+          git reset --hard origin/master
+          rm -f dist/atak-maps.zip
+          git ls-files -z '*.xml' | xargs -0 zip dist/atak-maps.zip
+
+      - name: semantic-release (retry)
+        id: release2
+        if: steps.check.outputs.behind == 'true'
+        uses: cycjimmy/semantic-release-action@v4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Fail if the release was skipped
+        if: steps.check.outputs.behind == 'true' && steps.release2.outputs.new_release_published != 'true'
+        run: |
+          git fetch origin master
+          if [ "$(git rev-parse HEAD)" != "$(git rev-parse origin/master)" ]; then
+            echo "::error::semantic-release skipped twice because master kept moving. Re-run this workflow (Actions → Map Release → Run workflow)."
+            exit 1
+          fi
+          echo "Retry found no releasable changes."

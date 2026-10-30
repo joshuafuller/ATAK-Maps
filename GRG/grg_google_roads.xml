@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <customMapSource>
-    <name>Google - Roadmap Standard</name>
+    <name>GRG - Google Roads</name>
     <minZoom>0</minZoom>
     <maxZoom>20</maxZoom>
-    <tileType>jpg</tileType>
+    <tileType>png</tileType>
     <tileUpdate>None</tileUpdate>
-    <url>https://mt1.google.com/vt/lyrs=m&amp;x={$x}&amp;y={$y}&amp;z={$z}</url>
+    <url>https://mt1.google.com/vt/lyrs=h&amp;x={$x}&amp;y={$y}&amp;z={$z}</url>
     <backgroundColor>#000000</backgroundColor>
 </customMapSource>

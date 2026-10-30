@@ -4,8 +4,9 @@
     [
       "@semantic-release/commit-analyzer",
       {
-        "preset": "angular",
+        "preset": "conventionalcommits",
         "releaseRules": [
+          { "breaking": true, "release": "major" },
           { "type": "feat", "release": "minor" },
           { "type": "fix", "release": "patch" },
           { "type": "perf", "release": "patch" },
@@ -16,7 +17,10 @@
         ]
       }
     ],
-    "@semantic-release/release-notes-generator",
+    [
+      "@semantic-release/release-notes-generator",
+      { "preset": "conventionalcommits" }
+    ],
     "@semantic-release/changelog",
     [
       "@semantic-release/git",

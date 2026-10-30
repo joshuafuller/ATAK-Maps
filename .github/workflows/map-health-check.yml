@@ -24,3 +24,8 @@ jobs:
         run: uv run python -m mapvalidator --probe --issues
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Every map, fetched exactly as ATAK does; fails the run on any error.
+      - name: ATAK harness (all maps)
+        if: always()
+        run: uv run python -m mapvalidator --harness .

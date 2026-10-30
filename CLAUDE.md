@@ -56,13 +56,23 @@ Schema at `schema/mobac-maps.xsd` validates all three types. Derived from ATAK's
 - **Validate Map XML** — validates all XML files against `schema/mobac-maps.xsd` on PRs and pushes to master
 - **Map Release** — on push to master, zips all XML files and creates a GitHub Release via semantic-release
 - **Update Map Catalog** — auto-generates the map catalog table in README.md when XML files change
+- **Deep Map Validation** — on PRs, runs the ATAK harness on the changed maps
+- **Map Health Check** — weekly, runs the ATAK harness on every map
+
+## ATAK harness
+
+`uv run python -m mapvalidator --harness .` (or `--only <files>`) checks maps the way ATAK uses them:
+
+- Builds the exact tile URL ATAK requests (`mapvalidator/atak_source.py`, ported from ATAK's `MobacMapSourceFactory`, `CustomMobacMapSource`, `CustomWmsMobacMapSource`) and fetches it with ATAK's User-Agent `TAK`
+- Tests minZoom, maxZoom and maxZoom + 1 at the map's `test_point` (in `descriptions.yml`; default New York)
+- Fails on HTTP errors, OGC/HTML error bodies, known placeholder tiles, empty or blank base tiles, tiles blocked for `TAK`, opaque overlays, and broken naming rules
+- Reports when the server has real tiles above maxZoom
 
 ## Reviewing PRs
 
 When reviewing map contributions:
-1. CI must pass — XML validates against the XSD schema
-2. Verify the tile URL is accessible and returns valid tiles
-3. Check zoom levels are reasonable for the source
-4. Confirm the file is in the correct directory (base map vs overlay)
+1. CI must pass — XML validates against the XSD schema and the ATAK harness passes for the changed maps
+2. Regional maps need a `test_point` in `descriptions.yml`
+3. Confirm the file is in the correct directory (base map vs overlay)
 5. No API keys or tokens embedded in URLs
 6. Uses conventional commit format (`feat: add <map name>`)

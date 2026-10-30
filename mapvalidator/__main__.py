@@ -30,6 +30,17 @@ def main():
         "--strict", action="store_true", help="Treat warnings as errors"
     )
     parser.add_argument(
+        "--harness",
+        action="store_true",
+        help="Fetch tiles exactly as ATAK does at min/max zoom and check content",
+    )
+    parser.add_argument(
+        "--only",
+        nargs="+",
+        type=Path,
+        help="With --harness: check only these map files",
+    )
+    parser.add_argument(
         "directory",
         nargs="?",
         default=".",
@@ -38,6 +49,15 @@ def main():
     args = parser.parse_args()
 
     repo_dir = Path(args.directory).resolve()
+
+    if args.harness:
+        from mapvalidator import harness
+
+        report, exit_code = harness.format_report(
+            harness.run_harness(repo_dir, harness.http_fetch, only=args.only)
+        )
+        print(report)
+        sys.exit(exit_code)
 
     # Step 1: XML validation
     results = validate_corpus(repo_dir)

@@ -1,3 +1,13 @@
+## [1.10.1](https://github.com/joshuafuller/ATAK-Maps/compare/v1.10.0...v1.10.1) (2026-10-30)
+
+
+* refactor!: rename all maps to short names and fix broken sources ([#100](https://github.com/joshuafuller/ATAK-Maps/issues/100)) ([81bded0](https://github.com/joshuafuller/ATAK-Maps/commit/81bded019d027ebc8d1bccef35aea847fe1257e1))
+
+
+### BREAKING CHANGES
+
+* every map file and display name changed. Old offline caches (<name>.sqlite) are orphaned; re-download tiles after updating.
+
 # [1.10.0](https://github.com/joshuafuller/ATAK-Maps/compare/v1.9.0...v1.10.0) (2026-10-30)
 
 

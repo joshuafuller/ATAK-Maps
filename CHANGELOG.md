@@ -1,3 +1,10 @@
+# [1.11.0](https://github.com/joshuafuller/ATAK-Maps/compare/v1.10.1...v1.11.0) (2026-10-30)
+
+
+### Features
+
+* **validator:** ATAK harness that tests maps exactly as ATAK fetches them ([#101](https://github.com/joshuafuller/ATAK-Maps/issues/101)) ([ac29eda](https://github.com/joshuafuller/ATAK-Maps/commit/ac29eda62ca0d26b3cb68dc27b0044840008dda1))
+
 ## [1.10.1](https://github.com/joshuafuller/ATAK-Maps/compare/v1.10.0...v1.10.1) (2026-10-30)
 
 

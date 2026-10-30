@@ -109,17 +109,26 @@ def _problem(resp: Response, verdict: TileVerdict | None, overlay: bool) -> str 
 
 
 def _check_zooms(
-    src: AtakSource, label: str, point, fetch: Fetch, overlay: bool
+    src: AtakSource,
+    label: str,
+    point,
+    fetch: Fetch,
+    overlay: bool,
+    empty_ok: bool,
+    has_data: set[str],
 ) -> list[Finding]:
+    """Check one leaf source; add "minZoom"/"maxZoom" to has_data where it drew something."""
     out = []
     for z, role in ((src.min_zoom, "minZoom"), (src.max_zoom, "maxZoom")):
         url, resp, verdict = _fetch_tile(src, z, point, fetch, TAK_USER_AGENT)
-        problem = _problem(resp, verdict, overlay)
+        if verdict is not None and verdict.kind == "image":
+            has_data.add(role)
+        problem = _problem(resp, verdict, empty_ok)
         if problem is None:
             opaque = (
                 verdict is not None
                 and verdict.kind == "image"
-                and verdict.transparent_fraction == 0.0
+                and verdict.see_through_fraction == 0.0
             )
             if overlay and role == "maxZoom" and opaque:
                 out.append(
@@ -169,12 +178,19 @@ def _check_zooms(
     return out
 
 
+def _leaves(src: AtakSource) -> list[AtakSource]:
+    """Tile sources inside a (possibly nested) multi-layer source."""
+    if src.kind != "multi":
+        return [src]
+    return [leaf for child in src.children for leaf in _leaves(child)]
+
+
 def check_source(path: Path, root: Path, fetch: Fetch) -> list[Finding]:
     src = parse_source(path)
     overlay = path.relative_to(root).parts[0] == OVERLAY_DIR
     findings = _check_name(src, overlay)
 
-    sources = src.children if src.kind == "multi" else [src]
+    sources = _leaves(src)
     urls = " ".join(s.url or "" for s in sources)
     if any(k in urls for k in _KEY_PLACEHOLDERS):
         return findings + [Finding("info", "needs an API key; tile checks skipped")]
@@ -193,9 +209,21 @@ def check_source(path: Path, root: Path, fetch: Fetch) -> list[Finding]:
         return findings
 
     point = _test_point(path, root)
+    composite = src.kind == "multi"
+    has_data: set[str] = set()
     for s in sources:
-        label = f"[{s.name}] " if src.kind == "multi" else ""
-        findings += _check_zooms(s, label, point, fetch, overlay)
+        label = f"[{s.name}] " if composite else ""
+        # In a composite one layer may be transparent where another has data,
+        # so emptiness is judged on the combined result below.
+        findings += _check_zooms(
+            s, label, point, fetch, overlay, overlay or composite, has_data
+        )
+    if composite and not overlay:
+        for role in ("minZoom", "maxZoom"):
+            if role not in has_data:
+                findings.append(
+                    Finding("error", f"{role}: no layer has data at the test point")
+                )
     return findings
 
 

@@ -81,3 +81,20 @@ class TestSyntheticTiles:
 
     def test_empty_body_is_error(self):
         assert classify_tile(b"", "image/png").kind == "error"
+
+
+class TestPartialAlpha:
+    def test_semi_transparent_overlay_is_not_opaque(self):
+        # alpha 128 everywhere, two colours: no fully transparent pixel, but
+        # the map underneath still shows through
+        img = Image.new("RGBA", (256, 256), (200, 30, 30, 128))
+        img.paste((30, 30, 200, 128), (0, 0, 64, 256))
+        buf = io.BytesIO()
+        img.save(buf, "PNG")
+        v = classify_tile(buf.getvalue(), "image/png")
+        assert v.kind == "image"
+        assert v.see_through_fraction == pytest.approx(1.0)
+
+    def test_uniform_semi_transparent_tile_is_not_blank(self):
+        v = classify_tile(_png((0, 90, 200, 100)), "image/png")
+        assert v.kind == "image"

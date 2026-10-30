@@ -284,3 +284,76 @@ class TestRunHarness:
         results = run_harness(tmp_path, net, only=[tmp_path / "usgs" / "m.xml"])
         assert [p.as_posix() for p in results] == ["usgs/m.xml"]
         assert all("/t.example/" in url for url, _ in net.calls)
+
+
+def _multi(tmp_path, name, layers_xml, folder="blm"):
+    d = tmp_path / folder
+    d.mkdir(parents=True, exist_ok=True)
+    f = d / "combo.xml"
+    f.write_text(
+        f"""<customMultiLayerMapSource><name>{name}</name><layers>{layers_xml}</layers>
+</customMultiLayerMapSource>"""
+    )
+    return f
+
+
+def _child(host, max_zoom=12):
+    return (
+        f"<customMapSource><name>{host}</name><minZoom>3</minZoom><maxZoom>{max_zoom}</maxZoom>"
+        f"<url>https://{host}.example/{{$z}}/{{$x}}/{{$y}}.png</url></customMapSource>"
+    )
+
+
+class HostNet(FakeNet):
+    """Answers by host name: {host: body}."""
+
+    def __init__(self, by_host):
+        super().__init__()
+        self.by_host = by_host
+
+    def __call__(self, url, user_agent):
+        self.calls.append((url, user_agent))
+        host = url.split("/")[2].split(".")[0]
+        z = int(re.search(r"/(\d+)/\d+/\d+\.png", url).group(1))
+        if z == 13:
+            return Response(404, "text/html", b"<html/>", None)
+        return Response(200, "image/png", self.by_host[host], None)
+
+
+class TestMultiLayer:
+    def test_transparent_child_over_real_base_is_fine(self, tmp_path):
+        f = _multi(tmp_path, "BLM Sat + Ownership", _child("sat") + _child("sma"))
+        net = HostNet({"sat": REAL, "sma": EMPTY})
+        assert _levels(check_source(f, tmp_path, net), "error") == []
+
+    def test_composite_with_no_data_is_an_error(self, tmp_path):
+        f = _multi(tmp_path, "BLM Sat + Ownership", _child("sat") + _child("sma"))
+        net = HostNet({"sat": EMPTY, "sma": EMPTY})
+        errors = _levels(check_source(f, tmp_path, net), "error")
+        assert any("no layer" in e.message for e in errors)
+
+    def test_nested_composite_is_checked(self, tmp_path):
+        inner = (
+            "<customMultiLayerMapSource><name>Inner</name>"
+            f"<layers>{_child('b')}</layers></customMultiLayerMapSource>"
+        )
+        f = _multi(tmp_path, "Nested", _child("a") + inner)
+        net = HostNet({"a": REAL, "b": REAL})
+        findings = check_source(f, tmp_path, net)
+        assert _levels(findings, "error") == []
+        assert any(url.startswith("https://b.example/") for url, _ in net.calls)
+
+
+class TestSemiTransparentOverlay:
+    def test_semi_transparent_overlay_passes_opacity_rule(self, tmp_path):
+        img = Image.new("RGBA", (256, 256), (200, 30, 30, 128))
+        img.paste((30, 30, 200, 128), (0, 0, 64, 256))
+        buf = io.BytesIO()
+        img.save(buf, "PNG")
+        net = FakeNet(default=buf.getvalue())
+        assert (
+            _levels(
+                check_source(_map(tmp_path, "GRG", "+ Tint"), tmp_path, net), "error"
+            )
+            == []
+        )

@@ -74,5 +74,5 @@ When reviewing map contributions:
 1. CI must pass — XML validates against the XSD schema and the ATAK harness passes for the changed maps
 2. Regional maps need a `test_point` in `descriptions.yml`
 3. Confirm the file is in the correct directory (base map vs overlay)
-5. No API keys or tokens embedded in URLs
-6. Uses conventional commit format (`feat: add <map name>`)
+4. No API keys or tokens embedded in URLs
+5. Uses conventional commit format (`feat: add <map name>`)

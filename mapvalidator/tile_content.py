@@ -26,7 +26,8 @@ KNOWN_PLACEHOLDERS = {
 class TileVerdict:
     # image | placeholder | blank (one opaque colour) | empty (fully transparent) | error
     kind: str
-    transparent_fraction: float = 0.0
+    transparent_fraction: float = 0.0  # pixels with alpha 0 (nothing drawn)
+    see_through_fraction: float = 0.0  # pixels with alpha < 255 (map shows through)
     detail: str = ""
 
 
@@ -47,8 +48,11 @@ def classify_tile(body: bytes, content_type: str | None) -> TileVerdict:
     alpha = rgba.getchannel("A").histogram()
     total = sum(alpha)
     transparent = alpha[0] / total
+    see_through = 1.0 - alpha[255] / total
     if transparent == 1.0:
-        return TileVerdict("empty", transparent_fraction=1.0)
-    if transparent == 0.0 and rgba.getcolors(maxcolors=1) is not None:
+        return TileVerdict("empty", transparent_fraction=1.0, see_through_fraction=1.0)
+    if see_through == 0.0 and rgba.getcolors(maxcolors=1) is not None:
         return TileVerdict("blank", detail="single opaque colour")
-    return TileVerdict("image", transparent_fraction=transparent)
+    return TileVerdict(
+        "image", transparent_fraction=transparent, see_through_fraction=see_through
+    )

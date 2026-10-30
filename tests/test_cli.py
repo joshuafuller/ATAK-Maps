@@ -190,26 +190,31 @@ class TestDefaultDirectory:
 # ---------------------------------------------------------------------------
 
 
+def _not_found(url, user_agent):
+    from mapvalidator.harness import Response
+
+    return Response(404, "text/html", b"<html/>", None)
+
+
 class TestHarnessFlag:
     def test_harness_failure_exits_one(self, tmp_path, capsys):
-        from mapvalidator.harness import Response
-
         (tmp_path / "esri").mkdir()
         _write_xml(tmp_path / "esri", VALID_TMS_XML)
-        not_found = lambda url, ua: Response(404, "text/html", b"<html/>", None)  # noqa: E731
-        with patch("mapvalidator.harness.http_fetch", not_found):
+        with patch("mapvalidator.harness.http_fetch", _not_found):
             code = _run_main("--harness", str(tmp_path))
         assert code == 1
         assert "HTTP 404" in capsys.readouterr().out
 
     def test_harness_only_option(self, tmp_path, capsys):
-        from mapvalidator.harness import Response
-
         for d in ("esri", "usgs"):
             (tmp_path / d).mkdir()
             _write_xml(tmp_path / d, VALID_TMS_XML)
-        not_found = lambda url, ua: Response(404, "text/html", b"<html/>", None)  # noqa: E731
-        with patch("mapvalidator.harness.http_fetch", not_found):
-            _run_main("--harness", str(tmp_path), "--only", str(tmp_path / "usgs" / "test_map.xml"))
+        with patch("mapvalidator.harness.http_fetch", _not_found):
+            _run_main(
+                "--harness",
+                str(tmp_path),
+                "--only",
+                str(tmp_path / "usgs" / "test_map.xml"),
+            )
         out = capsys.readouterr().out
         assert "usgs/test_map.xml" in out and "esri/" not in out

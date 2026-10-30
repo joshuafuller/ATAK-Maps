@@ -19,7 +19,9 @@ from pathlib import Path
 from urllib.parse import urlsplit
 
 _EARTH_A = 6378137.0  # WebMercatorProjection.a
-_OSM_MAX_LAT = math.degrees(math.atan(math.sinh(math.pi)))  # OSMUtils.mapnikTileLat(0, 0)
+_OSM_MAX_LAT = math.degrees(
+    math.atan(math.sinh(math.pi))
+)  # OSMUtils.mapnikTileLat(0, 0)
 _WMS_FORMATS = {"JPG": "image/jpeg", "PNG": "image/png"}  # CustomWmsMobacMapSource
 
 
@@ -107,7 +109,7 @@ def _parse(el: ET.Element) -> AtakSource:
         return _parse_wms(el)
     if el.tag == "customMultiLayerMapSource":
         layers = el.find("layers")
-        children = [_parse(c) for c in (layers if layers is not None else [])]
+        children = [_parse(c) for c in (list(layers) if layers is not None else [])]
         return AtakSource(
             kind="multi",
             name=_text(el, "name"),
@@ -126,7 +128,8 @@ def java_double(value: float) -> str:
     """Format a double like Java's String.valueOf(double)."""
     if value == 0.0:
         return "-0.0" if math.copysign(1.0, value) < 0 else "0.0"
-    sign, digits, exponent = Decimal(repr(value)).normalize().as_tuple()
+    sign, digits, exp = Decimal(repr(value)).normalize().as_tuple()
+    exponent = int(exp)  # finite doubles only; 'n'/'N'/'F' are NaN/inf
     digits_str = "".join(map(str, digits))
     point = len(digits_str) + exponent  # position of the decimal point
     prefix = "-" if sign else ""
@@ -151,8 +154,10 @@ def _quadkey(zoom: int, x: int, y: int) -> str:
 
 def _forward(srid: int, lat: float, lon: float) -> tuple[float, float]:
     if srid in (3857, 900913):
-        return (_EARTH_A * math.radians(lon),
-                _EARTH_A * math.log(math.tan(math.pi / 4 + math.radians(lat) / 2)))
+        return (
+            _EARTH_A * math.radians(lon),
+            _EARTH_A * math.log(math.tan(math.pi / 4 + math.radians(lat) / 2)),
+        )
     return lon, lat
 
 
@@ -211,12 +216,16 @@ def tile_url(src: AtakSource, zoom: int, x: int, y: int, server_part: int = 0) -
         y = ((1 << zoom) - 1) - y
     out = src.url or ""
     if src.server_parts:
-        out = out.replace("{$serverpart}", src.server_parts[server_part % len(src.server_parts)])
+        out = out.replace(
+            "{$serverpart}", src.server_parts[server_part % len(src.server_parts)]
+        )
     out = out.replace("{$x}", str(x)).replace("{$y}", str(y)).replace("{$z}", str(zoom))
     return out.replace("{$q}", _quadkey(zoom, x, y))
 
 
-def tile_for_point(src: AtakSource, lat: float, lon: float, zoom: int) -> tuple[int, int]:
+def tile_for_point(
+    src: AtakSource, lat: float, lon: float, zoom: int
+) -> tuple[int, int]:
     """The (x, y) of the tile that contains a point, in the source's tile grid."""
     if src.srid == 4326:
         size = 180.0 / (1 << zoom)

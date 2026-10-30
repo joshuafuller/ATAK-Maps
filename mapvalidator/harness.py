@@ -18,7 +18,9 @@ from mapvalidator.atak_source import AtakSource, parse_source, tile_for_point, t
 from mapvalidator.catalog import slugify
 from mapvalidator.tile_content import TileVerdict, classify_tile
 
-TAK_USER_AGENT = "TAK"  # CustomMobacMapSource.java: conn.setRequestProperty("User-Agent", "TAK")
+TAK_USER_AGENT = (
+    "TAK"  # CustomMobacMapSource.java: conn.setRequestProperty("User-Agent", "TAK")
+)
 BROWSER_USER_AGENT = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130 Safari/537.36"
 DEFAULT_TEST_POINT = (40.7128, -74.0060)  # New York
 MAX_NAME_LENGTH = 22
@@ -50,7 +52,8 @@ def _test_point(path: Path, root: Path) -> tuple[float, float]:
         import yaml
 
         entry = (yaml.safe_load(desc_file.read_text()) or {}).get(
-            slugify(f"{path.parent.name}-{path.stem}")) or {}
+            slugify(f"{path.parent.name}-{path.stem}")
+        ) or {}
         point = entry.get("test_point")
         if point:
             return float(point[0]), float(point[1])
@@ -63,13 +66,25 @@ def _check_name(src: AtakSource, overlay: bool) -> list[Finding]:
     if overlay and not name.startswith("+ "):
         out.append(Finding("error", f"overlay name '{name}' must start with '+ '"))
     if not overlay and name.startswith("+ "):
-        out.append(Finding("error", f"base map name '{name}' must not start with '+ ' (only overlays in GRG/)"))
+        out.append(
+            Finding(
+                "error",
+                f"base map name '{name}' must not start with '+ ' (only overlays in GRG/)",
+            )
+        )
     if len(name) > MAX_NAME_LENGTH:
-        out.append(Finding("warn", f"name '{name}' is {len(name)} characters (keep it to {MAX_NAME_LENGTH})"))
+        out.append(
+            Finding(
+                "warn",
+                f"name '{name}' is {len(name)} characters (keep it to {MAX_NAME_LENGTH})",
+            )
+        )
     return out
 
 
-def _fetch_tile(src: AtakSource, z: int, point, fetch: Fetch, ua: str) -> tuple[str, Response, TileVerdict | None]:
+def _fetch_tile(
+    src: AtakSource, z: int, point, fetch: Fetch, ua: str
+) -> tuple[str, Response, TileVerdict | None]:
     x, y = tile_for_point(src, point[0], point[1], z)
     url = tile_url(src, z, x, y)
     resp = fetch(url, ua)
@@ -93,24 +108,51 @@ def _problem(resp: Response, verdict: TileVerdict | None, overlay: bool) -> str 
     return None
 
 
-def _check_zooms(src: AtakSource, label: str, point, fetch: Fetch, overlay: bool) -> list[Finding]:
+def _check_zooms(
+    src: AtakSource, label: str, point, fetch: Fetch, overlay: bool
+) -> list[Finding]:
     out = []
     for z, role in ((src.min_zoom, "minZoom"), (src.max_zoom, "maxZoom")):
         url, resp, verdict = _fetch_tile(src, z, point, fetch, TAK_USER_AGENT)
         problem = _problem(resp, verdict, overlay)
         if problem is None:
-            if overlay and role == "maxZoom" and verdict.kind == "image" and verdict.transparent_fraction == 0.0:
-                out.append(Finding("error", f"{label}overlay tile at z{z} is opaque; overlays must be transparent"))
+            opaque = (
+                verdict is not None
+                and verdict.kind == "image"
+                and verdict.transparent_fraction == 0.0
+            )
+            if overlay and role == "maxZoom" and opaque:
+                out.append(
+                    Finding(
+                        "error",
+                        f"{label}overlay tile at z{z} is opaque; overlays must be transparent",
+                    )
+                )
             continue
         if not resp.error and (verdict is None or verdict.kind != "image"):
-            b_url, b_resp, b_verdict = _fetch_tile(src, z, point, fetch, BROWSER_USER_AGENT)
+            b_url, b_resp, b_verdict = _fetch_tile(
+                src, z, point, fetch, BROWSER_USER_AGENT
+            )
             if b_verdict is not None and b_verdict.kind == "image":
-                out.append(Finding("error", f"{label}z{z}: blocked for User-Agent TAK ({problem}); a browser gets a real tile"))
+                out.append(
+                    Finding(
+                        "error",
+                        f"{label}z{z}: blocked for User-Agent TAK ({problem}); a browser gets a real tile",
+                    )
+                )
                 break
-        hint = " (maxZoom is higher than the server's data)" if role == "maxZoom" and src.max_zoom > src.min_zoom else ""
+        hint = (
+            " (maxZoom is higher than the server's data)"
+            if role == "maxZoom" and src.max_zoom > src.min_zoom
+            else ""
+        )
         # One colour at high zoom can be real (water, a roof) or a "no data"
         # fill, so it only warns there; at minZoom it is always wrong.
-        level = "warn" if role == "maxZoom" and verdict is not None and verdict.kind == "blank" else "error"
+        level = (
+            "warn"
+            if role == "maxZoom" and verdict is not None and verdict.kind == "blank"
+            else "error"
+        )
         out.append(Finding(level, f"{label}{role} z{z}: {problem}{hint} — {url}"))
         if resp.error:
             break  # connection-level failure; other zooms will fail the same way
@@ -118,7 +160,12 @@ def _check_zooms(src: AtakSource, label: str, point, fetch: Fetch, overlay: bool
         z = src.max_zoom + 1
         _, resp, verdict = _fetch_tile(src, z, point, fetch, TAK_USER_AGENT)
         if verdict is not None and verdict.kind == "image":
-            out.append(Finding("info", f"{label}server has real tiles at z{z}, above maxZoom {src.max_zoom}"))
+            out.append(
+                Finding(
+                    "info",
+                    f"{label}server has real tiles at z{z}, above maxZoom {src.max_zoom}",
+                )
+            )
     return out
 
 
@@ -132,9 +179,16 @@ def check_source(path: Path, root: Path, fetch: Fetch) -> list[Finding]:
     if any(k in urls for k in _KEY_PLACEHOLDERS):
         return findings + [Finding("info", "needs an API key; tile checks skipped")]
 
-    bad_wms = [s for s in sources if s.kind == "wms" and s.tile_type not in _WMS_TILE_TYPES]
+    bad_wms = [
+        s for s in sources if s.kind == "wms" and s.tile_type not in _WMS_TILE_TYPES
+    ]
     for s in bad_wms:
-        findings.append(Finding("error", f"WMS tileType '{s.tile_type}' is not JPG or PNG; ATAK sends format=null"))
+        findings.append(
+            Finding(
+                "error",
+                f"WMS tileType '{s.tile_type}' is not JPG or PNG; ATAK sends format=null",
+            )
+        )
     if bad_wms:
         return findings
 
@@ -145,7 +199,9 @@ def check_source(path: Path, root: Path, fetch: Fetch) -> list[Finding]:
     return findings
 
 
-def http_fetch(url: str, user_agent: str, retries: int = 2, timeout: int = 20) -> Response:
+def http_fetch(
+    url: str, user_agent: str, retries: int = 2, timeout: int = 20
+) -> Response:
     """Real network fetch with ATAK-like behaviour (TLS verified, redirects followed)."""
     import requests
 
@@ -153,17 +209,22 @@ def http_fetch(url: str, user_agent: str, retries: int = 2, timeout: int = 20) -
     for attempt in range(retries + 1):
         try:
             r = requests.get(url, headers={"User-Agent": user_agent}, timeout=timeout)
-            last = Response(r.status_code, r.headers.get("Content-Type"), r.content, None)
+            last = Response(
+                r.status_code, r.headers.get("Content-Type"), r.content, None
+            )
             if r.status_code < 500:
                 return last
         except requests.RequestException as e:
             last = Response(None, None, b"", f"{type(e).__name__}: {e}")
         if attempt < retries:
             time.sleep(2 * (attempt + 1))
+    assert last is not None  # the loop runs at least once
     return last
 
 
-def run_harness(root: Path, fetch: Fetch, only: list[Path] | None = None) -> dict[Path, list[Finding]]:
+def run_harness(
+    root: Path, fetch: Fetch, only: list[Path] | None = None
+) -> dict[Path, list[Finding]]:
     """Check every map under root (or just ``only``); keys are paths relative to root."""
     from mapvalidator.catalog import iter_map_files
 

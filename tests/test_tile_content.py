@@ -41,8 +41,9 @@ class TestRealTiles:
         assert v.kind == "image"
         assert v.transparent_fraction == 0.0
 
-    @pytest.mark.parametrize("fixture", [
-        "esri_not_available.jpg", "osm_blocked.png", "bing_no_imagery.png"])
+    @pytest.mark.parametrize(
+        "fixture", ["esri_not_available.jpg", "osm_blocked.png", "bing_no_imagery.png"]
+    )
     def test_known_placeholders(self, fixture):
         v = classify_tile((FIXTURES / fixture).read_bytes(), "image/png")
         assert v.kind == "placeholder"
@@ -65,10 +66,18 @@ class TestSyntheticTiles:
         assert v.transparent_fraction == pytest.approx(0.5)
 
     def test_html_body_is_error(self):
-        assert classify_tile(b"<html><body>504 Gateway Time-out</body></html>", "text/html").kind == "error"
+        assert (
+            classify_tile(
+                b"<html><body>504 Gateway Time-out</body></html>", "text/html"
+            ).kind
+            == "error"
+        )
 
     def test_undecodable_bytes_are_error(self):
-        assert classify_tile(b"\x89PNG\r\n\x1a\nnot really a png", "image/png").kind == "error"
+        assert (
+            classify_tile(b"\x89PNG\r\n\x1a\nnot really a png", "image/png").kind
+            == "error"
+        )
 
     def test_empty_body_is_error(self):
         assert classify_tile(b"", "image/png").kind == "error"

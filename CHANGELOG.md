@@ -1,3 +1,13 @@
+## [2.0.0](https://github.com/joshuafuller/ATAK-Maps/compare/v1.11.0...v2.0.0) (2026-10-30)
+
+### ⚠ BREAKING CHANGES
+
+* **release:** every map file and display name changed in v1.10.1 (#100). ATAK keys offline caches by map name, so old <name>.sqlite caches are orphaned; re-download offline tiles.
+
+### Bug Fixes
+
+* **release:** breaking commits make a major release ([#102](https://github.com/joshuafuller/ATAK-Maps/issues/102)) ([7e9e918](https://github.com/joshuafuller/ATAK-Maps/commit/7e9e9189c972d2966204b0e986e32c9d331d0064))
+
 # [1.11.0](https://github.com/joshuafuller/ATAK-Maps/compare/v1.10.1...v1.11.0) (2026-10-30)
 
 

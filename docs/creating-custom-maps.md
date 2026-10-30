@@ -20,7 +20,7 @@ Adding `minZoom`, `tileType`, and `backgroundColor` is recommended.
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <customMapSource>
-    <name>OpenTopo - Opentopomap</name>
+    <name>OpenTopoMap</name>
     <minZoom>1</minZoom>
     <maxZoom>17</maxZoom>
     <tileType>png</tileType>
@@ -48,10 +48,14 @@ instructions and alternative methods.
 ## Submit to ATAK-Maps
 
 1. Fork this repository and create a branch.
-2. Add your XML file under the appropriate provider directory (e.g.,
-   `opentopo/` for OpenTopoMap sources).
-3. Use conventional commit format: `feat: add <map name>`.
-4. Open a pull request.
+2. Add your XML file under the source's lowercase directory (e.g.
+   `opentopo/opentopomap.xml`). Transparent overlays go in `GRG/` as
+   `grg_<source>_<layer>.xml`.
+3. Keep `<name>` short (about 20 characters), as `<Source> <Layer>`:
+   `Google Road`, `USGS Topo`. Start non-US national maps with the country
+   code (`DE Basemap Color`) and overlays with `+` and a space (`+ FEMA Flood`).
+4. Use conventional commit format: `feat: add <map name>`.
+5. Open a pull request.
 
 See [CONTRIBUTING.md](https://github.com/joshuafuller/ATAK-Maps/blob/master/CONTRIBUTING.md) for full contribution guidelines.
 

@@ -5,10 +5,10 @@ Collection of MOBAC-format XML map source files for [ATAK](https://tak.gov). Eac
 ## Project Structure
 
 ```text
-<Provider>/              # e.g. Bing/, Google/, ESRI/, NAIP/, usgs/
-  ├── map_name.xml       # Base map layers
+<source>/                # lowercase: bing/, google/, esri/, usgs/, de-basemap/, uk-os/
+  ├── <source>_<layer>.xml   # Base map layers
 GRG/
-  ├── grg_*.xml          # Overlay layers
+  ├── grg_<source>_<layer>.xml  # Overlay layers (transparent)
 schema/
   └── mobac-maps.xsd     # XSD schema — validates all XML map files
 docs/
@@ -32,16 +32,22 @@ docs/
 Three root element types (see `docs/xml-reference.md` for full spec):
 
 - **`customMapSource`** — TMS/XYZ tile sources (most files). Placeholders: `{$z}`, `{$x}`, `{$y}`, `{$q}` (quadkey), `{$serverpart}`
-- **`customWmsMapSource`** — OGC Web Map Service sources (basemapDE, Canada, FEMA, Poland)
-- **`customMultiLayerMapSource`** — Composite layers with per-layer opacity (e.g. `BLM/blm_satellite_land_ownership.xml`)
+- **`customWmsMapSource`** — OGC Web Map Service sources (Canada, FEMA)
+- **`customMultiLayerMapSource`** — Composite layers with per-layer opacity (e.g. `blm/blm_satellite_ownership.xml`)
 
 Schema at `schema/mobac-maps.xsd` validates all three types. Derived from ATAK's `MobacMapSourceFactory.java`.
 
 ## Conventions
 
 - **One XML file per map layer** — no multi-source bundles
-- **Directory = provider name** — group by tile source provider
-- **Overlay prefix**: files in `GRG/` should start with `grg_` by convention (ATAK does not require this — it distinguishes overlays by directory, not filename)
+- **Directory = source name** — lowercase; non-US national agencies use `<country>-<agency>` (e.g. `de-basemap/`, `uk-os/`, `ca-nrcan/`)
+- **Filenames**: lowercase `<source>_<layer>.xml`; overlays live in `GRG/` as `grg_<source>_<layer>.xml`
+- **Display `<name>`** — keep it short (about 20 characters; ATAK's layer list is narrow and sorts A–Z by name):
+  - `<Source> <Layer>`, no ` - ` separator, no format/projection words (WMTS, 3857, EPSG): `Google Road`, `Esri Topo`, `USGS Imagery`
+  - Non-US national maps start with the ISO country code: `DE Basemap Color`, `UK OS Road`, `CA Toporama`
+  - Overlays start with `+` and a space: `+ Google Roads`, `+ FEMA Flood` (one-tap install puts overlays in the base map list, so the name must say it)
+  - ATAK names the offline cache `<name>.sqlite`, so renaming a map starts it with an empty cache — avoid renames
+- **Overlays** must be transparent PNG; opaque layers are base maps even if they look like "shading"
 - **Commits**: use [Conventional Commits](https://www.conventionalcommits.org/) (`feat:`, `fix:`, `docs:`, etc.) — semantic-release parses these for versioning
 - **No API keys in XML** — if a source requires auth, document it but don't commit secrets
 

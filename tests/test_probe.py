@@ -611,9 +611,9 @@ class TestProbeSourceDead:
 
 class TestSmokeSources:
     def test_smoke_sources_contains_expected_files(self):
-        assert "Google/google_hybrid.xml" in SMOKE_SOURCES
-        assert "ESRI/esri_clarity.xml" in SMOKE_SOURCES
-        assert "Bing/Bing_Satellite.xml" in SMOKE_SOURCES
+        assert "google/google_hybrid.xml" in SMOKE_SOURCES
+        assert "esri/esri_clarity.xml" in SMOKE_SOURCES
+        assert "bing/bing_satellite.xml" in SMOKE_SOURCES
 
     def test_smoke_sources_has_exactly_three_entries(self):
         assert len(SMOKE_SOURCES) == 3
@@ -629,11 +629,11 @@ class TestProbeSmoke:
     def test_probes_only_smoke_sources(self, tmp_path):
         """probe_smoke should only probe files listed in SMOKE_SOURCES."""
         # Create directory structure with smoke + non-smoke XML files
-        google_dir = tmp_path / "Google"
+        google_dir = tmp_path / "google"
         google_dir.mkdir()
-        esri_dir = tmp_path / "ESRI"
+        esri_dir = tmp_path / "esri"
         esri_dir.mkdir()
-        bing_dir = tmp_path / "Bing"
+        bing_dir = tmp_path / "bing"
         bing_dir.mkdir()
         other_dir = tmp_path / "Other"
         other_dir.mkdir()
@@ -649,7 +649,7 @@ class TestProbeSmoke:
 
         (google_dir / "google_hybrid.xml").write_text(tms_xml)
         (esri_dir / "esri_clarity.xml").write_text(tms_xml)
-        (bing_dir / "Bing_Satellite.xml").write_text(tms_xml)
+        (bing_dir / "bing_satellite.xml").write_text(tms_xml)
         (other_dir / "some_other_map.xml").write_text(tms_xml)
 
         # Mock all tile URLs from example.com
@@ -668,14 +668,14 @@ class TestProbeSmoke:
         probed_files = {r.filepath.name for r in results}
         assert "google_hybrid.xml" in probed_files
         assert "esri_clarity.xml" in probed_files
-        assert "Bing_Satellite.xml" in probed_files
+        assert "bing_satellite.xml" in probed_files
         assert "some_other_map.xml" not in probed_files
 
     @responses.activate
     def test_missing_smoke_source_is_skipped(self, tmp_path):
         """If a smoke source file doesn't exist, it should be skipped."""
         # Only create one of the three smoke sources
-        google_dir = tmp_path / "Google"
+        google_dir = tmp_path / "google"
         google_dir.mkdir()
 
         tms_xml = """\
@@ -711,7 +711,7 @@ class TestProbeAllSmokeFlag:
     @responses.activate
     def test_probe_all_smoke_only_filters_sources(self, tmp_path):
         """probe_all(smoke_only=True) should behave like probe_smoke."""
-        google_dir = tmp_path / "Google"
+        google_dir = tmp_path / "google"
         google_dir.mkdir()
         other_dir = tmp_path / "Other"
         other_dir.mkdir()

@@ -38,9 +38,9 @@ EXCLUDE_DIRS_DEFAULT = {
 }
 
 SMOKE_SOURCES = [
-    "Google/google_hybrid.xml",
-    "ESRI/esri_clarity.xml",
-    "Bing/Bing_Satellite.xml",
+    "google/google_hybrid.xml",
+    "esri/esri_clarity.xml",
+    "bing/bing_satellite.xml",
 ]
 
 

@@ -24,6 +24,7 @@ TAK_USER_AGENT = (
 BROWSER_USER_AGENT = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130 Safari/537.36"
 DEFAULT_TEST_POINT = (40.7128, -74.0060)  # New York
 MAX_NAME_LENGTH = 22
+SKIPPED_NEEDS_KEY = "needs an API key; tile checks skipped"
 _KEY_PLACEHOLDERS = ("API_KEY_HERE", "YOUR_API_KEY", "YOUR_KEY_HERE", "{key}")
 _WMS_TILE_TYPES = ("JPG", "PNG")
 
@@ -185,7 +186,7 @@ def check_source(path: Path, root: Path, fetch: Fetch) -> list[Finding]:
     sources = _leaves(src)
     urls = " ".join(s.url or "" for s in sources)
     if any(k in urls for k in _KEY_PLACEHOLDERS):
-        return findings + [Finding("info", "needs an API key; tile checks skipped")]
+        return findings + [Finding("info", SKIPPED_NEEDS_KEY)]
 
     bad_wms = [
         s for s in sources if s.kind == "wms" and s.tile_type not in _WMS_TILE_TYPES
@@ -255,13 +256,27 @@ def run_harness(
 def health_report(results: dict[Path, list[Finding]], checked: str) -> dict[str, dict]:
     """Per-map status for the site's map explorer, keyed by catalog slug.
 
-    status is fail (any error), warn (any warning) or ok; problem is the first
+    status is fail (any error), warn (any warning), skip (tiles not fetched,
+    e.g. the map needs an API key) or ok; problem is the first
     error, else the first warning.
     """
     report = {}
     for path, findings in results.items():
         levels = {f.level for f in findings}
-        status = "fail" if "error" in levels else "warn" if "warn" in levels else "ok"
+        skipped = any(f.message == SKIPPED_NEEDS_KEY for f in findings)
+        status = (
+            "fail"
+            if "error" in levels
+            else (
+                "warn"
+                if "warn" in levels
+                else (
+                    "skip"
+                    if skipped  # not fetched: neither working nor broken
+                    else "ok"
+                )
+            )
+        )
         first = next(
             (
                 f.message

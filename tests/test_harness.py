@@ -414,8 +414,21 @@ class TestHealthReport:
             == "minZoom z1: HTTP 404"
         )
 
+    def test_skipped_tile_checks_are_skip_not_ok(self):
+        # API-key maps are not fetched; claiming "ok" would close real issues.
+        results = {
+            Path("uk-os/uk_os_road.xml"): [
+                Finding("info", "needs an API key; tile checks skipped")
+            ]
+        }
+        assert (
+            health_report(results, self.CHECKED)["uk-os-uk-os-road"]["status"] == "skip"
+        )
+
     def test_info_only_is_ok(self):
         results = {
-            Path("x/m.xml"): [Finding("info", "needs an API key; tile checks skipped")]
+            Path("x/m.xml"): [
+                Finding("info", "server has real tiles at z20, above maxZoom 19")
+            ]
         }
         assert health_report(results, self.CHECKED)["x-m"]["status"] == "ok"

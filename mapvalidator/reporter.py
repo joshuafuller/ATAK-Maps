@@ -71,7 +71,7 @@ def print_report(validations: list[ValidationResult]) -> int:
 
 @dataclass
 class MapHealth:
-    """One map's result from the ATAK harness: status is ok, warn or fail."""
+    """One map's result from the ATAK harness: status is ok, warn, fail or skip."""
 
     name: str
     status: str
@@ -111,7 +111,8 @@ def manage_github_issues(
 ) -> None:
     """Open an issue for each failing map and close it when the map works again.
 
-    Warnings neither open nor close issues. Titles start with "Map Health: <name>",
+    Warnings and skipped maps (not fetched, e.g. need an API key) neither
+    open nor close issues. Titles start with "Map Health: <name>",
     so issues opened by the older liveness probe are found and closed too.
     """
     if not health:

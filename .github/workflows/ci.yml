@@ -48,7 +48,11 @@ jobs:
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
         run: |
-          mapfile -t FILES < <(git diff --name-only --diff-filter=AMR "$BASE_SHA" HEAD -- 'maps/*.xml')
+          # Maps added, edited, or moved with edits; a pure move (R100) is not re-tested.
+          # No pathspec: Git needs both old and new paths to see a move.
+          mapfile -t FILES < <(git diff --name-status -M "$BASE_SHA" HEAD | awk '
+            $1 ~ /^(A|M)$/ && $2 ~ /^maps\/.*\.xml$/ {print $2}
+            $1 ~ /^R/ && $1 != "R100" && $3 ~ /^maps\/.*\.xml$/ {print $3}')
           if [ ${#FILES[@]} -eq 0 ]; then
             echo "No map files changed."
             exit 0

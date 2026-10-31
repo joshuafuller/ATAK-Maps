@@ -687,7 +687,7 @@ function issueUrl(m, h, ex) {
 function healthLine(m) {
   const h = HEALTH[m.slug], el = $('i-health'), pi = $('p-issue');
   el.title = ''; pi.className = 'p-issue'; pi.textContent = '';
-  if (!h) { el.className = 'health'; el.innerHTML = ''; return; }
+  if (!h || h.status === 'skip') { el.className = 'health'; el.innerHTML = ''; return; }  // skip: not tested (needs a key)
   if (h.status === 'ok') {
     el.className = 'health ok';
     el.innerHTML = `<svg viewBox="0 0 24 24">${HICON.ok}</svg><span></span>`;
@@ -706,7 +706,7 @@ function healthLine(m) {
   pi.className = 'p-issue ' + h.status;
   pi.textContent = `${h.status === 'fail' ? '✕ Not working' : '⚠ Problem'}: ${ex.title}`;
 }
-function dot(m) { const h = HEALTH[m.slug]; if (!h) return ''; const t = h.status === 'ok' ? 'Working in ATAK' : explain(h.problem || '').title; return `<span class="hd ${h.status}" title="${t.replace(/"/g, '')}"></span>`; }
+function dot(m) { const h = HEALTH[m.slug]; if (!h || h.status === 'skip') return ''; const t = h.status === 'ok' ? 'Working in ATAK' : explain(h.problem || '').title; return `<span class="hd ${h.status}" title="${t.replace(/"/g, '')}"></span>`; }
 
 // ---- offline estimate for the area on screen (what ATAK would download)
 const TILE_KB = { 'image/jpeg': 28, 'image/png': 16, jpg: 28, png: 16 };

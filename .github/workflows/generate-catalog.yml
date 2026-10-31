@@ -5,6 +5,7 @@ on:
     branches: [master]
     paths:
       - "**/*.xml"
+      - "descriptions.yml"
 
 jobs:
   catalog:
@@ -15,13 +16,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
+      - name: Install uv
+        uses: astral-sh/setup-uv@38f3f104447c67c051c4a08e39b64a148898af3a  # v4.2.0
 
       - name: Generate catalog
-        run: python3 .github/scripts/generate-catalog.py
+        run: uv run python .github/scripts/generate-catalog.py
 
       - name: Commit updated catalog
         run: |

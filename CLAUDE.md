@@ -56,12 +56,13 @@ Schema at `schema/mobac-maps.xsd` validates all three types. Derived from ATAK's
 - **Overlays** must be transparent PNG; opaque layers are base maps even if they look like "shading"
 - **Commits**: use [Conventional Commits](https://www.conventionalcommits.org/) (`feat:`, `fix:`, `docs:`, etc.) — semantic-release parses these for versioning
 - **No API keys in XML** — if a source requires auth, document it but don't commit secrets
+- **No hand-typed counts or versions** in README.md or the docs ("all 40 maps" goes stale). The map list in README.md is generated between the `MAP_CATALOG` markers by `mapvalidator.readme`; versions and status come from live badges. `tests/test_readme.py` fails on a typed map count
 
 ## CI/CD
 
 - **Validate Map XML** — validates all XML files against `schema/mobac-maps.xsd` on PRs and pushes to master
 - **Map Release** — on push to master, zips all XML files and creates a GitHub Release via semantic-release
-- **Update Map Catalog** — auto-generates the map catalog table in README.md when XML files change
+- **Update Map Catalog** — regenerates the README map list (grouped by type, `mapvalidator.readme`) when XML files or `descriptions.yml` change
 - **Docs and Dependency CI** — on site changes, builds the site and runs `scripts/site_check.py` (no JS errors, no axe violations, explorer loads, no overlapping map controls)
 - **Deploy Pages** — builds the site with the latest `map-health` artifact so the map explorer shows each map's status
 - **Deep Map Validation** — on PRs, runs the ATAK harness on the changed maps

@@ -7,17 +7,6 @@ from pathlib import Path
 
 from mapvalidator.qr import build_import_uri
 
-# Display/filter order for the map style categories on the Maps page.
-CATEGORY_ORDER = [
-    "Satellite",
-    "Topographic",
-    "Street",
-    "Nautical",
-    "Cycling",
-    "Overlay",
-    "Land use",
-]
-
 RAW_BASE = "https://raw.githubusercontent.com/joshuafuller/ATAK-Maps/master"
 
 # The tak:// import target must be served with an XML content type. raw

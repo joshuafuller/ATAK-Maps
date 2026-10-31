@@ -90,30 +90,52 @@ The [map explorer](../maps/) shows an estimate for the area on screen, for examp
 
 ## Fix a problem
 
-<div class="am-split" markdown>
-![](assets/brand/illo-blank.jpg){ alt="" }
-
-<div markdown>
-??? question "Map is blank or black"
-    - **Outside its region:** US, UK, DE, CA and PL maps only draw inside that country.
-    - **Zoomed too far:** each map stops at its own deepest zoom.
-    - **Server down:** check the map's status in the [map explorer](../maps/). Every map is tested weekly the way ATAK loads it.
-</div>
+<div class="am-fix-head" markdown="0">
+  <img src="../assets/brand/illo-blank.jpg" alt="" width="120" height="120">
+  <p>Pick what you see. Every map is tested weekly the way ATAK loads it, so first check its status in the <a href="../maps/">map explorer</a>.</p>
 </div>
 
-??? question "Maps do not show after import"
-    Restart ATAK. For manual installs, check the folder: base maps are not read from `atak/imagery/` itself. ATAK's log is under **Settings → Show Log**.
-
-??? question "Overlay replaces my map"
-    It was imported as a base map. Move its XML to `atak/grg/` and restart ATAK.
-
-??? question "UK OS map needs a key"
-    Get a free key from the OS Data Hub, open the XML, and replace `API_KEY_HERE` with it.
-
-??? question "Where is OpenStreetMap?"
-    The main OpenStreetMap tile servers block ATAK, so we do not include them. OSM-based maps from other servers (OpenTopoMap, CyclOSM, OpenSeaMap) work.
-
-??? question "Which file types does ATAK read?"
-    `.xml` map sources (what ATAK Maps provides), `.xmle` encrypted map sources and `.bsh` scripted map sources.
+<div class="am-faq" markdown="0">
+  <details class="am-q" name="fix">
+    <summary><span class="am-q__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M15 9l-6 6M9 9l6 6"/></svg></span><span class="am-q__t"><b>Map is blank or black</b><small>Wrong place, too far in, or the server is down</small></span><svg class="am-q__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary>
+    <div class="am-q__a">
+      <ul>
+        <li><b>Outside its region:</b> US, UK, DE, CA and PL maps only draw inside that country.</li>
+        <li><b>Zoomed too far:</b> each map stops at its own deepest zoom. The explorer shows the range.</li>
+        <li><b>Server down:</b> the map's card in the <a href="../maps/">explorer</a> says “Working in ATAK” or names the problem.</li>
+      </ul>
+    </div>
+  </details>
+  <details class="am-q" name="fix">
+    <summary><span class="am-q__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg></span><span class="am-q__t"><b>Maps do not show after import</b><small>A restart or the wrong folder</small></span><svg class="am-q__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary>
+    <div class="am-q__a">
+      <p>Restart ATAK. For manual installs, check the folder: base maps go in <code>atak/imagery/mobile/mapsources/</code>, not <code>atak/imagery/</code> itself. ATAK's log is under <b>Settings → Show Log</b>.</p>
+    </div>
+  </details>
+  <details class="am-q" name="fix">
+    <summary><span class="am-q__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/></svg></span><span class="am-q__t"><b>Overlay replaces my map</b><small>It was imported as a base map</small></span><svg class="am-q__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary>
+    <div class="am-q__a">
+      <p>One-tap import adds “+” maps as base maps. Move the XML to <code>atak/grg/</code> and restart ATAK; it then shows in <b>Overlay Manager</b> on top of any base map. <a href="#use-overlays">How overlays work</a>.</p>
+    </div>
+  </details>
+  <details class="am-q" name="fix">
+    <summary><span class="am-q__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="15" r="4"/><path d="M10.8 12.2L20 3M17 6l3 3M14 9l2 2"/></svg></span><span class="am-q__t"><b>UK OS map needs a key</b><small>Free key from the OS Data Hub</small></span><svg class="am-q__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary>
+    <div class="am-q__a">
+      <p>Get a free key from the OS Data Hub. Download the map's XML from the <a href="../maps/?region=UK">explorer</a>, replace <code>API_KEY_HERE</code> with your key, then copy it to the device.</p>
+    </div>
+  </details>
+  <details class="am-q" name="fix">
+    <summary><span class="am-q__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/></svg></span><span class="am-q__t"><b>Where is OpenStreetMap?</b><small>Its main servers block ATAK</small></span><svg class="am-q__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary>
+    <div class="am-q__a">
+      <p>The main OpenStreetMap tile servers block ATAK, so we do not include them. OSM-based maps on other servers work: OpenTopoMap, CyclOSM and OpenSeaMap.</p>
+    </div>
+  </details>
+  <details class="am-q" name="fix">
+    <summary><span class="am-q__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/></svg></span><span class="am-q__t"><b>Which files does ATAK read?</b><small>.xml, .xmle and .bsh</small></span><svg class="am-q__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary>
+    <div class="am-q__a">
+      <p><code>.xml</code> map sources (what ATAK Maps provides), <code>.xmle</code> encrypted map sources and <code>.bsh</code> scripted map sources.</p>
+    </div>
+  </details>
+</div>
 
 Still stuck? [Report a broken map](https://github.com/joshuafuller/ATAK-Maps/issues/new) or ask in [Discord](https://discord.gg/dQUYADMW87).

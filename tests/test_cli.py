@@ -1,7 +1,6 @@
-import json
-
 """Integration tests for mapvalidator.__main__.main() CLI entry point."""
 
+import json
 import sys
 from unittest.mock import MagicMock, patch
 

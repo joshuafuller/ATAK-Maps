@@ -36,7 +36,7 @@ CREDITS = {
     "bing": "© Microsoft Bing",
     "esri": "© Esri and its data providers",
     "usgs": "USGS The National Map",
-    "naip": "USDA NAIP",
+    "naip": "USDA NAIP via USGS The National Map",
     "blm": "Bureau of Land Management",
     "ca-nrcan": "© Natural Resources Canada",
     "de-basemap": "© BKG basemap.de",

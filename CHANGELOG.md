@@ -1,3 +1,11 @@
+## [2.3.1](https://github.com/joshuafuller/ATAK-Maps/compare/v2.3.0...v2.3.1) (2026-10-31)
+
+### Bug Fixes
+
+* **deps:** bump the python group with 5 updates ([#114](https://github.com/joshuafuller/ATAK-Maps/issues/114)) ([e79fe1b](https://github.com/joshuafuller/ATAK-Maps/commit/e79fe1bbc5e52cfa3a12c26ed28d0b80ccd11afb))
+* **health:** failed issue calls fail the run; health is saved first ([#111](https://github.com/joshuafuller/ATAK-Maps/issues/111)) ([44e959a](https://github.com/joshuafuller/ATAK-Maps/commit/44e959a9c29f436378d542ca52a4d73128dc67c0))
+* **maps:** NAIP from USGS The National Map ([#115](https://github.com/joshuafuller/ATAK-Maps/issues/115)) ([dcc5d5a](https://github.com/joshuafuller/ATAK-Maps/commit/dcc5d5a5f54de9f0a35374e8d655368bcd87a614)), closes [#113](https://github.com/joshuafuller/ATAK-Maps/issues/113)
+
 ## [2.3.0](https://github.com/joshuafuller/ATAK-Maps/compare/v2.2.0...v2.3.0) (2026-10-31)
 
 ### Features

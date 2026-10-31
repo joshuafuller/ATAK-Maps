@@ -1,7 +1,4 @@
----
-title: Install & fix
----
-
+<!-- markdownlint-disable MD041 -- the small label sits above the page title -->
 <span class="am-kicker">ATAK 5.1 or later</span>
 
 # Install & fix

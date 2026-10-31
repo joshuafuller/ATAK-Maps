@@ -1,3 +1,4 @@
+<!-- markdownlint-disable MD041 -- the banner picture comes before the first heading -->
 <div align="center">
 
 <picture>

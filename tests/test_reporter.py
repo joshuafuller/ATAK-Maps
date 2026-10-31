@@ -154,6 +154,20 @@ class TestManageGithubIssues:
         assert mock_run.call_count == 1  # list only: no close, no create
 
     @patch("mapvalidator.reporter.subprocess.run")
+    def test_name_that_prefixes_another_does_not_touch_its_issue(self, mock_run):
+        # "USGS Imagery" must not match "USGS Imagery Topo"'s issue.
+        existing = [
+            {"title": "Map Health: USGS Imagery Topo \u2014 not working", "number": 8}
+        ]
+        mock_run.return_value = MagicMock(stdout=json.dumps(existing), returncode=0)
+        manage_github_issues([MapHealth("USGS Imagery", "ok", "")])
+        assert mock_run.call_count == 1  # nothing closed
+        manage_github_issues([MapHealth("USGS Imagery", "fail", "HTTP 500")])
+        assert "issue create" in self._args(
+            mock_run.call_args_list[-1]
+        )  # its own issue opened
+
+    @patch("mapvalidator.reporter.subprocess.run")
     def test_healthy_map_without_issue_does_nothing(self, mock_run):
         mock_run.return_value = MagicMock(stdout="[]", returncode=0)
         manage_github_issues([MapHealth("GoodMap", "ok", "")])

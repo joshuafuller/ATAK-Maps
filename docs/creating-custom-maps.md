@@ -1,7 +1,4 @@
----
-title: Add a map
----
-
+<!-- markdownlint-disable MD041 -- the small label sits above the page title -->
 <span class="am-kicker">For contributors · about 20 min</span>
 
 # Add a map
@@ -83,7 +80,7 @@ The test builds tile URLs with ATAK's own rules and its “TAK” user agent, th
 
 ## ATAK gotchas
 
-!!! warning "WMS: tileType is png or jpg"
+!!! warning "WMS: tileType is `png` or `jpg`"
     Anything else makes ATAK send `format=null`, and the server refuses.
 
 !!! warning "maxZoom is the server's real limit"

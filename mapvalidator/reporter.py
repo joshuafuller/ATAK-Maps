@@ -121,8 +121,13 @@ def manage_github_issues(
     open_issues = _find_open_issues(repo)
 
     for h in health:
+        # Exact name: the title is the name alone or the name, " \u2014 ", a status.
+        # A prefix match would let "USGS Imagery" catch "USGS Imagery Topo".
+        own = f"{_TITLE_PREFIX}{h.name}"
         matching = [
-            i for i in open_issues if i["title"].startswith(f"{_TITLE_PREFIX}{h.name}")
+            i
+            for i in open_issues
+            if i["title"] == own or i["title"].startswith(f"{own} \u2014")
         ]
         if h.status == "fail" and not matching:
             body = "\n".join(

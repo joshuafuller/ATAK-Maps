@@ -1,151 +1,78 @@
 <div align="center">
 
-<img src="https://github.com/joshuafuller/ATAK-Maps/blob/master/images/ATAK_MAPS_Logo.png?raw=true" alt="ATAK-Maps" width="440">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/brand/readme-banner-dark.svg">
+  <img alt="ATAK Maps" src="docs/assets/brand/readme-banner-light.svg" width="100%">
+</picture>
 
-# ATAK-Maps
+**Satellite, topo, street, nautical and overlay maps for [ATAK](https://tak.gov).<br>Each one is tested the way ATAK loads tiles.**
 
-**Install any map into [ATAK](https://tak.gov) in one tap.**
+[![Latest release](https://img.shields.io/github/v/release/joshuafuller/ATAK-Maps?style=flat&color=E8590C)](https://github.com/joshuafuller/ATAK-Maps/releases/latest)
+[![Map health](https://img.shields.io/github/actions/workflow/status/joshuafuller/ATAK-Maps/map-health-check.yml?label=map%20health&style=flat)](https://github.com/joshuafuller/ATAK-Maps/actions/workflows/map-health-check.yml)
+[![Downloads](https://img.shields.io/github/downloads/joshuafuller/ATAK-Maps/total?style=flat)](https://github.com/joshuafuller/ATAK-Maps/releases)
+[![License](https://img.shields.io/github/license/joshuafuller/ATAK-Maps?style=flat)](LICENSE)
+[![Discord](https://img.shields.io/discord/698067185515495436?style=flat&label=chat)](https://discord.gg/dQUYADMW87)
 
-A curated, open collection of **40** satellite, topographic, nautical, trail and
-overlay map sources — scan a QR, tap **Add to ATAK**, or side-load. No manual
-file wrangling. ATAK&nbsp;5.1+.
-
-[![Latest Release](https://img.shields.io/github/v/release/joshuafuller/ATAK-Maps?style=flat)](https://github.com/joshuafuller/ATAK-Maps/releases/latest) ![Release Date](https://img.shields.io/github/release-date/joshuafuller/ATAK-Maps?style=flat) [![Downloads](https://img.shields.io/github/downloads/joshuafuller/ATAK-Maps/total?style=flat)](https://github.com/joshuafuller/ATAK-Maps/releases/latest) [![XML Validation](https://img.shields.io/github/actions/workflow/status/joshuafuller/ATAK-Maps/validate-maps.yml?label=XML%20validation&style=flat)](https://github.com/joshuafuller/ATAK-Maps/actions/workflows/validate-maps.yml)
-[![Stars](https://img.shields.io/github/stars/joshuafuller/ATAK-Maps?style=flat)](https://github.com/joshuafuller/ATAK-Maps) [![License](https://img.shields.io/github/license/joshuafuller/ATAK-Maps?style=flat)](LICENSE) [![Discord](https://img.shields.io/discord/698067185515495436?style=flat)](https://discord.gg/dQUYADMW87) [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/joshuafuller/ATAK-Maps)
-
-### [Browse &amp; install from the catalog site&nbsp;&rarr;](https://joshuafuller.github.io/ATAK-Maps/)
+### [Open the map explorer →](https://joshuafuller.github.io/ATAK-Maps/maps/)
 
 </div>
 
-## Add to ATAK
-
 <table>
 <tr>
-<td width="260" align="center">
-<img src="images/add-to-atak.png" width="240" alt="QR code to add all maps to ATAK"><br>
-<sub>Scan to add all 40 maps</sub>
+<td width="50%" valign="top">
+
+### Install maps
+
+<img src="images/add-to-atak.png" width="130" align="right" alt="QR code that adds every map to ATAK">
+
+- **All maps:** scan this code with your ATAK device.
+- **One map:** open the [map explorer](https://joshuafuller.github.io/ATAK-Maps/maps/) on the device and tap **Add to ATAK**.
+- **Offline or many devices:** download `atak-maps.zip` from [Releases](https://github.com/joshuafuller/ATAK-Maps/releases/latest).
+
+Problems? See [Install & fix](https://joshuafuller.github.io/ATAK-Maps/install-guide/).
+
 </td>
-<td>
+<td width="50%" valign="top">
 
-**Fastest — per map:** open the **[catalog site](https://joshuafuller.github.io/ATAK-Maps/maps/)**
-on your ATAK device and tap **Add to ATAK** on any map (filter by style, or
-scan a QR from another screen).
+### Add or fix a map
 
-**Whole set at once:** scan the QR, or on the device paste this into a browser —
-it imports a data package with all 40 maps, kept in ATAK's Mission Package Tool
-so you can remove them later:
+- [Add a map](https://joshuafuller.github.io/ATAK-Maps/creating-custom-maps/): naming rules and the XML format.
+- Test it the way ATAK loads it:<br>`uv run python -m mapvalidator --harness . --only my_map.xml`
+- [Report a broken map](https://github.com/joshuafuller/ATAK-Maps/issues/new)
 
-`tak://com.atakmap.app/import?url=https%3A%2F%2Fjoshuafuller.github.io%2FATAK-Maps%2Fpack%2Fatak-maps-all.zip`
-
-**Manual:** download the latest `atak-maps.zip` from the
-[Releases page](https://github.com/joshuafuller/ATAK-Maps/releases) and open it
-with ATAK's Import feature. See the **[Install Guide](docs/install-guide.md)**
-for troubleshooting and offline caching.
+ATAK 5.1 or later. Not affiliated with TAK.GOV.
 
 </td>
 </tr>
 </table>
 
-> Requires ATAK 5.1+ (the version that added the `tak://` import scheme). GitHub
-> can't render a tappable `tak://` link here — use the QR or the catalog site,
-> where the buttons are tappable on-device.
-
-## What is ATAK-Maps?
-
-A collection of [MOBAC-format](https://mobac.sourceforge.io/) XML files, each a
-pointer to an online map/imagery source. [ATAK](https://tak.gov) reads them to
-display live imagery and **cache map areas for offline use** — essential where
-connectivity is limited. Pick a region and quality, and ATAK downloads it for
-the field. (Not affiliated with TAK.GOV.)
-
-## Map Catalog
-
-All available map layers, auto-generated from the XML files in this repository:
+## Maps
 
 <!-- MAP_CATALOG_START -->
 
-| Provider | Map Name | Zoom (min–max) | Tile Type | Source |
-|----------|----------|----------------|-----------|--------|
-| bing | Bing Hybrid | 1–20 | jpg | TMS |
-| bing | Bing Road | 1–19 | png | TMS |
-| bing | Bing Satellite | 1–20 | jpg | TMS |
-| blm | BLM Land Ownership | 1–14 | jpg | TMS |
-| blm | BLM Sat + Ownership | —–— | — | Multi-Layer |
-| ca-nrcan | CA Base Map | 1–19 | jpg | WMS |
-| ca-nrcan | CA Toporama | 1–18 | jpg | WMS |
-| cyclosm | CyclOSM | 0–20 | png | TMS |
-| de-basemap | DE Basemap Color | 2–19 | png | TMS |
-| de-basemap | DE Basemap Elevation | 2–12 | png | TMS |
-| de-basemap | DE Basemap Gray | 2–19 | png | TMS |
-| de-basemap | DE Basemap Hillshade | 2–19 | png | TMS |
-| esri | Esri Clarity | 1–19 | jpg | TMS |
-| esri | Esri NatGeo | 1–16 | jpg | TMS |
-| esri | Esri Topo | 1–19 | jpg | TMS |
-| esri | Esri USA Topo | 0–15 | jpg | TMS |
-| google | Google Hybrid | 0–20 | jpg | TMS |
-| google | Google Hybrid No POI | 0–20 | jpg | TMS |
-| google | Google Relief | 0–17 | jpg | TMS |
-| google | Google Road | 0–20 | png | TMS |
-| google | Google Road Alt | 0–20 | png | TMS |
-| google | Google Road No POI | 0–20 | png | TMS |
-| google | Google Satellite | 0–20 | jpg | TMS |
-| google | Google Terrain | 0–20 | jpg | TMS |
-| GRG | + BLM Public Lands | 1–14 | png | TMS |
-| GRG | + CA BC Wildfire | 0–22 | png | WMS |
-| GRG | + FEMA Flood | 5–19 | PNG | WMS |
-| GRG | + Google Bike | 0–20 | png | TMS |
-| GRG | + Google Roads | 0–20 | png | TMS |
-| GRG | + Google Transit | 0–20 | png | TMS |
-| GRG | + OpenSeaMap | 0–18 | png | TMS |
-| GRG | + Waymarked Cycling | 0–18 | png | TMS |
-| mtbmap | MTBMap Europe | 0–18 | png | TMS |
-| naip | NAIP Imagery | 0–17 | jpg | TMS |
-| openseamap | OpenSeaMap Base | 0–18 | png | TMS |
-| opentopo | OpenTopoMap | 1–17 | png | TMS |
-| pl-geoportal | PL Ortho | 3–19 | jpg | TMS |
-| uk-os | UK OS Light | 0–16 | png | TMS |
-| uk-os | UK OS Outdoor | 0–16 | png | TMS |
-| uk-os | UK OS Road | 0–16 | png | TMS |
-| usgs | USGS Imagery | 0–16 | jpg | TMS |
-| usgs | USGS Imagery Topo | 1–16 | jpg | TMS |
-| usgs | USGS Relief | 0–16 | jpg | TMS |
-| usgs | USGS Topo | 0–16 | jpg | TMS |
+| Type | Maps |
+|------|------|
+| Satellite | Bing Hybrid · Bing Satellite · Esri Clarity · Google Hybrid · Google Hybrid No POI · Google Satellite · NAIP Imagery · PL Ortho · USGS Imagery · USGS Imagery Topo |
+| Topographic | CA Toporama · DE Basemap Elevation · DE Basemap Hillshade · Esri Topo · Esri USA Topo · Google Relief · Google Terrain · OpenTopoMap · UK OS Outdoor · USGS Relief · USGS Topo |
+| Street | Bing Road · CA Base Map · DE Basemap Color · DE Basemap Gray · Esri NatGeo · Google Road · Google Road Alt · Google Road No POI · UK OS Light · UK OS Road |
+| Nautical | + OpenSeaMap · OpenSeaMap Base |
+| Cycling | + Google Bike · + Waymarked Cycling · CyclOSM · MTBMap Europe |
+| Land use | BLM Land Ownership · BLM Sat + Ownership |
+| Overlays | + BLM Public Lands · + CA BC Wildfire · + FEMA Flood · + Google Roads · + Google Transit |
+
+Preview every map live, with filters and its current status, in the [map explorer](https://joshuafuller.github.io/ATAK-Maps/maps/).
 
 <!-- MAP_CATALOG_END -->
 
-## Frequently Asked Questions (FAQ)
-
-- **Can I cache these maps for offline use?** Yes, ATAK supports automatic and manual caching of maps.
-- **Will more maps be added?** We continuously update our map collection. Share your suggestions [here](https://github.com/joshuafuller/ATAK-Maps/issues).
-
-## OpenStreetMap Compatibility
-
-Please note that OpenStreetMap may restrict ATAK client access. These maps are included for reference, and we're exploring solutions.
-
-## Creating Custom Maps
-
-Want to add your own map sources? See the [Creating Custom Maps quickstart](docs/creating-custom-maps.md) to get started, or the [MOBAC XML Reference](docs/xml-reference.md) for the complete specification.
-
 ## Contributing
 
-We welcome your contributions! Review our [contribution guidelines](CONTRIBUTING.md) for more information.
+Contributions are welcome. Start with [Add a map](https://joshuafuller.github.io/ATAK-Maps/creating-custom-maps/) and the [contribution guidelines](CONTRIBUTING.md). Releases are automatic: see the [release guide](docs/release-guide.md).
 
-## Support
-
-Join our [Discord server](https://discord.gg/dQUYADMW87) for support and community engagement.
-
-## Publishing a New Version
-
-To publish a new release, push a commit to `master` with a message that begins
-with `feat:` or `fix:` using the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) format.
-The *Map Release* workflow runs automatically on those commits—or it can be
-triggered manually from the *Actions* tab—and uses semantic-release to tag the
-commit and upload `atak-maps.zip`.
-For more details, including instructions for forks, see [docs/release-guide.md](docs/release-guide.md).
+Questions and ideas: [Discord](https://discord.gg/dQUYADMW87) or [Issues](https://github.com/joshuafuller/ATAK-Maps/issues).
 
 ## License
 
-ATAK-Maps is distributed under the [MIT License](LICENSE).
+ATAK Maps is distributed under the [MIT License](LICENSE). Each map's tiles belong to its provider; see the source credit in the map explorer.
 
 ## Stargazers over time
 
@@ -155,5 +82,3 @@ ATAK-Maps is distributed under the [MIT License](LICENSE).
   <img alt="Star history" src="docs/images/star-history/star-history-light.svg">
 </picture>
 <!-- star-history:end -->
-
-

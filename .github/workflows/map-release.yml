@@ -44,7 +44,7 @@ jobs:
       actions:  read       # to see whether the catalog workflow is still running
 
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: master          # Always use latest master tip, not the triggering SHA.
           fetch-depth: 0       # @semantic-release/git may have pushed a chore(release)
@@ -92,7 +92,7 @@ jobs:
 
       - name: semantic-release
         id: release1
-        uses: cycjimmy/semantic-release-action@16ca923e6ccbb50770c415a0ccd43709a8c5f7a4 # v4.2.2
+        uses: cycjimmy/semantic-release-action@ad51787758d9654d5a75150a89a6fa9b3ccef95e # v8.1.4
         with:
           # preset in .releaserc.json; parses "type!:" breaking commits.
           # v10 needs conventional-changelog-writer 9; release-notes-generator ships 8.
@@ -121,7 +121,7 @@ jobs:
       - name: semantic-release (retry)
         id: release2
         if: steps.check.outputs.behind == 'true'
-        uses: cycjimmy/semantic-release-action@16ca923e6ccbb50770c415a0ccd43709a8c5f7a4 # v4.2.2
+        uses: cycjimmy/semantic-release-action@ad51787758d9654d5a75150a89a6fa9b3ccef95e # v8.1.4
         with:
           # preset in .releaserc.json; parses "type!:" breaking commits.
           # v10 needs conventional-changelog-writer 9; release-notes-generator ships 8.

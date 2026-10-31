@@ -25,10 +25,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       # Pinned to the v1.0.4 commit: this action runs with contents: write.
-      - uses: narayann7/star-history-action@c2061675dacbf6f35d116e556015b8905843387f # v1.0.4
+      - uses: narayann7/star-history-action@12543ab7352b91fb7c5eb0c4fbb39772baa0c168 # v1.0.6
         with:
           repos: ${{ github.repository }}
           output-dir: docs/images/star-history

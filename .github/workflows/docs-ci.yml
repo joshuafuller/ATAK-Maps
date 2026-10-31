@@ -9,6 +9,9 @@ on:
       - "pyproject.toml"
       - "uv.lock"
       - "scripts/gen_pages_catalog.py"
+      - "scripts/site_check.py"
+      - "overrides/**"
+      - "mapvalidator/explorer.py"
 
 jobs:
   test-and-build:
@@ -22,3 +25,9 @@ jobs:
         run: uv run --extra docs python scripts/gen_pages_catalog.py
       - name: Build documentation
         run: uv run --extra docs mkdocs build --strict
+      # Every page in a real browser: no script errors, no axe accessibility
+      # violations, the map explorer has its maps, no overlapping map controls.
+      - name: Install Chromium
+        run: uv run --extra site playwright install --with-deps chromium
+      - name: Check the built site
+        run: uv run --extra site python scripts/site_check.py site

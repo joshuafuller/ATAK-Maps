@@ -7,6 +7,7 @@ dependencies = ["requests", "pillow", "pyyaml"]
 [project.optional-dependencies]
 dev = ["pytest", "pytest-cov", "responses"]
 docs = ["mkdocs-material", "qrcode[pil]"]
+site = ["playwright>=1.64"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

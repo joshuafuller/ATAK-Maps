@@ -11,12 +11,18 @@ GRG/
   ├── grg_<source>_<layer>.xml  # Overlay layers (transparent)
 schema/
   └── mobac-maps.xsd     # XSD schema — validates all XML map files
-docs/
-  ├── install-guide.md   # User-focused installation guide
+docs/                    # GitHub Pages site (MkDocs Material; theme in overrides/ + stylesheets/site.css)
+  ├── index.md           # Home: search hand-off to the map explorer, add-all QR
+  ├── maps/index.html    # Map explorer (live Leaflet map); maps.js + health.js are generated
+  ├── install-guide.md   # "Install & fix"
+  ├── creating-custom-maps.md  # "Add a map" (contributor guide)
   ├── xml-reference.md   # Complete MOBAC XML spec (from ATAK source)
-  ├── creating-custom-maps.md  # Quickstart tutorial for contributors
   ├── release-guide.md   # Release process
-  └── images/            # Diagrams (install flow, XML anatomy, directory layout)
+  └── assets/brand/      # Logo, mark, contour art, illustrations
+overrides/partials/      # Material header (inline nav, logo, Add all maps) and named search dialog
+scripts/
+  ├── gen_pages_catalog.py  # Explorer data, QR codes, hosted sources, data package
+  └── site_check.py      # Built site in Chromium: JS errors, axe, explorer, overlaps
 .github/
   ├── workflows/
   │   ├── validate-maps.yml    # XSD schema validation on PRs
@@ -56,6 +62,8 @@ Schema at `schema/mobac-maps.xsd` validates all three types. Derived from ATAK's
 - **Validate Map XML** — validates all XML files against `schema/mobac-maps.xsd` on PRs and pushes to master
 - **Map Release** — on push to master, zips all XML files and creates a GitHub Release via semantic-release
 - **Update Map Catalog** — auto-generates the map catalog table in README.md when XML files change
+- **Docs and Dependency CI** — on site changes, builds the site and runs `scripts/site_check.py` (no JS errors, no axe violations, explorer loads, no overlapping map controls)
+- **Deploy Pages** — builds the site with the latest `map-health` artifact so the map explorer shows each map's status
 - **Deep Map Validation** — on PRs, runs the ATAK harness on the changed maps
 - **Map Health Check** — weekly, runs the ATAK harness on every map, saves per-map health (`map-health` artifact) and rebuilds Pages
 

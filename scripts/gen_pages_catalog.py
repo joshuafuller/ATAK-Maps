@@ -1,5 +1,13 @@
 #!/usr/bin/env python3
-"""Generate docs/maps.md and docs/qr/*.png from the repo's map sources."""
+"""Generate the site's map data from the repo's map sources.
+
+Writes the map explorer data (docs/maps/maps.js, docs/maps/health.js), QR
+codes (docs/qr/), hosted copies of each source (docs/sources/) and the
+all-maps data package (docs/pack/).
+"""
+
+import json
+import os
 
 import shutil
 import sys
@@ -22,16 +30,22 @@ from mapvalidator.catalog import (  # noqa: E402
     build_map_entry,
     iter_map_files,
     package_import_uri,
-    render_maps_page,
 )
+from mapvalidator.explorer import (  # noqa: E402
+    LIVE_POINTS,
+    build_explorer_data,
+    health_js,
+)  # noqa: E402
 
 DOCS = REPO_ROOT / "docs"
 QR_DIR = DOCS / "qr"
 SOURCES_DIR = DOCS / SOURCES_SUBDIR
 PACKAGE_DIR = DOCS / PACKAGE_SUBDIR
 DESCRIPTIONS_FILE = REPO_ROOT / "descriptions.yml"
-# The Maps page renders at /maps/ (pretty URLs); assets live one level up.
-ALL_MAPS_QR = "../qr/_all-maps.png"
+EXPLORER_DIR = DOCS / "maps"
+# map-health.json from the weekly ATAK harness run (the Pages workflow downloads
+# it); missing means the explorer shows no health status.
+HEALTH_FILE = Path(os.environ.get("MAP_HEALTH_JSON", REPO_ROOT / "map-health.json"))
 
 
 def write_qr(data: str, out_path: Path) -> None:
@@ -85,14 +99,16 @@ def main() -> None:
     missing = [e["slug"] for e in entries if not descriptions.get(e["slug"])]
     if missing:
         print(f"WARNING: {len(missing)} maps without a description: {missing}")
-    (DOCS / "maps.md").write_text(
-        render_maps_page(
-            entries,
-            descriptions=descriptions,
-            package_uri=package_import_uri(),
-            package_qr=ALL_MAPS_QR,
-        )
+    maps = build_explorer_data(REPO_ROOT, descriptions, live_points=LIVE_POINTS)
+    EXPLORER_DIR.mkdir(parents=True, exist_ok=True)
+    (EXPLORER_DIR / "maps.js").write_text(
+        "window.ATAK_MAPS = "
+        + json.dumps(maps, indent=1)
+        + ";\nwindow.ATAK_PACKAGE_URI = "
+        + json.dumps(package_import_uri())
+        + ";\n"
     )
+    (EXPLORER_DIR / "health.js").write_text(health_js(HEALTH_FILE))
     print(
         f"Generated {len(entries)} map entries + QR codes + hosted sources + "
         "data package into docs/."

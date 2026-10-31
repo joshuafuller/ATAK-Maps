@@ -5,7 +5,9 @@ __pycache__/
 # Generated Pages site artefacts
 /site/
 /docs/qr/
-/docs/maps.md
+/docs/maps/maps.js
+/docs/maps/health.js
+/map-health.json
 /docs/sources/
 /docs/pack/
 .cache/

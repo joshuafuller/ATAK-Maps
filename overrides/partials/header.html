@@ -1,0 +1,53 @@
+{#-
+  ATAK-Maps header: Material's header with the wordmark logo and the three
+  main links inline (Maps · Install & fix · Add a map), plus an "Add all maps"
+  button. Palette toggle, search and the GitHub box are Material's own.
+-#}
+{% set links = [
+  ("maps/", "Maps", '<path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/>'),
+  ("install-guide/", "Install & fix", '<path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/>'),
+  ("creating-custom-maps/", "Add a map", '<rect x="3" y="3" width="18" height="18" rx="3"/><path d="M12 8v8M8 12h8"/>'),
+] %}
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="{{ lang.t('header') }}">
+    <a href="{{ nav.homepage.url | url }}" title="{{ config.site_name | e }}" class="md-header__button md-logo am-logo" aria-label="{{ config.site_name }} home" data-md-component="logo">
+      <img class="am-logo--dark" src="{{ 'assets/brand/atak-maps-logo-dark.svg' | url }}" alt="{{ config.site_name }}" width="134" height="26">
+      <img class="am-logo--light" src="{{ 'assets/brand/atak-maps-logo.svg' | url }}" alt="{{ config.site_name }}" width="134" height="26">
+    </a>
+    <label class="md-header__button md-icon am-menu" for="__drawer" aria-label="Open menu">
+      {% include ".icons/material/menu.svg" %}
+    </label>
+    <div class="am-nav" aria-label="Main">
+      {% for href, label, icon in links %}
+        <a href="{{ href | url }}" class="am-nav__link"{% if page.url == href %} aria-current="page"{% endif %}>
+          <svg aria-hidden="true" viewBox="0 0 24 24">{{ icon }}</svg>{{ label }}
+        </a>
+      {% endfor %}
+    </div>
+    {% if config.theme.palette %}
+      {% if not config.theme.palette is mapping %}
+        {% include "partials/palette.html" %}
+      {% endif %}
+    {% endif %}
+    {% if not config.theme.palette is mapping %}
+      {% include "partials/javascripts/palette.html" %}
+    {% endif %}
+    {% if "material/search" in config.plugins %}
+      {% set search = config.plugins["material/search"] | attr("config") %}
+      {% if search.enabled %}
+        <label class="md-header__button md-icon" for="__search" aria-label="Search">
+          {% include ".icons/material/magnify.svg" %}
+        </label>
+        {% include "partials/search.html" %}
+      {% endif %}
+    {% endif %}
+    {% if config.repo_url %}
+      <div class="md-header__source">
+        {% include "partials/source.html" %}
+      </div>
+    {% endif %}
+    <a class="am-cta" href="{{ 'maps/' | url }}?add=all" aria-label="Add all maps">
+      <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg><span>Add all maps</span>
+    </a>
+  </nav>
+</header>

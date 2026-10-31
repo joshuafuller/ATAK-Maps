@@ -14,11 +14,11 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with: { fetch-depth: 0 }
 
       - name: Run Super-Linter
-        uses: github/super-linter@v5
+        uses: github/super-linter@45fc0d88288beee4701c62761281edfee85655d7 # v5.0.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BRANCH: master

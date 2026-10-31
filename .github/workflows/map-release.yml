@@ -34,6 +34,10 @@ concurrency:
   group: map-release
   cancel-in-progress: false
 
+# Least privilege by default; the job below asks for write where it needs it.
+permissions:
+  contents: read
+
 jobs:
   release:
     runs-on: ubuntu-latest

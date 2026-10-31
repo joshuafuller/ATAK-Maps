@@ -7,6 +7,10 @@ on:
       - "**/*.xml"
       - "maps/descriptions.yml"
 
+# Least privilege by default; the job below asks for write where it needs it.
+permissions:
+  contents: read
+
 jobs:
   catalog:
     runs-on: ubuntu-latest

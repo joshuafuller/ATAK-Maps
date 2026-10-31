@@ -10,6 +10,10 @@ on:
     paths:
       - "**/*.xml"
 
+permissions:
+  contents: read
+  statuses: write   # super-linter reports one status per linter
+
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -26,3 +30,13 @@ jobs:
           VALIDATE_JSCPD: false
           VALIDATE_PYTHON_ISORT: false
           VALIDATE_ALL_CODEBASE: false
+          # v7 adds formatters this repo does not use: Prettier, and PyInk,
+          # which conflicts with black. Python style is black + flake8 + mypy;
+          # v7's pylint also demands docstrings on every test, so it is off.
+          VALIDATE_CSS_PRETTIER: false
+          VALIDATE_HTML_PRETTIER: false
+          VALIDATE_JAVASCRIPT_PRETTIER: false
+          VALIDATE_MARKDOWN_PRETTIER: false
+          VALIDATE_YAML_PRETTIER: false
+          VALIDATE_PYTHON_PYINK: false
+          VALIDATE_PYTHON_PYLINT: false

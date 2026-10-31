@@ -1074,7 +1074,10 @@ const theme = $('theme');
 // Material for MkDocs keeps the visitor's palette under '<site path>.__palette'; share it.
 const PALETTE_KEY = new URL('..', location.href).pathname + '.__palette';
 function savePalette(t) { try { localStorage.setItem(PALETTE_KEY, JSON.stringify({ index: t === 'dark' ? 0 : 1, color: { media: '', scheme: t === 'dark' ? 'slate' : 'default', primary: 'custom', accent: 'custom' } })); } catch (e) {} }
-function loadPalette() { try { const p = JSON.parse(localStorage.getItem(PALETTE_KEY)); return p && p.color && p.color.scheme === 'default' ? 'light' : p ? 'dark' : null; } catch (e) { return null; } }
+// Read the choice the way Material does: by its position in mkdocs.yml's palette
+// list (0 = dark, 1 = light). The stored scheme name can be stale: the old site
+// saved index 0 as "default" (light) when light was first.
+function loadPalette() { try { const p = JSON.parse(localStorage.getItem(PALETTE_KEY)); return p && p.index === 1 ? 'light' : 'dark'; } catch (e) { return 'dark'; } }
 function setTheme(t) { document.documentElement.dataset.theme = t; theme.setAttribute('aria-label', `Switch to ${t === 'dark' ? 'light' : 'dark'} theme`); $('theme2-t').textContent = t === 'dark' ? 'Light theme' : 'Dark theme'; }
 $('theme2').onclick = () => theme.onclick();
 theme.onclick = () => { const t = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'; setTheme(t); savePalette(t); };

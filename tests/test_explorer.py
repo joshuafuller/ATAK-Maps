@@ -132,6 +132,21 @@ class TestRegionAndCredit:
         )
         assert credit_for(Path("unknown/thing.xml")) == ""
 
+    def test_credit_for_faa_railway_and_hydro_maps(self):
+        assert (
+            credit_for(Path("maps/base/faa/faa_vfr_sectional.xml"))
+            == "FAA Aeronautical Information Services"
+        )
+        for f in ("grg_openrailwaymap.xml", "grg_openrailwaymap_signals.xml"):
+            assert (
+                credit_for(Path("maps/overlays") / f)
+                == "© OpenRailwayMap (CC-BY-SA), © OpenStreetMap contributors"
+            )
+        assert (
+            credit_for(Path("maps/overlays/grg_usgs_hydro.xml"))
+            == "USGS The National Map"
+        )
+
 
 class TestBuildExplorerData:
     def test_one_entry_per_map_with_what_the_page_needs(self, tmp_path):

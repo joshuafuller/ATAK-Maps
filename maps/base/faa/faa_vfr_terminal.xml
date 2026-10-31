@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<customMapSource>
+    <!-- FAA Aeronautical Information Services, public use. Charts are updated every 56 days; not for navigation unless current. -->
+    <name>FAA VFR Terminal</name>
+    <minZoom>10</minZoom>
+    <maxZoom>12</maxZoom>
+    <tileType>jpg</tileType>
+    <tileUpdate>None</tileUpdate>
+    <url>https://tiles.arcgis.com/tiles/ssFJjBXIUyZDrSYZ/arcgis/rest/services/VFR_Terminal/MapServer/tile/{$z}/{$y}/{$x}</url>
+    <backgroundColor>#000000</backgroundColor>
+</customMapSource>

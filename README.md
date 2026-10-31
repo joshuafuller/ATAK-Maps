@@ -59,7 +59,8 @@ ATAK 5.1 or later. Not affiliated with TAK.GOV.
 | Nautical | + OpenSeaMap · OpenSeaMap Base |
 | Cycling | + Google Bike · + Waymarked Cycling · CyclOSM · MTBMap Europe |
 | Land use | BLM Land Ownership · BLM Sat + Ownership |
-| Overlays | + BLM Public Lands · + CA BC Wildfire · + FEMA Flood · + Google Roads · + Google Transit |
+| Overlays | + BLM Public Lands · + CA BC Wildfire · + FEMA Flood · + Google Roads · + Google Transit · + OpenRailwayMap · + ORM Electrified · + ORM Max Speed · + ORM Signals · + USGS Hydro |
+| Aeronautical | FAA IFR High · FAA IFR Low · FAA VFR Sectional · FAA VFR Terminal |
 
 Preview every map live, with filters and its current status, in the [map explorer](https://joshuafuller.github.io/ATAK-Maps/maps/).
 

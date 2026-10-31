@@ -157,3 +157,39 @@ usgs-usgs-imagery-topo:
 usgs-usgs-relief:
   category: Topographic
   text: "USGS shaded relief — terrain hillshade, United States."
+faa-faa-vfr-sectional:
+  test_point: [39.8617, -104.6731]
+  category: Aeronautical
+  text: "FAA VFR Sectional aeronautical charts (current 56-day cycle) — United States, zoom 8–12."
+faa-faa-vfr-terminal:
+  test_point: [39.8617, -104.6731]
+  category: Aeronautical
+  text: "FAA VFR Terminal Area charts around Class B airports — United States, zoom 10–12."
+faa-faa-ifr-low:
+  test_point: [39.8617, -104.6731]
+  category: Aeronautical
+  text: "FAA IFR Low Altitude enroute and area charts — United States, zoom 8–12."
+faa-faa-ifr-high:
+  test_point: [39.8617, -104.6731]
+  category: Aeronautical
+  text: "FAA IFR Enroute High Altitude charts — United States, zoom 7–9."
+grg-grg-openrailwaymap:
+  test_point: [40.7506, -73.9935]
+  category: Overlay
+  text: "OpenRailwayMap railway infrastructure (tracks, stations, yards) as a transparent overlay — global."
+grg-grg-openrailwaymap-maxspeed:
+  test_point: [40.7506, -73.9935]
+  category: Overlay
+  text: "OpenRailwayMap line speed limits, colour-coded, as a transparent overlay — global."
+grg-grg-openrailwaymap-signals:
+  test_point: [40.7506, -73.9935]
+  category: Overlay
+  text: "OpenRailwayMap railway signals and train protection systems as a transparent overlay — global."
+grg-grg-openrailwaymap-electrification:
+  test_point: [40.7506, -73.9935]
+  category: Overlay
+  text: "OpenRailwayMap electrification (voltage and current type) as a transparent overlay — global."
+grg-grg-usgs-hydro:
+  test_point: [38.8, -90.12]
+  category: Overlay
+  text: "USGS National Hydrography Dataset rivers, streams and water bodies as a transparent overlay — United States."

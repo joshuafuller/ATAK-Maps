@@ -10,15 +10,19 @@ on:
     paths:
       - "**/*.xml"
 
+permissions:
+  contents: read
+  statuses: write   # super-linter reports one status per linter
+
 jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with: { fetch-depth: 0 }
 
       - name: Run Super-Linter
-        uses: github/super-linter@45fc0d88288beee4701c62761281edfee85655d7 # v5.0.0
+        uses: github/super-linter@b807e99ddd37e444d189cfd2c2ca1274d8ae8ef1 # v7
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BRANCH: master
@@ -26,3 +30,13 @@ jobs:
           VALIDATE_JSCPD: false
           VALIDATE_PYTHON_ISORT: false
           VALIDATE_ALL_CODEBASE: false
+          # v7 adds formatters this repo does not use: Prettier, and PyInk,
+          # which conflicts with black. Python style is black + flake8 + mypy;
+          # v7's pylint also demands docstrings on every test, so it is off.
+          VALIDATE_CSS_PRETTIER: false
+          VALIDATE_HTML_PRETTIER: false
+          VALIDATE_JAVASCRIPT_PRETTIER: false
+          VALIDATE_MARKDOWN_PRETTIER: false
+          VALIDATE_YAML_PRETTIER: false
+          VALIDATE_PYTHON_PYINK: false
+          VALIDATE_PYTHON_PYLINT: false

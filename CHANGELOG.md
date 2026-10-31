@@ -1,3 +1,9 @@
+## [2.1.0](https://github.com/joshuafuller/ATAK-Maps/compare/v2.0.0...v2.1.0) (2026-10-31)
+
+### Features
+
+* **validator:** per-map health for the site + real maxZoom for 2 maps ([#103](https://github.com/joshuafuller/ATAK-Maps/issues/103)) ([bb8e6da](https://github.com/joshuafuller/ATAK-Maps/commit/bb8e6dafd41b031dd265c0dbfbae79d33321665b))
+
 ## [2.0.0](https://github.com/joshuafuller/ATAK-Maps/compare/v1.11.0...v2.0.0) (2026-10-30)
 
 ### ⚠ BREAKING CHANGES

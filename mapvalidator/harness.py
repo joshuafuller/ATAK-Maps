@@ -15,7 +15,7 @@ from pathlib import Path
 from typing import Callable
 
 from mapvalidator.atak_source import AtakSource, parse_source, tile_for_point, tile_url
-from mapvalidator.catalog import slugify
+from mapvalidator.catalog import is_overlay, load_descriptions, map_slug
 from mapvalidator.tile_content import TileVerdict, classify_tile
 
 TAK_USER_AGENT = (
@@ -24,7 +24,6 @@ TAK_USER_AGENT = (
 BROWSER_USER_AGENT = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130 Safari/537.36"
 DEFAULT_TEST_POINT = (40.7128, -74.0060)  # New York
 MAX_NAME_LENGTH = 22
-OVERLAY_DIR = "GRG"
 _KEY_PLACEHOLDERS = ("API_KEY_HERE", "YOUR_API_KEY", "YOUR_KEY_HERE", "{key}")
 _WMS_TILE_TYPES = ("JPG", "PNG")
 
@@ -47,16 +46,9 @@ Fetch = Callable[[str, str], Response]
 
 
 def _test_point(path: Path, root: Path) -> tuple[float, float]:
-    desc_file = root / "descriptions.yml"
-    if desc_file.exists():
-        import yaml
-
-        entry = (yaml.safe_load(desc_file.read_text()) or {}).get(
-            slugify(f"{path.parent.name}-{path.stem}")
-        ) or {}
-        point = entry.get("test_point")
-        if point:
-            return float(point[0]), float(point[1])
+    point = (load_descriptions(root).get(map_slug(path)) or {}).get("test_point")
+    if point:
+        return float(point[0]), float(point[1])
     return DEFAULT_TEST_POINT
 
 
@@ -69,7 +61,7 @@ def _check_name(src: AtakSource, overlay: bool) -> list[Finding]:
         out.append(
             Finding(
                 "error",
-                f"base map name '{name}' must not start with '+ ' (only overlays in GRG/)",
+                f"base map name '{name}' must not start with '+ ' (only overlays in maps/overlays/)",
             )
         )
     if len(name) > MAX_NAME_LENGTH:
@@ -187,7 +179,7 @@ def _leaves(src: AtakSource) -> list[AtakSource]:
 
 def check_source(path: Path, root: Path, fetch: Fetch) -> list[Finding]:
     src = parse_source(path)
-    overlay = path.relative_to(root).parts[0] == OVERLAY_DIR
+    overlay = is_overlay(path)
     findings = _check_name(src, overlay)
 
     sources = _leaves(src)
@@ -279,7 +271,7 @@ def health_report(results: dict[Path, list[Finding]], checked: str) -> dict[str,
             ),
             "",
         )
-        slug = slugify(f"{path.parent.name}-{path.stem}")
+        slug = map_slug(path)
         report[slug] = {"status": status, "checked": checked, "problem": first}
     return report
 

@@ -43,8 +43,6 @@ nav:
   - XML reference: xml-reference.md
   - Releases: release-guide.md
 
-exclude_docs: |
-  superpowers/
 
 markdown_extensions:
   - attr_list

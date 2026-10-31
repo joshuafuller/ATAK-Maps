@@ -2,7 +2,7 @@
 
 import json
 import sys
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 import pytest
 
@@ -106,63 +106,25 @@ class TestNonexistentDirectory:
 
 
 # ---------------------------------------------------------------------------
-# 4. --probe flag — probe_all is called, network is mocked
-# ---------------------------------------------------------------------------
-
-
-class TestProbeFlag:
-    @patch("mapvalidator.__main__.probe_all", return_value=[])
-    def test_probe_calls_probe_all(self, mock_probe, tmp_path):
-        _write_xml(tmp_path, VALID_TMS_XML)
-        code = _run_main("--probe", str(tmp_path))
-        mock_probe.assert_called_once()
-        assert code == 0
-
-    @patch("mapvalidator.__main__.probe_all", return_value=[])
-    def test_smoke_calls_probe_all(self, mock_probe, tmp_path):
-        _write_xml(tmp_path, VALID_TMS_XML)
-        code = _run_main("--smoke", str(tmp_path))
-        mock_probe.assert_called_once()
-        assert code == 0
-
-    @patch("mapvalidator.__main__.probe_all", return_value=[])
-    def test_no_probe_flag_skips_probing(self, mock_probe, tmp_path):
-        _write_xml(tmp_path, VALID_TMS_XML)
-        code = _run_main(str(tmp_path))
-        mock_probe.assert_not_called()
-        assert code == 0
-
-
-# ---------------------------------------------------------------------------
-# 5. --issues flag — manage_github_issues is called, network is mocked
+# 4. --issues flag — with --harness, failing maps open "Map Health" issues
 # ---------------------------------------------------------------------------
 
 
 class TestIssuesFlag:
     @patch("mapvalidator.__main__.manage_github_issues")
-    @patch("mapvalidator.__main__.probe_all", return_value=[MagicMock()])
-    def test_issues_with_probe_calls_manage(self, mock_probe, mock_issues, tmp_path):
-        _write_xml(tmp_path, VALID_TMS_XML)
-        code = _run_main("--probe", "--issues", str(tmp_path))
-        mock_issues.assert_called_once()
-        assert code == 0
+    def test_harness_issues_reports_each_map(self, mock_issues, tmp_path):
+        (tmp_path / "esri").mkdir()
+        _write_xml(tmp_path / "esri", VALID_TMS_XML)
+        with patch("mapvalidator.harness.http_fetch", _not_found):
+            _run_main("--harness", "--issues", str(tmp_path))
+        (health,) = mock_issues.call_args[0]
+        assert [(h.name, h.status) for h in health] == [("Test TMS Map", "fail")]
+        assert "HTTP 404" in health[0].problem
 
     @patch("mapvalidator.__main__.manage_github_issues")
-    def test_issues_without_probe_skips_manage(self, mock_issues, tmp_path):
-        """--issues alone (no --probe) means probes is None → skip manage."""
+    def test_issues_without_harness_does_nothing(self, mock_issues, tmp_path):
         _write_xml(tmp_path, VALID_TMS_XML)
         code = _run_main("--issues", str(tmp_path))
-        mock_issues.assert_not_called()
-        assert code == 0
-
-    @patch("mapvalidator.__main__.manage_github_issues")
-    @patch("mapvalidator.__main__.probe_all", return_value=[])
-    def test_issues_with_empty_probes_skips_manage(
-        self, mock_probe, mock_issues, tmp_path
-    ):
-        """--issues + --probe but probe_all returns [] (falsy) → skip manage."""
-        _write_xml(tmp_path, VALID_TMS_XML)
-        code = _run_main("--probe", "--issues", str(tmp_path))
         mock_issues.assert_not_called()
         assert code == 0
 

@@ -4,8 +4,7 @@ import json
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
-from mapvalidator.probe import ProbeResult, ProbeStatus
-from mapvalidator.reporter import manage_github_issues, print_report
+from mapvalidator.reporter import MapHealth, manage_github_issues, print_report
 from mapvalidator.xml_checks import ValidationResult
 
 # ---------------------------------------------------------------------------
@@ -27,28 +26,6 @@ def _vr(
         errors=errors or [],
         warnings=warnings or [],
         info=info or [],
-    )
-
-
-def _pr(
-    name: str = "TestMap",
-    status: ProbeStatus = ProbeStatus.HEALTHY,
-    tak_status_code: int | None = 200,
-    tak_error: str | None = None,
-    generic_status_code: int | None = 200,
-    generic_error: str | None = None,
-    test_url: str = "https://tiles.example.com/0/0/0.png",
-) -> ProbeResult:
-    """Shorthand factory for ProbeResult."""
-    return ProbeResult(
-        filepath=Path(f"Provider/{name}.xml"),
-        map_name=name,
-        status=status,
-        tak_status_code=tak_status_code,
-        tak_error=tak_error,
-        generic_status_code=generic_status_code,
-        generic_error=generic_error,
-        test_url=test_url,
     )
 
 
@@ -93,18 +70,6 @@ class TestPrintReportOutput:
         output = capsys.readouterr().out
         assert "Uses HTTP instead of HTTPS" in output
 
-    def test_with_probes_shows_status(self, capsys):
-        """When probes are provided, their status labels appear in output."""
-        vr = _vr(name="AliveMap")
-        pr_healthy = _pr(name="AliveMap", status=ProbeStatus.HEALTHY)
-        vr2 = _vr(name="DeadMap")
-        pr_dead = _pr(name="DeadMap", status=ProbeStatus.DEAD)
-
-        print_report([vr, vr2], probes=[pr_healthy, pr_dead])
-        output = capsys.readouterr().out
-        assert "HEALTHY" in output
-        assert "DEAD" in output
-
     def test_summary_counts(self, capsys):
         """Output must include error and warning counts."""
         vrs = [
@@ -138,114 +103,56 @@ class TestPrintReportOutput:
 
 
 class TestManageGithubIssues:
-    """Tests for manage_github_issues GitHub issue management."""
+    """Weekly ATAK-harness results open and close "Map Health:" issues."""
+
+    @staticmethod
+    def _args(call):
+        return " ".join(call[0][0] if call[0] else call.kwargs.get("args", []))
 
     @patch("mapvalidator.reporter.subprocess.run")
-    def test_creates_issue_for_dead_probe(self, mock_run):
-        """DEAD probe should trigger gh issue create."""
-        # gh issue list returns empty (no existing issues)
+    def test_failing_map_opens_an_issue(self, mock_run):
         mock_run.return_value = MagicMock(stdout="[]", returncode=0)
-
-        probe = _pr(
-            name="BrokenMap",
-            status=ProbeStatus.DEAD,
-            tak_error="Connection refused",
-            test_url="https://tiles.example.com/0/0/0.png",
-        )
-        manage_github_issues([probe])
-
-        # Should have called: 1) gh issue list, 2) gh issue create
-        assert mock_run.call_count == 2
-        create_call = mock_run.call_args_list[1]
-        args = (
-            create_call[0][0] if create_call[0] else create_call.kwargs.get("args", [])
-        )
-        args_str = " ".join(args)
-        assert "issue" in args_str
-        assert "create" in args_str
-        assert "Map Health: BrokenMap" in args_str
-        assert "DEAD" in args_str
-        assert "map-health" in args_str
+        manage_github_issues([MapHealth("BrokenMap", "fail", "minZoom z3: HTTP 404")])
+        assert mock_run.call_count == 2  # list, then create
+        args = self._args(mock_run.call_args_list[1])
+        assert "issue create" in args and "map-health" in args
+        assert "Map Health: BrokenMap" in args and "HTTP 404" in args
 
     @patch("mapvalidator.reporter.subprocess.run")
-    def test_creates_issue_for_blocked_probe(self, mock_run):
-        """BLOCKED probe should trigger gh issue create."""
+    def test_no_duplicate_issue(self, mock_run):
+        existing = [{"title": "Map Health: BrokenMap \u2014 DEAD", "number": 42}]
+        mock_run.return_value = MagicMock(stdout=json.dumps(existing), returncode=0)
+        manage_github_issues([MapHealth("BrokenMap", "fail", "HTTP 404")])
+        assert mock_run.call_count == 1
+
+    @patch("mapvalidator.reporter.subprocess.run")
+    def test_recovered_map_closes_its_issue(self, mock_run):
+        existing = [{"title": "Map Health: RecoveredMap \u2014 DEAD", "number": 99}]
+        mock_run.return_value = MagicMock(stdout=json.dumps(existing), returncode=0)
+        manage_github_issues([MapHealth("RecoveredMap", "ok", "")])
+        assert mock_run.call_count == 2
+        args = self._args(mock_run.call_args_list[1])
+        assert "issue close" in args and "99" in args
+
+    @patch("mapvalidator.reporter.subprocess.run")
+    def test_warning_neither_opens_nor_closes(self, mock_run):
+        existing = [{"title": "Map Health: SlowMap \u2014 not working", "number": 7}]
+        mock_run.return_value = MagicMock(stdout=json.dumps(existing), returncode=0)
+        manage_github_issues(
+            [
+                MapHealth("SlowMap", "warn", "blank tile at maxZoom"),
+                MapHealth("NewWarn", "warn", "x"),
+            ]
+        )
+        assert mock_run.call_count == 1
+
+    @patch("mapvalidator.reporter.subprocess.run")
+    def test_healthy_map_without_issue_does_nothing(self, mock_run):
         mock_run.return_value = MagicMock(stdout="[]", returncode=0)
-
-        probe = _pr(
-            name="BlockedMap",
-            status=ProbeStatus.BLOCKED,
-            tak_error="403 Forbidden",
-            test_url="https://tiles.example.com/0/0/0.png",
-        )
-        manage_github_issues([probe])
-
-        assert mock_run.call_count == 2
-        create_call = mock_run.call_args_list[1]
-        args = (
-            create_call[0][0] if create_call[0] else create_call.kwargs.get("args", [])
-        )
-        args_str = " ".join(args)
-        assert "issue" in args_str
-        assert "create" in args_str
-        assert "Map Health: BlockedMap" in args_str
-        assert "BLOCKED" in args_str
+        manage_github_issues([MapHealth("GoodMap", "ok", "")])
+        assert all("create" not in self._args(c) for c in mock_run.call_args_list)
 
     @patch("mapvalidator.reporter.subprocess.run")
-    def test_no_issue_for_healthy_probe_no_existing(self, mock_run):
-        """HEALTHY probe with no existing open issue -> no gh issue create."""
-        mock_run.return_value = MagicMock(stdout="[]", returncode=0)
-
-        probe = _pr(name="GoodMap", status=ProbeStatus.HEALTHY)
-        manage_github_issues([probe])
-
-        # Should only call gh issue list (to check for issues to close), never create
-        for c in mock_run.call_args_list:
-            args = c[0][0] if c[0] else c.kwargs.get("args", [])
-            args_str = " ".join(args)
-            assert "create" not in args_str
-
-    @patch("mapvalidator.reporter.subprocess.run")
-    def test_deduplication_no_duplicate_issue(self, mock_run):
-        """If an open issue already exists with matching title, don't create a new one."""
-        existing_issues = [{"title": "Map Health: BrokenMap \u2014 DEAD", "number": 42}]
-        mock_run.return_value = MagicMock(
-            stdout=json.dumps(existing_issues), returncode=0
-        )
-
-        probe = _pr(name="BrokenMap", status=ProbeStatus.DEAD)
-        manage_github_issues([probe])
-
-        # Should have called gh issue list but NOT gh issue create
-        assert mock_run.call_count == 1  # only the list call
-        args = mock_run.call_args_list[0][0][0]
-        args_str = " ".join(args)
-        assert "list" in args_str
-
-    @patch("mapvalidator.reporter.subprocess.run")
-    def test_auto_close_on_recovery(self, mock_run):
-        """HEALTHY probe with existing open issue -> gh issue close with comment."""
-        existing_issues = [
-            {"title": "Map Health: RecoveredMap \u2014 DEAD", "number": 99}
-        ]
-        mock_run.return_value = MagicMock(
-            stdout=json.dumps(existing_issues), returncode=0
-        )
-
-        probe = _pr(name="RecoveredMap", status=ProbeStatus.HEALTHY)
-        manage_github_issues([probe])
-
-        # Should have called: 1) gh issue list, 2) gh issue close
-        assert mock_run.call_count == 2
-        close_call = mock_run.call_args_list[1]
-        args = close_call[0][0] if close_call[0] else close_call.kwargs.get("args", [])
-        args_str = " ".join(args)
-        assert "issue" in args_str
-        assert "close" in args_str
-        assert "99" in args_str
-
-    @patch("mapvalidator.reporter.subprocess.run")
-    def test_empty_probes_list(self, mock_run):
-        """Empty probes list -> no subprocess calls at all."""
+    def test_empty_list_makes_no_calls(self, mock_run):
         manage_github_issues([])
         mock_run.assert_not_called()

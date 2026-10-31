@@ -77,6 +77,47 @@ SOURCE_TYPE_MAP = {
 }
 
 
+# Maps live in maps/base/<source>/<source>_<layer>.xml and
+# maps/overlays/grg_<source>_<layer>.xml. Each map keeps the URL and slug it had
+# before the move (<source>/<file> and GRG/<file>), so tak:// links, printed QR
+# codes, descriptions.yml keys and health records do not change.
+MAPS_DIR = "maps"
+OVERLAYS_DIR = "overlays"
+OVERLAY_GROUP = "GRG"
+
+
+DESCRIPTIONS_FILE = Path(MAPS_DIR) / "descriptions.yml"
+
+
+def load_descriptions(root: Path) -> dict:
+    """maps/descriptions.yml (slug -> category, text, test_point); {} if absent."""
+    f = root / DESCRIPTIONS_FILE
+    if not f.exists():
+        return {}
+    import yaml
+
+    return yaml.safe_load(f.read_text()) or {}
+
+
+def is_overlay(path: Path) -> bool:
+    """True for a transparent overlay (a file in maps/overlays/)."""
+    return path.parent.name in (OVERLAYS_DIR, OVERLAY_GROUP)
+
+
+def map_group(path: Path) -> str:
+    """Source folder name for a base map, GRG for an overlay."""
+    return OVERLAY_GROUP if is_overlay(path) else path.parent.name
+
+
+def site_path(path: Path) -> str:
+    """Where the site serves this map: <group>/<file>, unchanged by the move."""
+    return f"{map_group(path)}/{path.name}"
+
+
+def map_slug(path: Path) -> str:
+    return slugify(f"{map_group(path)}-{path.stem}")
+
+
 def slugify(text: str) -> str:
     """Lowercase, collapse runs of non-alphanumerics to '-', trim edges."""
     return re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-")
@@ -98,7 +139,7 @@ def iter_map_files(root: Path) -> list[Path]:
 def build_map_entry(filepath: Path, root: Path, raw_base: str = RAW_BASE) -> dict:
     """Extract catalog metadata + import URI for a single map file."""
     root_el = ET.parse(filepath).getroot()
-    provider = filepath.parent.name
+    provider = map_group(filepath)
     name = root_el.findtext("name", "Unknown")
     source_type = SOURCE_TYPE_MAP.get(root_el.tag, root_el.tag)
     rel = filepath.relative_to(root).as_posix()
@@ -106,13 +147,13 @@ def build_map_entry(filepath: Path, root: Path, raw_base: str = RAW_BASE) -> dic
     # The import must fetch the XML with an application/xml content type; the
     # Pages-hosted copy provides that (see PAGES_BASE note above). raw_url is
     # kept only for the human-facing "view source" link.
-    import_url = f"{PAGES_BASE}/{SOURCES_SUBDIR}/{rel}"
+    import_url = f"{PAGES_BASE}/{SOURCES_SUBDIR}/{site_path(filepath)}"
     urls = " ".join((u.text or "") for u in root_el.iter("url"))
     return {
         "provider": provider,
         "name": name,
         "source_type": source_type,
-        "slug": slugify(f"{provider}-{filepath.stem}"),
+        "slug": map_slug(filepath),
         "raw_url": raw_url,
         "import_url": import_url,
         "import_uri": build_import_uri(import_url),

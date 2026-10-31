@@ -44,7 +44,7 @@ addressed by zoom/x/y or quadkey.
 
 ### Full annotated example
 
-From [`opentopo/opentopomap.xml`](https://github.com/joshuafuller/ATAK-Maps/blob/master/opentopo/opentopomap.xml):
+From [`maps/base/opentopo/opentopomap.xml`](https://github.com/joshuafuller/ATAK-Maps/blob/master/maps/base/opentopo/opentopomap.xml):
 
 ```xml
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -85,7 +85,7 @@ From [`opentopo/opentopomap.xml`](https://github.com/joshuafuller/ATAK-Maps/blob
 
 ### Quadkey example
 
-From [`bing/bing_road.xml`](https://github.com/joshuafuller/ATAK-Maps/blob/master/bing/bing_road.xml):
+From [`maps/base/bing/bing_road.xml`](https://github.com/joshuafuller/ATAK-Maps/blob/master/maps/base/bing/bing_road.xml):
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -170,7 +170,7 @@ Alternatively, use XML entities (`&amp;` for `&`).
 
 ### Full annotated example (WMS)
 
-From [`de-basemap/de_basemap_color.xml`](https://github.com/joshuafuller/ATAK-Maps/blob/master/de-basemap/de_basemap_color.xml):
+From [`maps/base/de-basemap/de_basemap_color.xml`](https://github.com/joshuafuller/ATAK-Maps/blob/master/maps/base/de-basemap/de_basemap_color.xml):
 
 ```xml
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -190,7 +190,7 @@ From [`de-basemap/de_basemap_color.xml`](https://github.com/joshuafuller/ATAK-Ma
 
 ### WMS example with additional parameters
 
-From [`GRG/grg_fema_flood.xml`](https://github.com/joshuafuller/ATAK-Maps/blob/master/GRG/grg_fema_flood.xml):
+From [`maps/overlays/grg_fema_flood.xml`](https://github.com/joshuafuller/ATAK-Maps/blob/master/maps/overlays/grg_fema_flood.xml):
 
 ```xml
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -489,7 +489,7 @@ Source: `MobacMapSourceFactory.java` line 380-381:
 Only `coordinatesystem` (all lowercase) is recognized by the parser.  The
 camelCase variant `coordinateSystem` is silently ignored.  Some files in
 this repository use the wrong casing (e.g.,
-[`openseamap/openseamap_base.xml`](https://github.com/joshuafuller/ATAK-Maps/blob/master/openseamap/openseamap_base.xml)),
+[`maps/base/openseamap/openseamap_base.xml`](https://github.com/joshuafuller/ATAK-Maps/blob/master/maps/base/openseamap/openseamap_base.xml)),
 which means their coordinate system setting has no effect and the default
 SRID applies instead.
 

@@ -1,4 +1,0 @@
-{
-  "threshold": 10,
-  "ignore": ["**/*.xml", "uv.lock"]
-}

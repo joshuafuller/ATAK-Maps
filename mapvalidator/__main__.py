@@ -2,8 +2,7 @@ import argparse
 import sys
 from pathlib import Path
 
-from mapvalidator.probe import probe_all
-from mapvalidator.reporter import manage_github_issues, print_report
+from mapvalidator.reporter import MapHealth, manage_github_issues, print_report
 from mapvalidator.xml_checks import check_duplicates, validate_corpus
 
 
@@ -12,19 +11,9 @@ def main():
         description="ATAK Maps deep validation and liveness monitoring"
     )
     parser.add_argument(
-        "--probe",
-        action="store_true",
-        help="Test tile server liveness (dual user-agent)",
-    )
-    parser.add_argument(
         "--issues",
         action="store_true",
-        help="Create/close GitHub issues for probe failures",
-    )
-    parser.add_argument(
-        "--smoke",
-        action="store_true",
-        help="Quick smoke test of a few reliable sources",
+        help="With --harness: open/close GitHub 'Map Health' issues for failing maps",
     )
     parser.add_argument(
         "--strict", action="store_true", help="Treat warnings as errors"
@@ -61,6 +50,21 @@ def main():
         results = harness.run_harness(repo_dir, harness.http_fetch, only=args.only)
         report, exit_code = harness.format_report(results)
         print(report)
+        if args.issues:
+            from mapvalidator.atak_source import parse_source
+            from mapvalidator.catalog import map_slug
+
+            health = harness.health_report(results, "")
+            manage_github_issues(
+                [
+                    MapHealth(
+                        parse_source(repo_dir / path).name or path.stem,
+                        health[map_slug(path)]["status"],
+                        health[map_slug(path)]["problem"],
+                    )
+                    for path in results
+                ]
+            )
         if args.json:
             import json
             from datetime import datetime, timezone
@@ -81,21 +85,12 @@ def main():
         if results:
             results[0].errors.append(dup)
 
-    # Step 2: Liveness probing (optional)
-    probes = None
-    if args.probe or args.smoke:
-        probes = probe_all(repo_dir, smoke_only=args.smoke)
-
     # Step 3: Report
-    exit_code = print_report(results, probes)
+    exit_code = print_report(results)
 
     # If strict, treat warnings as errors
     if args.strict and any(r.warnings for r in results):
         exit_code = 1
-
-    # Step 4: GitHub issues (optional)
-    if args.issues and probes:
-        manage_github_issues(probes)
 
     sys.exit(exit_code)
 

@@ -1,0 +1,72 @@
+name: CI
+
+# One workflow for every pull request and every push to master:
+#   test  — the Python suite (mapvalidator, scripts) with coverage
+#   maps  — every map against the XSD, the deep XML checks, and the ATAK
+#           harness on the maps a pull request changes
+#   site  — build the site and check it in a real browser
+on:
+  pull_request:
+  push:
+    branches: [master]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@38f3f104447c67c051c4a08e39b64a148898af3a  # v4.2.0
+      - name: Tests
+        run: uv run --extra dev pytest --cov=mapvalidator --cov-fail-under=80
+
+  maps:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0       # diff against the pull request base
+      - uses: astral-sh/setup-uv@38f3f104447c67c051c4a08e39b64a148898af3a  # v4.2.0
+      - name: Install xmllint
+        run: sudo apt-get update && sudo apt-get install -y libxml2-utils
+      - name: Schema (XSD)
+        run: |
+          mapfile -d '' FILES < <(find maps -name '*.xml' -print0)
+          xmllint --noout --schema schema/mobac-maps.xsd "${FILES[@]}"
+      - name: Deep XML checks
+        run: uv run python -m mapvalidator
+      # Fetch the changed maps' tiles exactly as ATAK does (URL rules,
+      # User-Agent "TAK") at minZoom, maxZoom and maxZoom + 1.
+      - name: ATAK harness (maps changed in this pull request)
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          mapfile -t FILES < <(git diff --name-only --diff-filter=AMR "$BASE_SHA" HEAD -- 'maps/*.xml')
+          if [ ${#FILES[@]} -eq 0 ]; then
+            echo "No map files changed."
+            exit 0
+          fi
+          uv run python -m mapvalidator --harness . --only "${FILES[@]}"
+
+  site:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@38f3f104447c67c051c4a08e39b64a148898af3a  # v4.2.0
+      - name: Generate map data
+        run: uv run --extra docs python scripts/gen_pages_catalog.py
+      - name: Build the site (strict)
+        run: uv run --extra docs mkdocs build --strict
+      # Every page in Chromium: no script errors, no axe accessibility
+      # violations, the map explorer has its maps, no overlapping map controls.
+      - name: Install Chromium
+        run: uv run --extra site playwright install --with-deps chromium
+      - name: Check the built site
+        run: uv run --extra site python scripts/site_check.py site

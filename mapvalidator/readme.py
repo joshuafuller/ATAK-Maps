@@ -9,7 +9,7 @@ from __future__ import annotations
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
-from mapvalidator.catalog import iter_map_files, slugify
+from mapvalidator.catalog import iter_map_files, map_slug
 
 START_MARKER = "<!-- MAP_CATALOG_START -->"
 END_MARKER = "<!-- MAP_CATALOG_END -->"
@@ -32,7 +32,7 @@ def readme_catalog(root: Path, descriptions: dict) -> str:
     groups: dict[str, list[str]] = {}
     for f in iter_map_files(root):
         name = ET.parse(f).getroot().findtext("name", "Unknown")
-        slug = slugify(f"{f.parent.name}-{f.stem}")
+        slug = map_slug(f)
         category = (descriptions.get(slug) or {}).get("category", "Other")
         groups.setdefault(category, []).append(name)
     known = [c for c in ORDER if c in groups] + sorted(

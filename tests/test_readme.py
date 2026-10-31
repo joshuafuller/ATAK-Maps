@@ -29,10 +29,10 @@ def _map(root: Path, rel: str, name: str) -> None:
 
 class TestReadmeCatalog:
     def test_maps_grouped_by_type_overlays_last(self, tmp_path):
-        _map(tmp_path, "usgs/usgs_topo.xml", "USGS Topo")
-        _map(tmp_path, "esri/esri_topo.xml", "Esri Topo")
-        _map(tmp_path, "google/google_satellite.xml", "Google Satellite")
-        _map(tmp_path, "GRG/grg_fema_flood.xml", "+ FEMA Flood")
+        _map(tmp_path, "maps/base/usgs/usgs_topo.xml", "USGS Topo")
+        _map(tmp_path, "maps/base/esri/esri_topo.xml", "Esri Topo")
+        _map(tmp_path, "maps/base/google/google_satellite.xml", "Google Satellite")
+        _map(tmp_path, "maps/overlays/grg_fema_flood.xml", "+ FEMA Flood")
         desc = {
             "usgs-usgs-topo": {"category": "Topographic"},
             "esri-esri-topo": {"category": "Topographic"},

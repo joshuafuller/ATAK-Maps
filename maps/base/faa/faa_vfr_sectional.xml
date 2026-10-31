@@ -5,7 +5,7 @@
     <minZoom>8</minZoom>
     <maxZoom>12</maxZoom>
     <tileType>jpg</tileType>
-    <tileUpdate>None</tileUpdate>
+    <tileUpdate>604800000</tileUpdate>
     <url>https://tiles.arcgis.com/tiles/ssFJjBXIUyZDrSYZ/arcgis/rest/services/VFR_Sectional/MapServer/tile/{$z}/{$y}/{$x}</url>
     <backgroundColor>#000000</backgroundColor>
 </customMapSource>

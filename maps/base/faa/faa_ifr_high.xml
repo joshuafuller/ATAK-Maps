@@ -5,7 +5,7 @@
     <minZoom>7</minZoom>
     <maxZoom>9</maxZoom>
     <tileType>jpg</tileType>
-    <tileUpdate>None</tileUpdate>
+    <tileUpdate>604800000</tileUpdate>
     <url>https://tiles.arcgis.com/tiles/ssFJjBXIUyZDrSYZ/arcgis/rest/services/IFR_High/MapServer/tile/{$z}/{$y}/{$x}</url>
     <backgroundColor>#000000</backgroundColor>
 </customMapSource>

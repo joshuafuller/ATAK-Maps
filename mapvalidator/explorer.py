@@ -13,7 +13,7 @@ from typing import Callable, Optional
 from urllib.parse import parse_qsl
 
 from mapvalidator.atak_source import AtakSource, parse_source
-from mapvalidator.catalog import build_map_entry, iter_map_files
+from mapvalidator.catalog import RAW_BASE, build_map_entry, iter_map_files
 from mapvalidator.harness import DEFAULT_TEST_POINT
 
 # First match wins; checked against the map's description text.
@@ -55,6 +55,8 @@ OVERLAY_CREDITS = {
     "grg_openseamap": f"© OpenSeaMap, {OSM}",
     "grg_waymarked": f"© Waymarked Trails, {OSM}",
 }
+
+BLOB_BASE = "https://github.com/joshuafuller/ATAK-Maps/blob/master"
 
 LivePoint = Callable[[], Optional[tuple]]
 
@@ -134,6 +136,8 @@ def build_explorer_data(
                 "overlay": f.parent.name == "GRG",
                 "needsKey": entry["needs_key"],
                 "importUri": entry["import_uri"],
+                "xmlUrl": entry["import_url"],  # site copy, served as application/xml
+                "sourceUrl": entry["raw_url"].replace(RAW_BASE, BLOB_BASE),
                 "credit": credit_for(f.relative_to(root)),
                 "min": src.min_zoom,
                 "max": src.max_zoom,

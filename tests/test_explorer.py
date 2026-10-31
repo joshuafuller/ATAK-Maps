@@ -150,6 +150,15 @@ class TestBuildExplorerData:
         )
         assert road["credit"] == "© Google"
         assert road["importUri"].startswith("tak://com.atakmap.app/import?url=")
+        # the XML itself, for manual installs and for adding an API key
+        assert (
+            road["xmlUrl"]
+            == "https://joshuafuller.github.io/ATAK-Maps/sources/google/google_road.xml"
+        )
+        assert (
+            road["sourceUrl"].endswith("/google/google_road.xml")
+            and "github" in road["sourceUrl"]
+        )
         assert road["point"] == [40.7128, -74.006]  # harness default test point
         assert (fema["overlay"], fema["region"], fema["point"]) == (
             True,

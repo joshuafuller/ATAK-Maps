@@ -230,6 +230,13 @@ aside { display: flex; flex-direction: column; min-height: 0; background: var(--
 .pulse { width: 18px; height: 18px; border-radius: 50%; background: var(--action); box-shadow: 0 0 0 0 rgba(255,122,47,.6); animation: pulse 1.3s ease-out 2; border: 2px solid #fff; }
 @keyframes pulse { to { box-shadow: 0 0 0 36px rgba(255,122,47,0); } }
 .ghost.done { color: #4FB37A; border-color: color-mix(in srgb, #4FB37A 60%, transparent); gap: 6px; }
+.xmlrow { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--faint); }
+.xmlrow svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linejoin: round; }
+.xmlrow a { color: var(--accent); font-weight: 600; text-decoration: underline; text-underline-offset: 2px; }
+.op-acts { grid-column: 1 / -1; display: flex; gap: 8px; margin-top: 6px; }
+.op-acts a, .op-acts button { display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 10px; border-radius: 8px; border: 1px solid var(--line-strong); background: transparent; color: var(--strong); font-family: 'IBM Plex Sans', sans-serif; font-size: 12.5px; font-weight: 600; text-decoration: none; cursor: pointer; }
+.op-acts a.add { background: var(--action); border-color: var(--action); color: var(--action-text); }
+.op-acts svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; }
 .qm-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; }
 .mbtn { position: relative; width: 42px; height: 42px; border-radius: 11px; border: 1px solid var(--line-strong); background: transparent; color: var(--text); display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
 .mbtn svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
@@ -451,7 +458,7 @@ aside { display: flex; flex-direction: column; min-height: 0; background: var(--
       <span class="label">Scan with your ATAK device</span>
       <div class="qrwrap"><div class="qrbox"><div id="qm-qr"></div><span class="scan"></span></div><i class="c tl"></i><i class="c tr"></i><i class="c bl"></i><i class="c br"></i></div>
       <h3 id="qm-name"></h3>
-      <p>Or on this device: tap <b>Add</b>.</p>
+      <p>Or on this device: tap <b>Add</b>. <a id="qm-dl" download>Download the XML</a></p>
       <div class="qm-actions"><button class="ghost" id="qm-share" type="button">Copy link</button><button class="btn" id="qm-done" type="button">Done</button></div>
     </div>
   </div>
@@ -476,6 +483,7 @@ aside { display: flex; flex-direction: column; min-height: 0; background: var(--
       <div class="health" id="i-health"></div>
       <div class="gauge" aria-label="Zoom range"><span class="label" id="g-min"></span><div class="track"><div class="range" id="g-range"></div><div class="now" id="g-now"></div></div><span class="label" id="g-max"></span></div>
       <div class="offline" id="i-off"></div>
+      <div class="xmlrow" id="i-xml"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/></svg><a id="i-dl" download>Download XML</a><span aria-hidden="true">·</span><a id="i-src" target="_blank" rel="noopener">View on GitHub</a></div>
       <div class="ovl" id="i-ovl" hidden><span class="label">On top</span><div class="ovl-chips" id="ovl-chips"></div></div>
       <div class="pick" id="i-cmp"><label for="cmpsel">Compare with</label><select id="cmpsel"></select></div>
       <div class="row">
@@ -787,9 +795,8 @@ function show(m, move = true) {
   $('g-min').textContent = 'Z' + m.min; $('g-max').textContent = 'Z' + m.max;
   $('g-range').style.left = (m.min / ZMAX * 100) + '%'; $('g-range').style.width = ((m.max - m.min) / ZMAX * 100) + '%';
   $('i-add').href = m.importUri;
-  const qr = $('i-qr'); qr.innerHTML = '';
-  qrInto(qr, m.importUri, 132);
-  $('b-name').textContent = m.name;
+  qrFor(m);
+  $('i-dl').href = m.xmlUrl; $('i-src').href = m.sourceUrl;
   if (state.cmpOn) drawCompare();
   healthLine(m); offline(); writeHash();
   peekUpdate(m); if (phone()) setStop(move ? 'peek' : sheetStop, false);
@@ -923,6 +930,13 @@ function renderList(rebuild) {
         li.insertAdjacentHTML('beforeend', `<div class="op"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3v18" /></svg><input type="range" min="10" max="100" step="5" value="${v}"><span>${v}%</span></div>`);
         const r = li.querySelector('input'); r.setAttribute('aria-label', 'Opacity of ' + m.name);
         r.oninput = () => { state.opacity[m.slug] = r.value / 100; overlayLayers[m.slug]?.opacity(r.value / 100); r.nextSibling.textContent = r.value + '%'; };
+        const acts = document.createElement('div'); acts.className = 'op-acts';
+        acts.innerHTML = '<a class="add"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Add to ATAK</a><button type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M14 14h3v3h-3z"/></svg>QR</button><a download><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>XML</a>';
+        const [add, qrb, dl] = acts.children;
+        add.href = m.importUri; add.setAttribute('aria-label', 'Add ' + m.name + ' to ATAK');
+        qrb.setAttribute('aria-label', 'QR code for ' + m.name); qrb.onclick = () => showQR(m);
+        dl.href = m.xmlUrl; dl.setAttribute('aria-label', 'Download the XML for ' + m.name);
+        li.querySelector('.op').appendChild(acts);
       }
       if (!m.overlay && finePointer.matches) {
         b.addEventListener('mouseenter', () => { if (m === state.current || m.needsKey || state.cmpOn) return;
@@ -1022,16 +1036,23 @@ function peekUpdate(m) {
   $('p-meta').textContent = `${m.category} · ${m.region} · z${m.min}–${m.max}`;
   $('p-add').href = m.importUri;
 }
-$('p-qr').onclick = () => {
-  const m = state.current; $('qm-qr').innerHTML = '';
+function openQR(m) {
+  $('qm-qr').innerHTML = '';
   qrInto($('qm-qr'), m.importUri, 220);
-  $('qm-name').textContent = m.name; $('qrmodal').hidden = false; $('qm-done').focus();
-};
+  $('qm-name').textContent = m.name; $('qm-dl').href = m.xmlUrl; $('qrmodal').hidden = false; $('qm-done').focus();
+}
+$('p-qr').onclick = () => openQR(state.current);
 $('qm-done').onclick = () => { $('qrmodal').hidden = true; $('p-qr').focus(); };
 $('qm-share').onclick = copyLink;
 $('i-share').onclick = copyLink;
 $('qrmodal').addEventListener('click', e => { if (e.target.id === 'qrmodal') $('qrmodal').hidden = true; });
 
+// QR card / phone QR window can show any map: the base map, or an overlay's own code
+function qrFor(m) { $('i-qr').innerHTML = ''; qrInto($('i-qr'), m.importUri, 132); $('b-name').textContent = m.name; }
+function showQR(m) {
+  if (phone()) { openQR(m); return; }
+  qrFor(m); flip(true);
+}
 // ---- flip the card to show the QR code
 function flip(toBack) {
   const info = $('info');
@@ -1045,10 +1066,10 @@ function flip(toBack) {
   setTimeout(() => (toBack ? $('i-flipback') : $('i-qrbtn')).focus({ preventScroll: true }), 450);
 }
 $('info').addEventListener('animationend', e => { if (e.animationName === 'lift') $('info').classList.remove('lift'); });
-$('i-qrbtn').onclick = () => flip(true);
-$('i-flipback').onclick = () => flip(false);
+$('i-qrbtn').onclick = () => showQR(state.current);
+$('i-flipback').onclick = () => { flip(false); setTimeout(() => qrFor(state.current), 500); };
 $('back').addEventListener('click', e => { if (!e.target.closest('#i-flipback') && matchMedia('(max-width: 820px)').matches) flip(false); });
-document.addEventListener('keydown', e => { if (e.key === 'Escape') { $('qrmodal').hidden = true; closeMenus(); flip(false); allPanel(false); document.querySelector('header').classList.remove('open'); } });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { $('qrmodal').hidden = true; closeMenus(); if ($('info').classList.contains('flipped')) { flip(false); setTimeout(() => qrFor(state.current), 500); } allPanel(false); document.querySelector('header').classList.remove('open'); } });
 const theme = $('theme');
 // Material for MkDocs keeps the visitor's palette under '<site path>.__palette'; share it.
 const PALETTE_KEY = new URL('..', location.href).pathname + '.__palette';

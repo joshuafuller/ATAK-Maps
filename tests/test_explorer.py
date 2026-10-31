@@ -130,6 +130,9 @@ class TestRegionAndCredit:
             credit_for(Path("maps/overlays/grg_fema_flood.xml"))
             == "FEMA National Flood Hazard Layer"
         )
+        assert credit_for(Path("maps/base/naip/naip_imagery.xml")) == (
+            "USDA NAIP via USGS The National Map"
+        )
         assert credit_for(Path("unknown/thing.xml")) == ""
 
     def test_credit_for_faa_railway_and_hydro_maps(self):

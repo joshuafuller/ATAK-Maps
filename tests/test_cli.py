@@ -121,6 +121,19 @@ class TestIssuesFlag:
         assert [(h.name, h.status) for h in health] == [("Test TMS Map", "fail")]
         assert "HTTP 404" in health[0].problem
 
+    @patch(
+        "mapvalidator.__main__.manage_github_issues",
+        side_effect=RuntimeError("gh issue create failed"),
+    )
+    def test_health_file_is_written_even_if_issues_fail(self, mock_issues, tmp_path):
+        (tmp_path / "esri").mkdir()
+        _write_xml(tmp_path / "esri", VALID_TMS_XML)
+        out = tmp_path / "health.json"
+        with patch("mapvalidator.harness.http_fetch", _not_found):
+            with pytest.raises(RuntimeError):
+                _run_main("--harness", "--issues", "--json", str(out), str(tmp_path))
+        assert out.exists()
+
     @patch("mapvalidator.__main__.manage_github_issues")
     def test_issues_without_harness_does_nothing(self, mock_issues, tmp_path):
         _write_xml(tmp_path, VALID_TMS_XML)

@@ -38,6 +38,7 @@ esri-esri-topo:
   category: Topographic
   text: "Esri World Topographic — roads, terrain, boundaries and labels, global."
 grg-grg-fema-flood:
+  test_point: [29.7604, -95.3698]
   category: Overlay
   text: "FEMA National Flood Hazard Layer — flood-zone overlay, transparent, United States."
 grg-grg-ca-bc-wildfire:

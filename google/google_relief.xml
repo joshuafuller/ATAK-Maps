@@ -2,7 +2,7 @@
 <customMapSource>
     <name>Google Relief</name>
     <minZoom>0</minZoom>
-    <maxZoom>20</maxZoom>
+    <maxZoom>17</maxZoom>
     <tileType>jpg</tileType>
     <tileUpdate>None</tileUpdate>
     <url>https://mt1.google.com/vt/lyrs=t&amp;x={$x}&amp;y={$y}&amp;z={$z}</url>

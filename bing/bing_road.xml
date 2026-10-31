@@ -2,7 +2,7 @@
 <customMapSource>
 	<name>Bing Road</name>
 	<minZoom>1</minZoom>
-	<maxZoom>20</maxZoom>
+	<maxZoom>19</maxZoom>
 	<tileType>png</tileType>
 	<tileUpdate>None</tileUpdate>
 	<url>https://ecn.t{$serverpart}.tiles.virtualearth.net/tiles/r{$q}?g=761&amp;mkt=en-us</url>

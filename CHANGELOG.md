@@ -1,3 +1,13 @@
+## [2.2.0](https://github.com/joshuafuller/ATAK-Maps/compare/v2.1.0...v2.2.0) (2026-10-31)
+
+### Features
+
+* **site:** new site with a live map explorer ([#104](https://github.com/joshuafuller/ATAK-Maps/issues/104)) ([065f46d](https://github.com/joshuafuller/ATAK-Maps/commit/065f46da585864b9a9df2772ca77c689314e92bf))
+
+### Bug Fixes
+
+* **site:** explorer opens dark for returning visitors; clearer Fix a problem ([#106](https://github.com/joshuafuller/ATAK-Maps/issues/106)) ([149bc5b](https://github.com/joshuafuller/ATAK-Maps/commit/149bc5b4aa1e8b522abdcc7b65e4a88790ea90fb))
+
 ## [2.1.0](https://github.com/joshuafuller/ATAK-Maps/compare/v2.0.0...v2.1.0) (2026-10-31)
 
 ### Features

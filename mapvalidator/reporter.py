@@ -81,11 +81,18 @@ class MapHealth:
 _TITLE_PREFIX = "Map Health: "
 
 
+def _gh(args: list[str]) -> subprocess.CompletedProcess:
+    """Run gh; raise with its error text if it fails, so the run fails loudly."""
+    result = subprocess.run(["gh", *args], capture_output=True, text=True)
+    if result.returncode != 0:
+        raise RuntimeError(f"gh {' '.join(args[:2])} failed: {result.stderr.strip()}")
+    return result
+
+
 def _find_open_issues(repo: str) -> list[dict]:
     """Query open map-health issues via gh CLI."""
-    result = subprocess.run(
+    result = _gh(
         [
-            "gh",
             "issue",
             "list",
             "--label",
@@ -96,12 +103,8 @@ def _find_open_issues(repo: str) -> list[dict]:
             "title,number",
             "--repo",
             repo,
-        ],
-        capture_output=True,
-        text=True,
+        ]
     )
-    if result.returncode != 0:
-        return []
     return json.loads(result.stdout)
 
 
@@ -144,9 +147,8 @@ def manage_github_issues(
                     "Check the tile server. If it has shut down for good, remove or replace this map.",
                 ]
             )
-            subprocess.run(
+            _gh(
                 [
-                    "gh",
                     "issue",
                     "create",
                     "--title",
@@ -157,15 +159,12 @@ def manage_github_issues(
                     "map-health",
                     "--repo",
                     repo,
-                ],
-                capture_output=True,
-                text=True,
+                ]
             )
         elif h.status == "ok":
             for issue in matching:
-                subprocess.run(
+                _gh(
                     [
-                        "gh",
                         "issue",
                         "close",
                         str(issue["number"]),
@@ -173,7 +172,5 @@ def manage_github_issues(
                         f"{h.name} works in ATAK again (weekly ATAK harness). Auto-closing.",
                         "--repo",
                         repo,
-                    ],
-                    capture_output=True,
-                    text=True,
+                    ]
                 )

@@ -50,6 +50,15 @@ def main():
         results = harness.run_harness(repo_dir, harness.http_fetch, only=args.only)
         report, exit_code = harness.format_report(results)
         print(report)
+        # Health first: the site's status must not depend on the issue step.
+        if args.json:
+            import json
+            from datetime import datetime, timezone
+
+            checked = datetime.now(timezone.utc).isoformat(timespec="seconds")
+            args.json.write_text(
+                json.dumps(harness.health_report(results, checked), indent=1) + "\n"
+            )
         if args.issues:
             from mapvalidator.atak_source import parse_source
             from mapvalidator.catalog import map_slug
@@ -64,14 +73,6 @@ def main():
                     )
                     for path in results
                 ]
-            )
-        if args.json:
-            import json
-            from datetime import datetime, timezone
-
-            checked = datetime.now(timezone.utc).isoformat(timespec="seconds")
-            args.json.write_text(
-                json.dumps(harness.health_report(results, checked), indent=1) + "\n"
             )
         sys.exit(exit_code)
 

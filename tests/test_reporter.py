@@ -4,6 +4,8 @@ import json
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
+import pytest
+
 from mapvalidator.reporter import MapHealth, manage_github_issues, print_report
 from mapvalidator.xml_checks import ValidationResult
 
@@ -172,6 +174,26 @@ class TestManageGithubIssues:
         mock_run.return_value = MagicMock(stdout="[]", returncode=0)
         manage_github_issues([MapHealth("GoodMap", "ok", "")])
         assert all("create" not in self._args(c) for c in mock_run.call_args_list)
+
+    @patch("mapvalidator.reporter.subprocess.run")
+    def test_failed_gh_call_is_reported_not_hidden(self, mock_run):
+        # A missing label made "gh issue create" fail silently on the first run.
+        mock_run.side_effect = [
+            MagicMock(stdout="[]", returncode=0),
+            MagicMock(
+                stdout="",
+                stderr="could not add label: 'map-health' not found",
+                returncode=1,
+            ),
+        ]
+        with pytest.raises(RuntimeError, match="map-health' not found"):
+            manage_github_issues([MapHealth("BrokenMap", "fail", "HTTP 404")])
+
+    @patch("mapvalidator.reporter.subprocess.run")
+    def test_failed_issue_list_is_reported(self, mock_run):
+        mock_run.return_value = MagicMock(stdout="", stderr="HTTP 403", returncode=1)
+        with pytest.raises(RuntimeError, match="HTTP 403"):
+            manage_github_issues([MapHealth("BrokenMap", "fail", "HTTP 404")])
 
     @patch("mapvalidator.reporter.subprocess.run")
     def test_empty_list_makes_no_calls(self, mock_run):

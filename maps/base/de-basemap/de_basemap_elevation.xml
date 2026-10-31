@@ -5,6 +5,7 @@
     <minZoom>2</minZoom>
     <maxZoom>12</maxZoom>
     <tileType>png</tileType>
+    <tileUpdate>None</tileUpdate>
     <url>https://sgx.geodatenzentrum.de/wmts_basemapde_schummerung/tile/1.0.0/de_basemapde_web_raster_colordem/default/GLOBAL_WEBMERCATOR/{$z}/{$y}/{$x}.png</url>
     <backgroundColor>#FFFFFF</backgroundColor> <!-- Optional: Default is black, can be #FFFFFF for white or #00000000 for transparent black if issues with PNG alpha -->
 </customMapSource>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<customMapSource>
+    <!-- FAA Aeronautical Information Services, public use. Charts are updated every 56 days; not for navigation unless current. -->
+    <name>FAA VFR Sectional</name>
+    <minZoom>8</minZoom>
+    <maxZoom>12</maxZoom>
+    <tileType>jpg</tileType>
+    <tileUpdate>604800000</tileUpdate>
+    <url>https://tiles.arcgis.com/tiles/ssFJjBXIUyZDrSYZ/arcgis/rest/services/VFR_Sectional/MapServer/tile/{$z}/{$y}/{$x}</url>
+    <backgroundColor>#000000</backgroundColor>
+</customMapSource>

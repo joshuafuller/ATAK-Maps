@@ -4,6 +4,7 @@
     <minZoom>0</minZoom>
     <maxZoom>16</maxZoom>
     <tileType>png</tileType>
+    <tileUpdate>None</tileUpdate>
     <!--
         Ordnance Survey OS Maps API (Great Britain only). Requires a free API
         key: sign up at https://osdatahub.os.uk, create an "OS Maps API"

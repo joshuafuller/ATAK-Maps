@@ -4,6 +4,7 @@
     <minZoom>0</minZoom>
     <maxZoom>18</maxZoom>
     <tileType>png</tileType>
+    <tileUpdate>None</tileUpdate>
     <url>https://t2.openseamap.org/tile/{$z}/{$x}/{$y}.png</url>
     <coordinatesystem>EPSG:3857</coordinatesystem>
     <backgroundColor>#000000</backgroundColor>

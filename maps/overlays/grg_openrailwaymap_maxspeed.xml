@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<customMapSource>
+    <!-- Place in <storage>/atak/grg/. Tiles: OpenRailwayMap (CC-BY-SA), data: OpenStreetMap contributors (ODbL). -->
+    <name>+ ORM Max Speed</name>
+    <minZoom>0</minZoom>
+    <maxZoom>19</maxZoom>
+    <tileType>png</tileType>
+    <tileUpdate>None</tileUpdate>
+    <url>https://tiles.openrailwaymap.org/maxspeed/{$z}/{$x}/{$y}.png</url>
+    <backgroundColor>#000000</backgroundColor>
+</customMapSource>

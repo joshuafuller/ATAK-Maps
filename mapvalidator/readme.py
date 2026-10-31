@@ -22,6 +22,7 @@ ORDER = [
     "Nautical",
     "Cycling",
     "Land use",
+    "Aeronautical",
     "Other",
     "Overlay",
 ]

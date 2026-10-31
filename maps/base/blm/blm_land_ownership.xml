@@ -4,6 +4,7 @@
     <minZoom>1</minZoom>
     <maxZoom>14</maxZoom>
     <tileType>jpg</tileType>
+    <tileUpdate>None</tileUpdate>
     <!--
         BLM Surface Management Agency (SMA): federal/state/local land ownership
         for the United States. Yellow = BLM, green = USFS, lavender = NPS,

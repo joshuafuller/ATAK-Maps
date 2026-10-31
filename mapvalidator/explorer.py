@@ -46,6 +46,7 @@ CREDITS = {
     "cyclosm": f"© CyclOSM, {OSM}",
     "mtbmap": f"© MTBMap.cz, {OSM}",
     "openseamap": f"© OpenSeaMap, {OSM}",
+    "faa": "FAA Aeronautical Information Services",
 }
 OVERLAY_CREDITS = {
     "grg_google": "© Google",
@@ -54,6 +55,8 @@ OVERLAY_CREDITS = {
     "grg_ca_bc": "© Province of British Columbia (DataBC)",
     "grg_openseamap": f"© OpenSeaMap, {OSM}",
     "grg_waymarked": f"© Waymarked Trails, {OSM}",
+    "grg_openrailwaymap": f"© OpenRailwayMap (CC-BY-SA), {OSM}",
+    "grg_usgs": "USGS The National Map",
 }
 
 BLOB_BASE = "https://github.com/joshuafuller/ATAK-Maps/blob/master"

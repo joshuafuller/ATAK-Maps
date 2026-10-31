@@ -1,39 +1,46 @@
-site_name: ATAK-Maps
-site_description: Map sources for ATAK — install by QR code or one tap.
+site_name: ATAK Maps
+site_description: Every map ATAK can use, tested the way ATAK loads tiles. Preview them live and add them in one tap.
 site_url: https://joshuafuller.github.io/ATAK-Maps/
 repo_url: https://github.com/joshuafuller/ATAK-Maps
+repo_name: GitHub
 docs_dir: docs
+copyright: ATAK Maps · community project · MIT licence
 
 theme:
   name: material
-  logo: images/atak-maps-logo.png
-  favicon: images/atak-maps-logo.png
+  custom_dir: overrides
+  logo: assets/brand/atak-maps-mark-dark.svg
+  favicon: assets/brand/atak-maps-mark.svg
   font:
     text: IBM Plex Sans
     code: IBM Plex Mono
+  # Dark is the default; the toggle switches to light. The map explorer
+  # (docs/maps/) reads and writes the same saved choice.
   palette:
-    - scheme: default
-      primary: blue grey
-      toggle:
-        icon: material/weather-night
-        name: Switch to dark mode
     - scheme: slate
-      primary: blue grey
+      primary: custom
+      accent: custom
       toggle:
         icon: material/weather-sunny
-        name: Switch to light mode
+        name: Switch to light theme
+    - scheme: default
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark theme
   features:
-    - navigation.instant
     - navigation.top
     - search.suggest
     - content.code.copy
+    - toc.follow
 
 nav:
   - Home: index.md
-  - Maps: maps.md
-  - Installation: install-guide.md
-  - Creating Custom Maps: creating-custom-maps.md
-  - XML Reference: xml-reference.md
+  - Maps: https://joshuafuller.github.io/ATAK-Maps/maps/
+  - Install & fix: install-guide.md
+  - Add a map: creating-custom-maps.md
+  - XML reference: xml-reference.md
   - Releases: release-guide.md
 
 exclude_docs: |
@@ -42,12 +49,29 @@ exclude_docs: |
 markdown_extensions:
   - attr_list
   - md_in_html
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - tables
+  - toc:
+      permalink: true
+      title: On this page
 
 extra_css:
-  - stylesheets/maps.css
+  - stylesheets/site.css
 
 extra_javascript:
-  - javascripts/maps-filter.js
+  - javascripts/site.js
+
+extra:
+  generator: false
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/joshuafuller/ATAK-Maps
+      name: GitHub
+    - icon: fontawesome/brands/discord
+      link: https://discord.gg/dQUYADMW87
+      name: Discord
 
 plugins:
   - search

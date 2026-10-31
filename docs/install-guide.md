@@ -1,146 +1,119 @@
-# Installing ATAK Maps
+---
+title: Install & fix
+---
 
-## Quick Start
+<span class="am-kicker">ATAK 5.1 or later</span>
 
-1. Download `atak-maps.zip` from the [Releases page](https://github.com/joshuafuller/ATAK-Maps/releases).
-2. Open the ZIP in ATAK using **Import** — ATAK places the map files automatically.
-3. New map sources appear in the map layer selector.
+# Install & fix
 
-That's it. ATAK's Import feature handles file placement for you.
+<p class="am-lede">Get maps into ATAK in under a minute, use them offline, and fix the problems people hit most.</p>
 
-![Install Flow](images/install-flow.png)
+## Pick a way
 
-## Using ATAK Import (Recommended)
+<div class="am-grid" markdown="0">
+  <a class="am-card am-card--accent" href="#one-tap-or-qr"><span class="am-kicker">Fastest · 1 min</span><span class="am-display">One tap or QR</span><p>On the device, or scan from a computer.</p></a>
+  <a class="am-card" href="#manual-install"><span class="am-kicker">Control · 5 min</span><span class="am-display">Manual copy</span><p>Pick exact files. Needed for overlays on top.</p></a>
+  <a class="am-card" href="#update-or-remove"><span class="am-kicker">Many devices</span><span class="am-display">Release ZIP</span><p>One file to hand out or side-load.</p></a>
+</div>
 
-The easiest way to install maps is through ATAK's built-in Import feature:
+## One tap or QR
 
-1. Download `atak-maps.zip` from the [Releases page](https://github.com/joshuafuller/ATAK-Maps/releases) onto your device.
-2. In ATAK, tap **Import** (or use your file manager to open the ZIP with ATAK).
-3. ATAK ingests the ZIP and the map sources populate automatically.
-4. Check the map layer selector — new sources should be listed.
+<div class="am-grid" markdown="0">
+  <div class="am-card">
+    <h3>On the ATAK device</h3>
+    <ol>
+      <li>Open the <a href="../maps/">map explorer</a> in the device's browser.</li>
+      <li>Pick a map, then tap <b>Add to ATAK</b>.</li>
+      <li>ATAK opens and imports it. It shows in the map layer list.</li>
+    </ol>
+  </div>
+  <div class="am-card">
+    <h3>From a computer</h3>
+    <div class="am-qr">
+      <img src="../qr/_all-maps.png" alt="QR code that adds every map to ATAK" width="110" height="110">
+      <span>Scan a map's QR code with the device camera. This one adds <b>every map</b> as one data package.</span>
+    </div>
+  </div>
+</div>
 
-For transparent overlays, check their placement using the [Map Tips](#map-tips) below.
+!!! note "Good to know"
+    One-tap import puts every map, overlays too, in the base map list. To draw a “+” overlay on top of another map, use [manual copy](#use-overlays).
 
-## What's in the Download
+## Manual install
 
-The release ZIP contains all available XML map source files, organized by provider:
+Download single XML files from the [map explorer](../maps/), or `atak-maps.zip` from [Releases](https://github.com/joshuafuller/ATAK-Maps/releases/latest). Copy them to the device:
 
-- **Providers included:** Bing, Google, ESRI, USGS, OpenTopo, and others
-- **Two types of files:**
-  - **Base maps** — satellite imagery, street maps, topographic maps
-  - **Overlays** — transparent layers (flood zones, trails, seamarks, reference grids); filenames start with `grg_` and names start with `+`
+| File | Copy to |
+|------|---------|
+| Base maps | `atak/imagery/mobile/mapsources/` |
+| “+” overlays | `atak/grg/` |
 
-## Manual Installation (Alternative)
+`atak/` is in the device's internal storage, usually `/sdcard` or `/storage/emulated/0`. `atak/mobac/mapsources/` also works for base maps. New files usually show at once; if not, restart ATAK.
 
-If you prefer to place files manually or want to install only specific maps:
+## Use overlays
 
-![Directory Layout](images/directory-layout.png)
+<div class="am-split" markdown>
+![](assets/brand/illo-overlay.jpg){ alt="" }
 
-### Base Maps
+<div markdown>
+1. Copy the “+” map's XML to `atak/grg/`.
+2. Pick any base map in ATAK.
+3. Turn the overlay on in **Overlay Manager**.
 
-Copy base-map `.xml` files to:
+Symbols too small? **Overlay Manager → Map Controls → Map Imagery Scaling**. Try overlays first in the [map explorer](../maps/?tab=overlays).
+</div>
+</div>
 
-```text
-<storage>/atak/imagery/mobile/mapsources/
-```
+## Offline use
 
-`<storage>` is your device's internal storage root (typically `/sdcard` or `/storage/emulated/0`). The alternate directory `<storage>/atak/mobac/mapsources/` also works.
+<div class="am-split" markdown>
+![](assets/brand/illo-offline.jpg){ alt="" }
 
-### Overlays
+<div markdown>
+ATAK keeps the tiles you view. To save an area before you lose signal:
 
-Copy overlay XML files (the `grg_` files in `GRG/`) to:
+1. Select the map in the map layer selector.
+2. Open **Map Manager** and choose **Download**.
+3. Draw the area and pick the zoom levels.
 
-```text
-<storage>/atak/grg/
-```
+The [map explorer](../maps/) shows an estimate for the area on screen, for example “1,240 tiles · about 25 MB”.
+</div>
+</div>
 
-These appear as overlay layers in ATAK, not base maps. The `grg_` prefix is a naming convention; the destination directory determines their use as overlays.
+## Update or remove
 
-### Verify
+<div class="am-grid" markdown="0">
+  <div class="am-card"><h3>Update</h3><p>Import the new package or ZIP again. It replaces the old files.</p></div>
+  <div class="am-card"><h3>Remove</h3><p>Delete the package in the <b>Mission Package Tool</b>, or delete the XML files you copied.</p></div>
+  <div class="am-card am-card--warn"><h3>Coming from v1?</h3><p>v2 renamed every map. ATAK keeps offline tiles under the old names, so download your areas again.</p></div>
+</div>
 
-1. Open ATAK.
-2. Tap the map layer selector (layers icon).
-3. New map sources should be listed. Select one and confirm tiles load.
-4. For overlays, check the overlay manager.
+## Fix a problem
 
-ATAK uses file system monitoring, so new map files may appear without restarting the app. If they don't show up, restart ATAK.
+<div class="am-split" markdown>
+![](assets/brand/illo-blank.jpg){ alt="" }
 
-## Installing Individual Maps
+<div markdown>
+??? question "Map is blank or black"
+    - **Outside its region:** US, UK, DE, CA and PL maps only draw inside that country.
+    - **Zoomed too far:** each map stops at its own deepest zoom.
+    - **Server down:** check the map's status in the [map explorer](../maps/). Every map is tested weekly the way ATAK loads it.
+</div>
+</div>
 
-You don't have to install the entire collection:
+??? question "Maps do not show after import"
+    Restart ATAK. For manual installs, check the folder: base maps are not read from `atak/imagery/` itself. ATAK's log is under **Settings → Show Log**.
 
-1. Browse the repository folders on [GitHub](https://github.com/joshuafuller/ATAK-Maps).
-2. Download just the `.xml` files you want.
-3. Either import them via ATAK, or manually place them in the directories above.
+??? question "Overlay replaces my map"
+    It was imported as a base map. Move its XML to `atak/grg/` and restart ATAK.
 
-## Map Tips
+??? question "UK OS map needs a key"
+    Get a free key from the OS Data Hub, open the XML, and replace `API_KEY_HERE` with it.
 
-### Base Maps and GRG Overlays
+??? question "Where is OpenStreetMap?"
+    The main OpenStreetMap tile servers block ATAK, so we do not include them. OSM-based maps from other servers (OpenTopoMap, CyclOSM, OpenSeaMap) work.
 
-Place base-map XML files in `<storage>/atak/imagery/mobile/mapsources/` and
-transparent overlay XML files in `<storage>/atak/grg/`. Select your base map,
-then use **Overlay Manager** to turn individual GRG overlays on or off.
-If an overlay appears only as a base-map choice after import, move its XML to
-`atak/grg/` and restart ATAK.
+??? question "Which file types does ATAK read?"
+    `.xml` map sources (what ATAK Maps provides), `.xmle` encrypted map sources and `.bsh` scripted map sources.
 
-### Adjusting Imagery Scaling
-
-If symbols or labels on a raster map or GRG overlay appear too small, adjust
-**Overlay Manager → Map Controls → Map Imagery Scaling**. This changes imagery
-scaling for the base map as well as raster overlays; it is not a separate
-seamark-symbol size control. Available controls can vary by ATAK version.
-
-### Using OpenSeaMap
-
-OpenSeaMap has two separate XML sources:
-
-| Source | Install location | Purpose |
-|--------|------------------|---------|
-| `openseamap/openseamap_base.xml` | `<storage>/atak/imagery/mobile/mapsources/` | Base map |
-| `GRG/grg_openseamap.xml` | `<storage>/atak/grg/` | Transparent seamarks overlay |
-
-Select **OpenSeaMap Base** (or any base map), then enable **+ OpenSeaMap** in
-Overlay Manager. You can toggle seamarks independently or display them over
-another base map. For small symbols, use the imagery-scaling control described
-above.
-
-## Offline Caching
-
-ATAK automatically caches map tiles you view. To proactively cache an area for offline use:
-
-1. In ATAK, open the map layer selector and choose the map source you want to cache.
-2. Navigate to **Map Manager** (or long-press on the map layer).
-3. Select **Download** and draw a region on the map.
-4. Choose the zoom levels you need and start the download.
-5. Cached tiles are stored in SQLite databases on your device and persist when you go offline.
-
-Once cached, those tiles are available with no internet connection.
-
-## Troubleshooting
-
-### Maps don't appear after import
-
-- Try restarting ATAK.
-- If using manual install, confirm files are in the correct directory.
-- Check ATAK logs (Settings > Show Log) for errors loading map sources.
-
-### Tiles show as black or blank
-
-- The map server may be down or blocking requests.
-- Check your internet connection.
-- Some sources (notably OpenStreetMap) may restrict access from ATAK. These files are included for reference but may not always work.
-
-### Wrong directory (manual install)
-
-| File type | Correct directory | Common mistake |
-|-----------|-------------------|----------------|
-| Base maps (`.xml`) | `atak/imagery/mobile/mapsources/` | `atak/imagery/` (parent dir — won't be scanned) |
-| Overlay XMLs (including seamarks) | `atak/grg/` | `atak/imagery/mobile/mapsources/` |
-
-### Accepted file extensions
-
-| Extension | Description |
-|-----------|-------------|
-| `.xml` | Standard map source (this is what ATAK-Maps provides) |
-| `.xmle` | Encrypted XML map source |
-| `.bsh` | BeanShell scripted map source |
+Still stuck? [Report a broken map](https://github.com/joshuafuller/ATAK-Maps/issues/new) or ask in [Discord](https://discord.gg/dQUYADMW87).

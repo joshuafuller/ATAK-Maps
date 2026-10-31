@@ -8,6 +8,7 @@ on:
 
 permissions:
   contents: read
+  actions: read      # download the latest map-health artifact
   pages: write
   id-token: write
 
@@ -21,6 +22,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v4
+      # Per-map "Working in ATAK" status from the latest weekly ATAK harness
+      # run (Map Health Check). Missing just means no status on the site.
+      - name: Latest map health
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          run=$(gh run list --repo "$GITHUB_REPOSITORY" --workflow map-health-check.yml --status completed --limit 1 --json databaseId --jq '.[0].databaseId // empty')
+          if [ -n "$run" ]; then gh run download "$run" --repo "$GITHUB_REPOSITORY" --name map-health --dir . || echo "No map-health artifact in run $run"; fi
       - name: Generate catalog + QR codes
         run: uv run --extra docs python scripts/gen_pages_catalog.py
       - name: Build site (strict)

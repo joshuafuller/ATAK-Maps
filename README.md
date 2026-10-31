@@ -67,7 +67,7 @@ All available map layers, auto-generated from the XML files in this repository:
 | Provider | Map Name | Zoom (min–max) | Tile Type | Source |
 |----------|----------|----------------|-----------|--------|
 | bing | Bing Hybrid | 1–20 | jpg | TMS |
-| bing | Bing Road | 1–20 | png | TMS |
+| bing | Bing Road | 1–19 | png | TMS |
 | bing | Bing Satellite | 1–20 | jpg | TMS |
 | blm | BLM Land Ownership | 1–14 | jpg | TMS |
 | blm | BLM Sat + Ownership | —–— | — | Multi-Layer |
@@ -84,7 +84,7 @@ All available map layers, auto-generated from the XML files in this repository:
 | esri | Esri USA Topo | 0–15 | jpg | TMS |
 | google | Google Hybrid | 0–20 | jpg | TMS |
 | google | Google Hybrid No POI | 0–20 | jpg | TMS |
-| google | Google Relief | 0–20 | jpg | TMS |
+| google | Google Relief | 0–17 | jpg | TMS |
 | google | Google Road | 0–20 | png | TMS |
 | google | Google Road Alt | 0–20 | png | TMS |
 | google | Google Road No POI | 0–20 | png | TMS |

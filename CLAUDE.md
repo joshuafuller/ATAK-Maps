@@ -57,7 +57,7 @@ Schema at `schema/mobac-maps.xsd` validates all three types. Derived from ATAK's
 - **Map Release** — on push to master, zips all XML files and creates a GitHub Release via semantic-release
 - **Update Map Catalog** — auto-generates the map catalog table in README.md when XML files change
 - **Deep Map Validation** — on PRs, runs the ATAK harness on the changed maps
-- **Map Health Check** — weekly, runs the ATAK harness on every map
+- **Map Health Check** — weekly, runs the ATAK harness on every map, saves per-map health (`map-health` artifact) and rebuilds Pages
 
 ## ATAK harness
 
@@ -67,6 +67,7 @@ Schema at `schema/mobac-maps.xsd` validates all three types. Derived from ATAK's
 - Tests minZoom, maxZoom and maxZoom + 1 at the map's `test_point` (in `descriptions.yml`; default New York)
 - Fails on HTTP errors, OGC/HTML error bodies, known placeholder tiles, empty or blank base tiles, tiles blocked for `TAK`, opaque overlays, and broken naming rules
 - Reports when the server has real tiles above maxZoom
+- `--json <file>` also writes per-map health (`ok` / `warn` / `fail`, first problem, check time) keyed by catalog slug, for the site's map explorer
 
 ## Reviewing PRs
 

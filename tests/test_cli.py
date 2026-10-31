@@ -1,5 +1,6 @@
 """Integration tests for mapvalidator.__main__.main() CLI entry point."""
 
+import json
 import sys
 from unittest.mock import MagicMock, patch
 
@@ -218,3 +219,13 @@ class TestHarnessFlag:
             )
         out = capsys.readouterr().out
         assert "usgs/test_map.xml" in out and "esri/" not in out
+
+    def test_harness_json_writes_health_file(self, tmp_path):
+        (tmp_path / "esri").mkdir()
+        _write_xml(tmp_path / "esri", VALID_TMS_XML)
+        out = tmp_path / "health.json"
+        with patch("mapvalidator.harness.http_fetch", _not_found):
+            _run_main("--harness", str(tmp_path), "--json", str(out))
+        data = json.loads(out.read_text())
+        assert data["esri-test-map"]["status"] == "fail"
+        assert "HTTP 404" in data["esri-test-map"]["problem"]

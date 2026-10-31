@@ -11,7 +11,14 @@ from pathlib import Path
 
 from PIL import Image
 
-from mapvalidator.harness import Response, check_source, format_report, run_harness
+from mapvalidator.harness import (
+    Finding,
+    Response,
+    check_source,
+    format_report,
+    health_report,
+    run_harness,
+)
 
 FIXTURES = Path(__file__).parent / "fixtures" / "tiles"
 REAL = (FIXTURES / "usgs_topo_real.jpg").read_bytes()
@@ -357,3 +364,46 @@ class TestSemiTransparentOverlay:
             )
             == []
         )
+
+
+class TestHealthReport:
+    """Per-map status the site's map explorer shows ("Working in ATAK" / problem)."""
+
+    CHECKED = "2026-10-30T12:00:00+00:00"
+
+    def test_status_per_map_keyed_by_catalog_slug(self):
+        results = {
+            Path("esri/esri_topo.xml"): [],
+            Path("bing/bing_road.xml"): [Finding("warn", "maxZoom z20: blank tile")],
+            Path("GRG/grg_fema_flood.xml"): [
+                Finding("info", "server has real tiles at z20"),
+                Finding("error", "minZoom z5: HTTP 500"),
+            ],
+        }
+        report = health_report(results, self.CHECKED)
+        assert report["esri-esri-topo"] == {
+            "status": "ok",
+            "checked": self.CHECKED,
+            "problem": "",
+        }
+        assert report["bing-bing-road"]["status"] == "warn"
+        assert report["grg-grg-fema-flood"]["status"] == "fail"
+
+    def test_problem_is_the_first_error_not_info(self):
+        results = {
+            Path("x/m.xml"): [
+                Finding("info", "server has real tiles at z20"),
+                Finding("warn", "name is long"),
+                Finding("error", "minZoom z1: HTTP 404"),
+            ]
+        }
+        assert (
+            health_report(results, self.CHECKED)["x-m"]["problem"]
+            == "minZoom z1: HTTP 404"
+        )
+
+    def test_info_only_is_ok(self):
+        results = {
+            Path("x/m.xml"): [Finding("info", "needs an API key; tile checks skipped")]
+        }
+        assert health_report(results, self.CHECKED)["x-m"]["status"] == "ok"

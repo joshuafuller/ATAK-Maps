@@ -260,6 +260,30 @@ def run_harness(
     return {f.relative_to(root): check_source(f, root, fetch) for f in files}
 
 
+def health_report(results: dict[Path, list[Finding]], checked: str) -> dict[str, dict]:
+    """Per-map status for the site's map explorer, keyed by catalog slug.
+
+    status is fail (any error), warn (any warning) or ok; problem is the first
+    error, else the first warning.
+    """
+    report = {}
+    for path, findings in results.items():
+        levels = {f.level for f in findings}
+        status = "fail" if "error" in levels else "warn" if "warn" in levels else "ok"
+        first = next(
+            (
+                f.message
+                for lvl in ("error", "warn")
+                for f in findings
+                if f.level == lvl
+            ),
+            "",
+        )
+        slug = slugify(f"{path.parent.name}-{path.stem}")
+        report[slug] = {"status": status, "checked": checked, "problem": first}
+    return report
+
+
 def format_report(results: dict[Path, list[Finding]]) -> tuple[str, int]:
     """Plain-text report and process exit code (1 if any error)."""
     lines = []

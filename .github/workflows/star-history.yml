@@ -25,7 +25,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
       # Pinned to the v1.0.4 commit: this action runs with contents: write.
       - uses: narayann7/star-history-action@c2061675dacbf6f35d116e556015b8905843387f # v1.0.4

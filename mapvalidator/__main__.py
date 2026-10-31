@@ -41,6 +41,11 @@ def main():
         help="With --harness: check only these map files",
     )
     parser.add_argument(
+        "--json",
+        type=Path,
+        help="With --harness: also write per-map health (for the site's map explorer) to this file",
+    )
+    parser.add_argument(
         "directory",
         nargs="?",
         default=".",
@@ -53,10 +58,17 @@ def main():
     if args.harness:
         from mapvalidator import harness
 
-        report, exit_code = harness.format_report(
-            harness.run_harness(repo_dir, harness.http_fetch, only=args.only)
-        )
+        results = harness.run_harness(repo_dir, harness.http_fetch, only=args.only)
+        report, exit_code = harness.format_report(results)
         print(report)
+        if args.json:
+            import json
+            from datetime import datetime, timezone
+
+            checked = datetime.now(timezone.utc).isoformat(timespec="seconds")
+            args.json.write_text(
+                json.dumps(harness.health_report(results, checked), indent=1) + "\n"
+            )
         sys.exit(exit_code)
 
     # Step 1: XML validation

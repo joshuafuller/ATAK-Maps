@@ -49,6 +49,16 @@ class TestReadmeCatalog:
         assert rows[2] == "| Topographic | Esri Topo · USGS Topo |"
         assert rows[-1] == "| Overlays | + FEMA Flood |"
 
+    def test_aeronautical_comes_before_overlays(self, tmp_path):
+        _map(tmp_path, "maps/base/faa/faa_vfr_sectional.xml", "FAA VFR Sectional")
+        _map(tmp_path, "maps/overlays/grg_fema_flood.xml", "+ FEMA Flood")
+        desc = {
+            "faa-faa-vfr-sectional": {"category": "Aeronautical"},
+            "grg-grg-fema-flood": {"category": "Overlay"},
+        }
+        out = readme_catalog(tmp_path, desc)
+        assert out.index("| Aeronautical |") < out.index("| Overlays |")
+
     def test_map_without_description_is_listed_as_other(self, tmp_path):
         _map(tmp_path, "x/y.xml", "Mystery Map")
         assert "| Other | Mystery Map |" in readme_catalog(tmp_path, {})

@@ -1,7 +1,8 @@
 # Map catalog metadata for the Maps page, keyed by map slug.
 # Community-editable: add an entry when you add a map.
 #   category: one of Satellite | Topographic | Street | Nautical |
-#             Cycling | Overlay | Land use   (used for grouping/filter)
+#             Cycling | Overlay | Land use | Aeronautical
+#             (used for grouping/filter)
 #   text:     one-line description shown under the map
 #   test_point: [lat, lon] where the map has data; the ATAK harness
 #             (python -m mapvalidator --harness) tests tiles there.

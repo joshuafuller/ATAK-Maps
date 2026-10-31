@@ -520,9 +520,9 @@ aside { display: flex; flex-direction: column; min-height: 0; background: var(--
 <script src="health.js" onerror="window.ATAK_HEALTH={}"></script>
 <script>
 const MAPS = window.ATAK_MAPS;
-const COLORS = { Satellite: '#4FA37A', Topographic: '#C48A4E', Street: '#8D9BAA', Nautical: '#4F94D4', Cycling: '#A483CC', Overlay: '#FF7A2F', 'Land use': '#9DB347', Other: '#8D9BAA' };
+const COLORS = { Satellite: '#4FA37A', Topographic: '#C48A4E', Street: '#8D9BAA', Nautical: '#4F94D4', Cycling: '#A483CC', Overlay: '#FF7A2F', 'Land use': '#9DB347', Aeronautical: '#D4B04F', Other: '#8D9BAA' };
 const REGION_ORDER = ['Anywhere', 'Global', 'US', 'UK', 'DE', 'CA', 'PL', 'Europe'];
-const TYPE_ORDER = ['All', 'Satellite', 'Topographic', 'Street', 'Nautical', 'Cycling', 'Land use'];
+const TYPE_ORDER = ['All', 'Satellite', 'Topographic', 'Street', 'Nautical', 'Cycling', 'Land use', 'Aeronautical'];
 const ZMAX = 22;
 // QR codes as inline SVG: sharp at any size, and they paint inside the 3D-flipped card in every browser
 function qrInto(el, text, size) {

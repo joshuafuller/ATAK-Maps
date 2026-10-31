@@ -1,3 +1,13 @@
+## [2.3.0](https://github.com/joshuafuller/ATAK-Maps/compare/v2.2.0...v2.3.0) (2026-10-31)
+
+### Features
+
+* **maps:** FAA charts, OpenRailwayMap and USGS Hydro; TAK Aware compatibility ([#109](https://github.com/joshuafuller/ATAK-Maps/issues/109)) ([637cb63](https://github.com/joshuafuller/ATAK-Maps/commit/637cb637bff54688bd43626442e632e8c318b933))
+
+### Bug Fixes
+
+* **deps:** Pillow 13 (41 Dependabot alerts); pin all actions to commits ([#108](https://github.com/joshuafuller/ATAK-Maps/issues/108)) ([40d7899](https://github.com/joshuafuller/ATAK-Maps/commit/40d7899901839954af71217e076fd4d63c628251))
+
 ## [2.2.0](https://github.com/joshuafuller/ATAK-Maps/compare/v2.1.0...v2.2.0) (2026-10-31)
 
 ### Features

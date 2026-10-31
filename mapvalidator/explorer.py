@@ -13,7 +13,7 @@ from typing import Callable, Optional
 from urllib.parse import parse_qsl
 
 from mapvalidator.atak_source import AtakSource, parse_source
-from mapvalidator.catalog import RAW_BASE, build_map_entry, iter_map_files
+from mapvalidator.catalog import RAW_BASE, build_map_entry, is_overlay, iter_map_files
 from mapvalidator.harness import DEFAULT_TEST_POINT
 
 # First match wins; checked against the map's description text.
@@ -102,7 +102,7 @@ def region_for(text: str) -> str:
 
 
 def credit_for(rel: Path) -> str:
-    if rel.parent.name == "GRG":
+    if is_overlay(rel):
         return next(
             (v for k, v in OVERLAY_CREDITS.items() if rel.stem.startswith(k)), ""
         )
@@ -133,7 +133,7 @@ def build_explorer_data(
                 "region": region_for(text),
                 "point": point,
                 "zoom": zoom,
-                "overlay": f.parent.name == "GRG",
+                "overlay": is_overlay(f),
                 "needsKey": entry["needs_key"],
                 "importUri": entry["import_uri"],
                 "xmlUrl": entry["import_url"],  # site copy, served as application/xml

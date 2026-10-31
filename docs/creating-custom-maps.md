@@ -1,7 +1,4 @@
----
-title: Add a map
----
-
+<!-- markdownlint-disable MD041 -- the small label sits above the page title -->
 <span class="am-kicker">For contributors · about 20 min</span>
 
 # Add a map
@@ -49,13 +46,13 @@ Screen space in ATAK is tight, so names stay short: **about 20 characters**.
 
 | Map | Name | File |
 |-----|------|------|
-| Most maps | `USGS Topo` | `usgs/usgs_topo.xml` |
-| Non-US national | `DE Basemap Color` | `de-basemap/de_basemap_color.xml` |
-| Overlay | `+ FEMA Flood` | `GRG/grg_fema_flood.xml` |
+| Most maps | `USGS Topo` | `maps/base/usgs/usgs_topo.xml` |
+| Non-US national | `DE Basemap Color` | `maps/base/de-basemap/de_basemap_color.xml` |
+| Overlay | `+ FEMA Flood` | `maps/overlays/grg_fema_flood.xml` |
 
 ## 4 · Describe it
 
-Add an entry to `descriptions.yml`. The map explorer uses it for the card and the filters. The **test point** is where the ATAK test checks for real tiles; regional maps need one.
+Add an entry to `maps/descriptions.yml`. The map explorer uses it for the card and the filters. The **test point** is where the ATAK test checks for real tiles; regional maps need one.
 
 ```yaml
 opentopo-opentopomap:
@@ -67,8 +64,8 @@ opentopo-opentopomap:
 ## 5 · Test like ATAK
 
 ```console
-$ uv run python -m mapvalidator --harness . --only opentopo/opentopomap.xml
-ok   opentopo/opentopomap.xml
+$ uv run python -m mapvalidator --harness . --only maps/base/opentopo/opentopomap.xml
+ok   maps/base/opentopo/opentopomap.xml
 
 1 maps, 0 errors
 ```
@@ -83,7 +80,7 @@ The test builds tile URLs with ATAK's own rules and its “TAK” user agent, th
 
 ## ATAK gotchas
 
-!!! warning "WMS: tileType is png or jpg"
+!!! warning "WMS: tileType is `png` or `jpg`"
     Anything else makes ATAK send `format=null`, and the server refuses.
 
 !!! warning "maxZoom is the server's real limit"

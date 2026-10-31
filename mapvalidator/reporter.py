@@ -5,7 +5,8 @@ from __future__ import annotations
 import json
 import subprocess
 
-from mapvalidator.probe import ProbeResult, ProbeStatus
+from dataclasses import dataclass
+
 from mapvalidator.xml_checks import ValidationResult
 
 # ---------------------------------------------------------------------------
@@ -23,19 +24,11 @@ def _classify(vr: ValidationResult) -> str:
     return "clean"
 
 
-def print_report(
-    validations: list[ValidationResult],
-    probes: list[ProbeResult] | None = None,
-) -> int:
-    """Print a console report of validation (and optional probe) results.
+def print_report(validations: list[ValidationResult]) -> int:
+    """Print a console report of validation results.
 
     Returns an exit code: 1 if any validation errors exist, 0 otherwise.
     """
-    # Build probe lookup by map name
-    probe_map: dict[str, ProbeResult] = {}
-    if probes:
-        for p in probes:
-            probe_map[p.map_name] = p
 
     # Sort: errors first, then warnings, then clean
     sorted_vrs = sorted(validations, key=lambda v: _STATUS_ORDER.get(_classify(v), 9))
@@ -59,11 +52,6 @@ def print_report(
         for warn in vr.warnings:
             print(f"      WARN:  {warn}")
 
-        # Probe status if available
-        if vr.map_name in probe_map:
-            pr = probe_map[vr.map_name]
-            print(f"      PROBE: {pr.status.name}")
-
         print()
 
     # Summary
@@ -80,7 +68,16 @@ def print_report(
 # GitHub issue management
 # ---------------------------------------------------------------------------
 
-_UNHEALTHY = {ProbeStatus.BLOCKED, ProbeStatus.DEAD, ProbeStatus.DEGRADED}
+
+@dataclass
+class MapHealth:
+    """One map's result from the ATAK harness: status is ok, warn, fail or skip."""
+
+    name: str
+    status: str
+    problem: str
+
+
 _TITLE_PREFIX = "Map Health: "
 
 
@@ -109,50 +106,51 @@ def _find_open_issues(repo: str) -> list[dict]:
 
 
 def manage_github_issues(
-    probes: list[ProbeResult],
+    health: list[MapHealth],
     repo: str = "joshuafuller/ATAK-Maps",
 ) -> None:
-    """Create or close GitHub issues based on probe results using the gh CLI."""
-    if not probes:
+    """Open an issue for each failing map and close it when the map works again.
+
+    Warnings and skipped maps (not fetched, e.g. need an API key) neither
+    open nor close issues. Titles start with "Map Health: <name>",
+    so issues opened by the older liveness probe are found and closed too.
+    """
+    if not health:
         return
 
     open_issues = _find_open_issues(repo)
 
-    for probe in probes:
-        title_prefix = f"{_TITLE_PREFIX}{probe.map_name}"
-        matching = [i for i in open_issues if i["title"].startswith(title_prefix)]
-
-        if probe.status in _UNHEALTHY:
-            # If there's already an open issue for this map, skip
-            if matching:
-                continue
-
-            status_label = probe.status.name
-            title = f"{_TITLE_PREFIX}{probe.map_name} \u2014 {status_label}"
-
-            error_detail = probe.tak_error or probe.generic_error or "No error details"
-            body_lines = [
-                "## Map Health Alert",
-                "",
-                f"**Map:** {probe.map_name}",
-                f"**Status:** {status_label}",
-                f"**Test URL:** {probe.test_url}",
-                f"**Error:** {error_detail}",
-                "",
-                "### Suggested Action",
-                "Verify the tile server is still operational. "
-                "If the server has permanently shut down, consider removing or "
-                "replacing this map source.",
-            ]
-            body = "\n".join(body_lines)
-
+    for h in health:
+        # Exact name: the title is the name alone or the name, " \u2014 ", a status.
+        # A prefix match would let "USGS Imagery" catch "USGS Imagery Topo".
+        own = f"{_TITLE_PREFIX}{h.name}"
+        matching = [
+            i
+            for i in open_issues
+            if i["title"] == own or i["title"].startswith(f"{own} \u2014")
+        ]
+        if h.status == "fail" and not matching:
+            body = "\n".join(
+                [
+                    "## Map Health Alert",
+                    "",
+                    f"**Map:** {h.name}",
+                    f"**Problem:** {h.problem or 'No details'}",
+                    "",
+                    "Found by the weekly ATAK harness, which fetches tiles exactly as ATAK does.",
+                    "Reproduce: `uv run python -m mapvalidator --harness . --only <map file>`",
+                    "",
+                    "### Suggested Action",
+                    "Check the tile server. If it has shut down for good, remove or replace this map.",
+                ]
+            )
             subprocess.run(
                 [
                     "gh",
                     "issue",
                     "create",
                     "--title",
-                    title,
+                    f"{_TITLE_PREFIX}{h.name} \u2014 not working",
                     "--body",
                     body,
                     "--label",
@@ -163,9 +161,7 @@ def manage_github_issues(
                 capture_output=True,
                 text=True,
             )
-
-        elif probe.status == ProbeStatus.HEALTHY and matching:
-            # Close resolved issues
+        elif h.status == "ok":
             for issue in matching:
                 subprocess.run(
                     [
@@ -174,7 +170,7 @@ def manage_github_issues(
                         "close",
                         str(issue["number"]),
                         "--comment",
-                        f"Map {probe.map_name} is now HEALTHY. Auto-closing.",
+                        f"{h.name} works in ATAK again (weekly ATAK harness). Auto-closing.",
                         "--repo",
                         repo,
                     ],

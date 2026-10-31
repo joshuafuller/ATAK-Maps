@@ -189,7 +189,8 @@ class TestTestPoint:
     def test_point_from_descriptions(self, tmp_path):
         net = FakeNet()
         f = _map(tmp_path, "de-basemap", "DE Basemap Color", min_zoom=10, max_zoom=10)
-        (tmp_path / "descriptions.yml").write_text(
+        (tmp_path / "maps").mkdir(exist_ok=True)
+        (tmp_path / "maps" / "descriptions.yml").write_text(
             "de-basemap-m:\n  category: Street\n  test_point: [52.52, 13.405]\n"
         )
         check_source(f, tmp_path, net)
@@ -201,7 +202,10 @@ class TestOverlays:
     def test_overlay_name_must_start_with_plus(self, tmp_path):
         net = FakeNet(default=_overlay_png())
         errors = _levels(
-            check_source(_map(tmp_path, "GRG", "Google Roads"), tmp_path, net), "error"
+            check_source(
+                _map(tmp_path, "maps/overlays", "Google Roads"), tmp_path, net
+            ),
+            "error",
         )
         assert any("+ " in e.message for e in errors)
 
@@ -216,7 +220,9 @@ class TestOverlays:
 
     def test_opaque_overlay_is_an_error(self, tmp_path):
         errors = _levels(
-            check_source(_map(tmp_path, "GRG", "+ Relief"), tmp_path, FakeNet()),
+            check_source(
+                _map(tmp_path, "maps/overlays", "+ Relief"), tmp_path, FakeNet()
+            ),
             "error",
         )
         assert any("opaque" in e.message for e in errors)
@@ -225,7 +231,9 @@ class TestOverlays:
         net = FakeNet(default=EMPTY)
         assert (
             _levels(
-                check_source(_map(tmp_path, "GRG", "+ FEMA Flood"), tmp_path, net),
+                check_source(
+                    _map(tmp_path, "maps/overlays", "+ FEMA Flood"), tmp_path, net
+                ),
                 "error",
             )
             == []
@@ -261,8 +269,8 @@ class TestWms:
 class TestRunHarness:
     def test_exit_code_and_report(self, tmp_path):
         _map(tmp_path, "esri", "Esri Topo")
-        bad = tmp_path / "GRG"
-        bad.mkdir()
+        bad = tmp_path / "maps" / "overlays"
+        bad.mkdir(parents=True)
         (bad / "roads.xml").write_text(
             (tmp_path / "esri" / "m.xml").read_text().replace("Esri Topo", "Roads")
         )
@@ -272,9 +280,12 @@ class TestRunHarness:
         results = run_harness(tmp_path, FakeNet(default=_overlay_png()))
         report, exit_code = format_report(results)
 
-        assert [p.as_posix() for p in results] == ["GRG/roads.xml", "esri/m.xml"]
+        assert [p.as_posix() for p in results] == [
+            "esri/m.xml",
+            "maps/overlays/roads.xml",
+        ]
         assert exit_code == 1
-        assert "GRG/roads.xml" in report and "ERROR" in report
+        assert "maps/overlays/roads.xml" in report and "ERROR" in report
 
     def test_clean_run_exits_zero(self, tmp_path):
         _map(tmp_path, "esri", "Esri Topo")
@@ -360,7 +371,8 @@ class TestSemiTransparentOverlay:
         net = FakeNet(default=buf.getvalue())
         assert (
             _levels(
-                check_source(_map(tmp_path, "GRG", "+ Tint"), tmp_path, net), "error"
+                check_source(_map(tmp_path, "maps/overlays", "+ Tint"), tmp_path, net),
+                "error",
             )
             == []
         )
@@ -402,8 +414,21 @@ class TestHealthReport:
             == "minZoom z1: HTTP 404"
         )
 
+    def test_skipped_tile_checks_are_skip_not_ok(self):
+        # API-key maps are not fetched; claiming "ok" would close real issues.
+        results = {
+            Path("uk-os/uk_os_road.xml"): [
+                Finding("info", "needs an API key; tile checks skipped")
+            ]
+        }
+        assert (
+            health_report(results, self.CHECKED)["uk-os-uk-os-road"]["status"] == "skip"
+        )
+
     def test_info_only_is_ok(self):
         results = {
-            Path("x/m.xml"): [Finding("info", "needs an API key; tile checks skipped")]
+            Path("x/m.xml"): [
+                Finding("info", "server has real tiles at z20, above maxZoom 19")
+            ]
         }
         assert health_report(results, self.CHECKED)["x-m"]["status"] == "ok"

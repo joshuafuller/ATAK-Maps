@@ -90,7 +90,9 @@ class TestLeafSpecs:
         assert spec["quadkey"] is True and spec["tms"] is True
 
     def test_wms_splits_base_and_keeps_extra_parameters(self, tmp_path):
-        (spec,) = leaf_specs(parse_source(_map(tmp_path, "GRG/f.xml", WMS)))
+        (spec,) = leaf_specs(
+            parse_source(_map(tmp_path, "maps/overlays/grg_f.xml", WMS))
+        )
         assert spec["kind"] == "wms"
         assert spec["base"] == "https://wms.example/WMSServer"
         assert (spec["layers"], spec["version"], spec["format"]) == (
@@ -120,9 +122,12 @@ class TestRegionAndCredit:
         assert region_for("Google satellite imagery — global.") == "Global"
 
     def test_credit_by_folder_and_overlay_prefix(self):
-        assert credit_for(Path("esri/esri_topo.xml")) == "© Esri and its data providers"
         assert (
-            credit_for(Path("GRG/grg_fema_flood.xml"))
+            credit_for(Path("maps/base/esri/esri_topo.xml"))
+            == "© Esri and its data providers"
+        )
+        assert (
+            credit_for(Path("maps/overlays/grg_fema_flood.xml"))
             == "FEMA National Flood Hazard Layer"
         )
         assert credit_for(Path("unknown/thing.xml")) == ""
@@ -130,8 +135,10 @@ class TestRegionAndCredit:
 
 class TestBuildExplorerData:
     def test_one_entry_per_map_with_what_the_page_needs(self, tmp_path):
-        _map(tmp_path, "google/google_road.xml", TMS.format(name="Google Road"))
-        _map(tmp_path, "GRG/grg_fema_flood.xml", WMS)
+        _map(
+            tmp_path, "maps/base/google/google_road.xml", TMS.format(name="Google Road")
+        )
+        _map(tmp_path, "maps/overlays/grg_fema_flood.xml", WMS)
         desc = {
             "google-google-road": {"category": "Street", "text": "Road map — global."},
             "grg-grg-fema-flood": {
@@ -156,7 +163,7 @@ class TestBuildExplorerData:
             == "https://joshuafuller.github.io/ATAK-Maps/sources/google/google_road.xml"
         )
         assert (
-            road["sourceUrl"].endswith("/google/google_road.xml")
+            road["sourceUrl"].endswith("/maps/base/google/google_road.xml")
             and "github" in road["sourceUrl"]
         )
         assert road["point"] == [40.7128, -74.006]  # harness default test point
@@ -176,7 +183,7 @@ class TestBuildExplorerData:
         assert entry["needsKey"] is True
 
     def test_live_point_overrides_test_point(self, tmp_path):
-        _map(tmp_path, "GRG/grg_fema_flood.xml", WMS)
+        _map(tmp_path, "maps/overlays/grg_fema_flood.xml", WMS)
         (entry,) = build_explorer_data(
             tmp_path,
             {},
@@ -185,7 +192,7 @@ class TestBuildExplorerData:
         assert (entry["point"], entry["zoom"]) == ([51.2, -121.7], 10)
 
     def test_failed_live_lookup_keeps_test_point(self, tmp_path):
-        _map(tmp_path, "GRG/grg_fema_flood.xml", WMS)
+        _map(tmp_path, "maps/overlays/grg_fema_flood.xml", WMS)
         (entry,) = build_explorer_data(
             tmp_path, {}, live_points={"grg-grg-fema-flood": lambda: None}
         )

@@ -1,3 +1,4 @@
+<!-- markdownlint-disable MD041 -- the banner picture comes before the first heading -->
 <div align="center">
 
 <picture>
@@ -23,7 +24,7 @@
 
 ### Install maps
 
-<img src="images/add-to-atak.png" width="130" align="right" alt="QR code that adds every map to ATAK">
+<img src="docs/assets/brand/add-to-atak.png" width="130" align="right" alt="QR code that adds every map to ATAK">
 
 - **All maps:** scan this code with your ATAK device.
 - **One map:** open the [map explorer](https://joshuafuller.github.io/ATAK-Maps/maps/) on the device and tap **Add to ATAK**.
@@ -37,7 +38,7 @@ Problems? See [Install & fix](https://joshuafuller.github.io/ATAK-Maps/install-g
 ### Add or fix a map
 
 - [Add a map](https://joshuafuller.github.io/ATAK-Maps/creating-custom-maps/): naming rules and the XML format.
-- Test it the way ATAK loads it:<br>`uv run python -m mapvalidator --harness . --only my_map.xml`
+- Test it the way ATAK loads it:<br>`uv run python -m mapvalidator --harness . --only maps/base/<source>/<map>.xml`
 - [Report a broken map](https://github.com/joshuafuller/ATAK-Maps/issues/new)
 
 ATAK 5.1 or later. Not affiliated with TAK.GOV.

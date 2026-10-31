@@ -29,18 +29,27 @@ To contribute to ATAK Maps, follow these steps:
 
 ## Testing Your Changes
 
-Before submitting a pull request, use the helper scripts in `scripts/` to catch problems early. All three require Python and the `mapvalidator` package in this repository.
+Maps live in `maps/base/<source>/` (base maps) and `maps/overlays/` (transparent overlays, `grg_` prefix). Full guide: [Add a map](https://joshuafuller.github.io/ATAK-Maps/creating-custom-maps/). Before you open a pull request, run these with [uv](https://docs.astral.sh/uv/):
 
-* **`./scripts/validate.sh`** — Runs deep deterministic validation on every XML map file (zoom ranges, URL placeholders, casing, serverParts, and more). No network access needed, so it runs fast. Pass `--strict` to treat warnings as errors (this is what CI does).
+* **Test your map the way ATAK loads it** (fetches real tiles with ATAK's URL rules and user agent):
 
-* **`./scripts/test-map.sh <file>`** — Validates and probes a single map file. Use this when you're adding or editing one map:
   ```bash
-  ./scripts/test-map.sh google/google_hybrid.xml
+  uv run python -m mapvalidator --harness . --only maps/base/google/google_hybrid.xml
   ```
 
-* **`./scripts/probe.sh`** — Validates all maps and probes every tile server for liveness. This makes network requests, so it takes longer. Useful for a final check before opening your PR.
+* **Check every map's XML** (zoom ranges, URL placeholders, serverParts and more; no network):
 
-CI will run schema validation automatically on every pull request, but running these locally first saves time and review cycles.
+  ```bash
+  uv run python -m mapvalidator
+  ```
+
+* **Run the tests** if you change Python code:
+
+  ```bash
+  uv run --extra dev pytest
+  ```
+
+CI runs all of these, the schema check and a browser check of the site on every pull request.
 
 ## Contact
 

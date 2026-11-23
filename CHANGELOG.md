@@ -1,3 +1,9 @@
+## [2.3.2](https://github.com/joshuafuller/ATAK-Maps/compare/v2.3.1...v2.3.2) (2026-11-23)
+
+### Bug Fixes
+
+* **maps:** remove USGS Imagery Topo, retired by USGS ([#124](https://github.com/joshuafuller/ATAK-Maps/issues/124)) ([4fc7602](https://github.com/joshuafuller/ATAK-Maps/commit/4fc760274d26c56c3abbcc35acf73da61e156564)), closes [#123](https://github.com/joshuafuller/ATAK-Maps/issues/123)
+
 ## [2.3.1](https://github.com/joshuafuller/ATAK-Maps/compare/v2.3.0...v2.3.1) (2026-10-31)
 
 ### Bug Fixes

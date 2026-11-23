@@ -152,9 +152,6 @@ usgs-usgs-topo:
 usgs-usgs-imagery:
   category: Satellite
   text: "USGS aerial imagery only, no labels — United States."
-usgs-usgs-imagery-topo:
-  category: Satellite
-  text: "USGS aerial imagery with topographic labels and features blended — United States."
 usgs-usgs-relief:
   category: Topographic
   text: "USGS shaded relief — terrain hillshade, United States."

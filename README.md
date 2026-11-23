@@ -53,7 +53,7 @@ ATAK 5.1 or later. Not affiliated with TAK.GOV.
 
 | Type | Maps |
 |------|------|
-| Satellite | Bing Hybrid · Bing Satellite · Esri Clarity · Google Hybrid · Google Hybrid No POI · Google Satellite · NAIP Imagery · PL Ortho · USGS Imagery · USGS Imagery Topo |
+| Satellite | Bing Hybrid · Bing Satellite · Esri Clarity · Google Hybrid · Google Hybrid No POI · Google Satellite · NAIP Imagery · PL Ortho · USGS Imagery |
 | Topographic | CA Toporama · DE Basemap Elevation · DE Basemap Hillshade · Esri Topo · Esri USA Topo · Google Relief · Google Terrain · OpenTopoMap · UK OS Outdoor · USGS Relief · USGS Topo |
 | Street | Bing Road · CA Base Map · DE Basemap Color · DE Basemap Gray · Esri NatGeo · Google Road · Google Road Alt · Google Road No POI · UK OS Light · UK OS Road |
 | Nautical | + OpenSeaMap · OpenSeaMap Base |
